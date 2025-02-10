@@ -3,6 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Тренировка немецких слов</title>
+    <style>
+        .option {
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .correct {
+            border-color: green;
+        }
+        .incorrect {
+            border-color: red;
+        }
+    </style>
 </head>
 <body>
     <h1 id="title">Тренировка немецких слов</h1>
@@ -16,22 +32,40 @@
     </div>
 
     <div id="order-selection">
-        <button type="button" onclick="toggleOrder()" id="order-button">Случайный порядок</button>
+        <label for="word-order">Порядок слов:</label>
+        <select id="word-order" onchange="toggleOrder()">
+            <option value="random">Случайный</option>
+            <option value="sequential">По порядку</option>
+        </select>
+    </div>
+
+    <div id="mode-selection">
+        <label for="mode">Режим работы:</label>
+        <select id="mode" onchange="getWord()">
+            <option value="manual">Ввод перевода</option>
+            <option value="multiple-choice">Выбор из вариантов</option>
+        </select>
     </div>
 
     <div id="word-container">
         <p id="translate-text">Переведи это слово:</p>
         <h2 id="word"></h2>
-        <input type="text" id="user-input" placeholder="Введите перевод">
-        <button type="button" onclick="checkAnswer()" id="check-button">Проверить</button>
-        <button type="button" onclick="skipWord()" id="skip-button">Пропустить</button>
+
+        <div id="manual-input-container">
+            <input type="text" id="user-input" placeholder="Введите перевод">
+            <button type="button" onclick="checkAnswer()" id="check-button">Проверить</button>
+            <button type="button" onclick="skipWord()" id="skip-button">Пропустить</button>
+        </div>
+
+        <div id="multiple-choice-container" style="display: none;"></div>
+
         <p id="feedback"></p>
         <p id="counter-text">Счётчик правильных ответов: <span id="correct-counter">0</span></p>
     </div>
 
     <script>
         const words = [
-			// Мебель
+            // Мебель
             { german: "das Bett", russian: "кровать" },
             { german: "der Stuhl", russian: "стул" },
             { german: "der Tisch", russian: "стол" },
@@ -665,27 +699,17 @@
         let correctCounter = 0;
         let isRandomOrder = true;
 
-        const translations = {
-            ru: {
-                title: "Тренировка немецких слов",
-                translateText: "Переведи это слово:",
-                checkButton: "Проверить",
-                counterText: "Счётчик правильных ответов:",
-                correct: "Правильно!",
-                wrong: "Неправильно! Правильный ответ: "
-            }
-        };
-
         function toggleOrder() {
-            isRandomOrder = !isRandomOrder;
-            document.getElementById('order-button').textContent = isRandomOrder ? 'Случайный порядок' : 'По порядку';
+            const order = document.getElementById('word-order').value;
+            isRandomOrder = order === 'random';
             currentWordIndex = 0;
             getWord();
         }
 
         function getWord() {
             const languageDirection = document.getElementById('language-direction').value;
-            
+            const mode = document.getElementById('mode').value;
+
             if (repeatWords.length > 0) {
                 currentWordIndex = repeatWords.shift();
             } else if (isRandomOrder) {
@@ -699,8 +723,18 @@
                 : words[currentWordIndex].russian;
 
             document.getElementById('word').textContent = wordToTranslate;
-            document.getElementById('user-input').value = '';
             document.getElementById('feedback').textContent = '';
+            document.getElementById('correct-counter').textContent = correctCounter;
+
+            if (mode === 'manual') {
+                document.getElementById('manual-input-container').style.display = 'block';
+                document.getElementById('multiple-choice-container').style.display = 'none';
+                document.getElementById('user-input').value = '';
+            } else {
+                document.getElementById('manual-input-container').style.display = 'none';
+                document.getElementById('multiple-choice-container').style.display = 'block';
+                showMultipleChoice(languageDirection);
+            }
         }
 
         function checkAnswer() {
@@ -712,20 +746,71 @@
 
             if (userAnswer === correctAnswer) {
                 correctCounter++;
-                document.getElementById('feedback').textContent = translations.ru.correct;
+                document.getElementById('feedback').textContent = 'Правильно!';
+                setTimeout(getWord, 1500);
             } else {
                 correctCounter = 0;
-                document.getElementById('feedback').textContent = `${translations.ru.wrong}${correctAnswer}`;
+                document.getElementById('feedback').textContent = `Неправильно! Правильный ответ: ${correctAnswer}`;
                 repeatWords.push(currentWordIndex);
+                setTimeout(getWord, 1500);
             }
-
-            document.getElementById('correct-counter').textContent = correctCounter;
-            setTimeout(getWord, 1500);
         }
 
         function skipWord() {
             document.getElementById('feedback').textContent = 'Слово пропущено!';
             setTimeout(getWord, 1500);
+        }
+
+        function showMultipleChoice(languageDirection) {
+            const correctAnswer = languageDirection === 'de-ru' 
+                ? words[currentWordIndex].russian 
+                : words[currentWordIndex].german;
+
+            let options = [correctAnswer];
+
+            while (options.length < 4) {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                const randomWord = languageDirection === 'de-ru' 
+                    ? words[randomIndex].russian 
+                    : words[randomIndex].german;
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
+                }
+            }
+
+            options = options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('multiple-choice-container');
+            container.innerHTML = '';
+
+            const maxLength = Math.max(...options.map(option => option.length));
+            const maxWidth = maxLength * 12 + 'px';
+
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.textContent = option;
+                div.className = 'option';
+                div.style.width = maxWidth;
+                div.onclick = () => checkMultipleChoice(option, correctAnswer);
+                container.appendChild(div);
+            });
+        }
+
+        function checkMultipleChoice(selected, correctAnswer) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                if (option.textContent === selected) {
+                    if (selected === correctAnswer) {
+                        option.classList.add('correct');
+                        correctCounter++;
+                        setTimeout(getWord, 1500);
+                    } else {
+                        option.classList.add('incorrect');
+                        correctCounter = 0;
+                    }
+                }
+            });
+            document.getElementById('correct-counter').textContent = correctCounter;
         }
 
         getWord();
