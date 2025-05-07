@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренировка немецких слов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, label, p, #word {
+            text-align: center;
+        }
+
+        div {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        select, input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            display: block;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .option {
+            margin: 5px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .correct {
+            border-color: green;
+        }
+
+        .incorrect {
+            border-color: red;
+        }
+
+        #multiple-choice-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            select, input, button, .option {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Тренировка немецких слов</h1>
+
+    <div id="interface-language-selection">
+        <label for="language-direction">Выберите направление перевода:</label>
+        <select id="language-direction" onchange="getWord()">
+            <option value="de-ru">С немецкого на русский</option>
+            <option value="ru-de">С русского на немецкий</option>
+        </select>
+    </div>
+
+    <div id="order-selection">
+        <label for="word-order">Порядок слов:</label>
+        <select id="word-order" onchange="toggleOrder()">
+            <option value="random">Случайный</option>
+            <option value="sequential">По порядку</option>
+        </select>
+    </div>
+
+    <div id="mode-selection">
+        <label for="mode">Режим работы:</label>
+        <select id="mode" onchange="getWord()">
+            <option value="manual">Ввод перевода</option>
+            <option value="multiple-choice">Выбор из вариантов</option>
+        </select>
+    </div>
+
+    <div id="word-container">
+        <p id="translate-text">Переведи это слово:</p>
+        <h2 id="word"></h2>
+
+        <div id="manual-input-container">
+            <input type="text" id="user-input" placeholder="Введите перевод">
+            <button type="button" onclick="checkAnswer()" id="check-button">Проверить</button>
+            <button type="button" onclick="skipWord()" id="skip-button">Пропустить</button>
+        </div>
+
+        <div id="multiple-choice-container" style="display: none;"></div>
+
+        <p id="feedback"></p>
+        <p id="counter-text">Счётчик правильных ответов: <span id="correct-counter">0</span></p>
+    </div>
+	
+	<button onclick="location.href='index.html'" style="margin-top: 10px; font-size: 16px; padding: 10px 20px; border: none; background: transparent; text-decoration: underline; cursor: pointer;">Zur Startseite</button>
+
+    <footer>
+        © 2025 Aleksand Shcherbyna. Все права защищены.
+    </footer>
+
+    <script>
+        const words = [
+                { german: "die Einfahrt, -en", russian: "въезд, подъезд" },
+				{ german: "der Hof, Höfe", russian: "двор" },
+				{ german: "kündigen (hat gekündigt)", russian: "увольнять, расторгать" },
+				{ german: "der Vertrag, Verträge", russian: "договор" },
+				{ german: "das Verständnis (Sg.)", russian: "понимание" },
+				{ german: "abschließen (hat abgeschlossen)", russian: "заключать, завершать" },
+				{ german: "niedrig", russian: "низкий" },
+				{ german: "die Kosten (Pl.)", russian: "расходы, издержки" },
+				{ german: "(sich) erhöhen (hat erhöht)", russian: "повышаться, увеличиваться" },
+				{ german: "entfernen (hat entfernt)", russian: "удалять, устранять" },
+				{ german: "der Gegenstand, Gegenstände", russian: "предмет, вещь" },
+				{ german: "heizen (hat geheizt)", russian: "отапливать" },
+				{ german: "der Kinderwagen, -", russian: "детская коляска" },
+				{ german: "der Aufzug, Aufzüge", russian: "лифт" },
+				{ german: "die Treppe, -n", russian: "лестница" },
+				{ german: "der Briefkasten, Briefkästen", russian: "почтовый ящик" },
+				{ german: "die Lösung, -en", russian: "решение" },
+				{ german: "ziemlich", russian: "довольно, порядочно" },
+				{ german: "recht haben (hat recht gehabt)", russian: "быть правым" },
+				{ german: "die Frage, -n", russian: "вопрос" },
+				{ german: "die Bitte, -n", russian: "просьба" },
+				{ german: "die Absicht, -en", russian: "намерение, замысел" },
+				{ german: "die Schicht, -en", russian: "смена, слой" },
+				{ german: "die Energie (Sg.)", russian: "энергия" },
+				{ german: "selbst", russian: "сам, сама, само, сами" },
+				{ german: "wechseln", russian: "менять, обменивать" },
+				{ german: "die Decke, -n", russian: "потолок, одеяло" },
+				{ german: "hängen (hat gehängt / gehangen)", russian: "висеть" },
+				{ german: "der Dank (Sg.)", russian: "благодарность" },
+				{ german: "nichts", russian: "ничего" },
+				{ german: "die Menge, -n", russian: "множество, толпа" },
+				{ german: "der Kugelschreiber, -", russian: "шариковая ручка" },
+				{ german: "stecken (hat gesteckt)", russian: "торчать, быть воткнутым" },
+				{ german: "das Schloss, Schlösser", russian: "замок" },
+				{ german: "stehen (hat gestanden)", russian: "стоять" },
+				{ german: "das Bild, -er", russian: "картина, изображение" },
+				{ german: "die Wand, Wände", russian: "стена" },
+				{ german: "die Katze, -n", russian: "кошка" },
+				{ german: "liegen (hat gelegen)", russian: "лежать" },
+				{ german: "die Ruhe (Sg.)", russian: "тишина, покой" },
+				{ german: "das Schild, -er", russian: "табличка, щит" },
+				{ german: "stören (hat gestört)", russian: "мешать" },
+				{ german: "stellen (hat gestellt)", russian: "ставить" },
+				{ german: "der Stift, -e", russian: "ручка, карандаш" },
+				{ german: "lassen, du lässt, er lässt (hat gelassen)", russian: "оставлять, позволять" },
+				{ german: "werfen, du wirfst, er wirft (hat geworfen)", russian: "бросать" },
+				{ german: "aufpassen (hat aufgepasst)", russian: "присматривать, быть внимательным" },
+				{ german: "gießen (hat gegossen)", russian: "лить, поливать" },
+				{ german: "wirklich", russian: "действительно, в самом деле" },
+				{ german: "klingeln (hat geklingelt)", russian: "звонить" },
+				{ german: "besprechen, du besprichst, er bespricht (hat besprochen)", russian: "обсуждать" },
+				{ german: "füttern (hat gefüttert)", russian: "кормить" },
+				{ german: "der Handwerker, -", russian: "мастер, ремесленник" },
+				{ german: "bauen (hat gebaut)", russian: "строить" },
+				{ german: "dahin", russian: "туда" },
+				{ german: "die Pflanze, -n", russian: "растение" },
+				{ german: "dorthin", russian: "туда" },
+				{ german: "die Vorsicht (Sg.)", russian: "осторожность" },
+				{ german: "herunter-, runter-", russian: "вниз" },
+				{ german: "fallen, du fällst, er fällt (ist gefallen)", russian: "падать" },
+				{ german: "rein", russian: "внутрь, чисто" },
+				{ german: "der Müll (Sg.)", russian: "мусор" },
+				{ german: "raus", russian: "наружу, вон" },
+				{ german: "rein-kommen (ist reingekommen)", russian: "входить" },
+				{ german: "die Mitteilung, -en", russian: "сообщение, извещение" },
+				{ german: "der Bewohner, - / die Bewohnerin, -nen", russian: "жилец, жительница" },
+				{ german: "trennen (hat getrennt)", russian: "разделять, сортировать" },
+				{ german: "Bio-", russian: "био-" },
+				{ german: "der Abfall, Abfälle", russian: "отходы, мусор" },
+				{ german: "das Plastik (Sg.)", russian: "пластик" },
+				{ german: "beachten (hat beachtet)", russian: "обращать внимание" },
+				{ german: "die Müllabfuhr, -en", russian: "вывоз мусора" },
+				{ german: "die Mülltonne, -n", russian: "мусорный бак" },
+				{ german: "abstellen (hat abgestellt)", russian: "ставить, парковать" }
+        ];
+
+        let currentWordIndex = 0;
+        let repeatWords = [];
+        let correctCounter = 0;
+        let isRandomOrder = true;
+
+        function toggleOrder() {
+            const order = document.getElementById('word-order').value;
+            isRandomOrder = order === 'random';
+            currentWordIndex = 0;
+            getWord();
+        }
+
+        function getWord() {
+            const languageDirection = document.getElementById('language-direction').value;
+            const mode = document.getElementById('mode').value;
+
+            if (repeatWords.length > 0) {
+                currentWordIndex = repeatWords.shift();
+            } else if (isRandomOrder) {
+                currentWordIndex = Math.floor(Math.random() * words.length);
+            } else {
+                currentWordIndex = (currentWordIndex + 1) % words.length;
+            }
+
+            const wordToTranslate = languageDirection === 'de-ru' 
+                ? words[currentWordIndex].german 
+                : words[currentWordIndex].russian;
+
+            document.getElementById('word').textContent = wordToTranslate;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('correct-counter').textContent = correctCounter;
+
+            if (mode === 'manual') {
+                document.getElementById('manual-input-container').style.display = 'block';
+                document.getElementById('multiple-choice-container').style.display = 'none';
+                document.getElementById('user-input').value = '';
+            } else {
+                document.getElementById('manual-input-container').style.display = 'none';
+                document.getElementById('multiple-choice-container').style.display = 'block';
+                showMultipleChoice(languageDirection);
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('user-input').value.trim().toLowerCase();
+            const languageDirection = document.getElementById('language-direction').value;
+            const correctAnswer = languageDirection === 'de-ru' 
+                ? words[currentWordIndex].russian.toLowerCase() 
+                : words[currentWordIndex].german.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                correctCounter++;
+                document.getElementById('feedback').textContent = 'Правильно!';
+                setTimeout(getWord, 1500);
+            } else {
+                correctCounter = 0;
+                document.getElementById('feedback').textContent = `Неправильно! Правильный ответ: ${correctAnswer}`;
+                repeatWords.push(currentWordIndex);
+                setTimeout(getWord, 1500);
+            }
+        }
+
+        function skipWord() {
+            document.getElementById('feedback').textContent = 'Слово пропущено!';
+            setTimeout(getWord, 1500);
+        }
+
+        function showMultipleChoice(languageDirection) {
+            const correctAnswer = languageDirection === 'de-ru' 
+                ? words[currentWordIndex].russian 
+                : words[currentWordIndex].german;
+
+            let options = [correctAnswer];
+
+            while (options.length < 4) {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                const randomWord = languageDirection === 'de-ru' 
+                    ? words[randomIndex].russian 
+                    : words[randomIndex].german;
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
+                }
+            }
+
+            options = options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('multiple-choice-container');
+            container.innerHTML = '';
+
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.textContent = option;
+                div.className = 'option';
+                div.onclick = () => checkMultipleChoice(option, correctAnswer);
+                container.appendChild(div);
+            });
+        }
+
+        function checkMultipleChoice(selected, correctAnswer) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                if (option.textContent === selected) {
+                    if (selected === correctAnswer) {
+                        option.classList.add('correct');
+                        correctCounter++;
+                        setTimeout(getWord, 1500);
+                    } else {
+                        option.classList.add('incorrect');
+                        correctCounter = 0;
+                    }
+                }
+            });
+            document.getElementById('correct-counter').textContent = correctCounter;
+        }
+
+        getWord();
+    </script>
+</body>
+</html>
