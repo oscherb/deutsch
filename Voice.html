@@ -9,9 +9,6 @@
       background: #f9f9f9;
       padding: 30px;
     }
-    h1 {
-      color: #333;
-    }
     .word {
       margin: 10px 0;
       padding: 10px;
@@ -34,9 +31,23 @@
   <div class="word" onclick="speak('Tschüss')">Tschüss — Пока</div><br>
 
   <script>
+    let germanVoice = null;
+
+    function loadVoices() {
+      const voices = speechSynthesis.getVoices();
+      germanVoice = voices.find(voice => voice.lang.startsWith('de'));
+    }
+
+    // Некоторые браузеры загружают голоса асинхронно
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'de-DE';
+      if (germanVoice) {
+        utterance.voice = germanVoice;
+      }
       speechSynthesis.speak(utterance);
     }
   </script>
