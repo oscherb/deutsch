@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Учим немецкий</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 30px;
+    }
+    h1 {
+      color: #333;
+    }
+    .word {
+      margin: 10px 0;
+      padding: 10px;
+      background: #e0f7fa;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .word:hover {
+      background: #b2ebf2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Слова по-немецки 📘</h1>
+
+  <div class="word" onclick="speak('Guten Morgen')">Guten Morgen — Доброе утро</div><br>
+  <div class="word" onclick="speak('Wie geht es dir?')">Wie geht es dir? — Как дела?</div><br>
+  <div class="word" onclick="speak('Danke')">Danke — Спасибо</div><br>
+  <div class="word" onclick="speak('Tschüss')">Tschüss — Пока</div><br>
+
+  <script>
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
