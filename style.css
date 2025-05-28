@@ -1,0 +1,142 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(to bottom, #d1e0ec, #f5f5dc); /* Оттенки голубого и желтого */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Чтобы контент был сверху, если не помещается */
+    min-height: 100vh;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.trainer-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Ограничение для мобильного вида */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.progress-info {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.verb-display h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 2em;
+    color: #003366; /* Темно-синий для контраста */
+}
+
+.verb-display #verb-translation-hint {
+    font-size: 0.9em;
+    color: #444;
+    margin-bottom: 20px;
+    min-height: 1.2em; /* Резервируем место, чтобы не прыгало */
+}
+
+.preposition-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.choice-button {
+    padding: 15px 10px;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.choice-button:hover {
+    background-color: #e9e9e9;
+}
+
+.choice-button.correct {
+    background-color: #4CAF50; /* Зеленый */
+    color: white;
+    border-color: #388E3C;
+}
+
+.choice-button.incorrect {
+    background-color: #F44336; /* Красный */
+    color: white;
+    border-color: #D32F2F;
+}
+
+.example-area {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.example-area h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #0056b3;
+}
+
+#german-example {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+#show-translation-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    transition: background-color 0.2s;
+}
+
+#show-translation-button:hover {
+    background-color: #0056b3;
+}
+
+#russian-translation {
+    font-size: 0.95em;
+    color: #333;
+}
+
+.navigation-controls {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navigation-controls button {
+    padding: 12px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #5c6bc0; /* Фиолетовый оттенок */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navigation-controls button:hover {
+    background-color: #3f51b5;
+}
+
+.navigation-controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
