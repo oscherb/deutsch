@@ -102,7 +102,9 @@ function loadWord(index) {
     currentWord = vocabulary[index];
 
     verbTextElement.textContent = currentWord.verb;
-    verbTranslationHintElement.textContent = `(Падеж: ${currentWord.case})`;
+    //verbTranslationHintElement.textContent = `(Падеж: ${currentWord.case})`;
+    verbTranslationHintElement.textContent = `${currentWord.translationVerbPreposition} (Падеж: ${currentWord.case})`;
+
 
     const choices = generateChoices(currentWord.preposition);
     choiceButtons.forEach((button, i) => {
