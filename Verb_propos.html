@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажер немецких глаголов</title>
+    <title>Тренажер немецких глаголов с предлогами</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="trainer-container">
         <div class="progress-info">
-            Слово <span id="current-word-number">1</span> из <span id="total-word-count">5</span>
+            Слово <span id="current-word-number">1</span> из <span id="total-word-count">0</span>
         </div>
 
         <div class="verb-display">
-            <h2 id="verb-text">глагол</h2>
+            <h2 id="verb-text">Загрузка...</h2>
             <p id="verb-translation-hint"></p>
         </div>
 
@@ -27,14 +27,18 @@
         <div class="example-area" id="example-area" style="display: none;">
             <h3>Пример:</h3>
             <p id="german-example"></p>
-            <button id="show-translation-button">Показать перевод примера</button>
             <p id="russian-translation" style="display: none;"></p>
         </div>
 
         <div class="navigation-controls">
             <button id="prev-button" disabled>&laquo; Назад</button>
-            <button id="next-button">Вперед &raquo;</button>
+            <button id="next-button" disabled>Вперед &raquo;</button>
         </div>
+
+        <footer class="page-footer">
+            <a href="index.html" class="home-link-button">На главную</a>
+            <p class="copyright">&copy; 2025 Aleksand Shcherbyna. Alle Rechte vorbehalten.</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>

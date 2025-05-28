@@ -1,5 +1,3 @@
-// script.js
-
 // Список всех возможных предлогов для генерации неправильных вариантов
 const allPrepositions = [
     "an", "auf", "aus", "bei", "bis", "durch", "für", "gegen", "hinter",
@@ -7,12 +5,12 @@ const allPrepositions = [
     "unter", "von", "vor", "zu"
 ];
 
-let vocabulary = []; // Теперь это пустой массив, будет загружен из JSON
+let vocabulary = [];
 let currentWordIndex = 0;
 let currentWord = {};
 let answerGiven = false;
 
-// Элементы DOM (остаются без изменений)
+// Элементы DOM
 const verbTextElement = document.getElementById('verb-text');
 const verbTranslationHintElement = document.getElementById('verb-translation-hint');
 const choiceButtons = [
@@ -23,14 +21,13 @@ const choiceButtons = [
 ];
 const exampleAreaElement = document.getElementById('example-area');
 const germanExampleElement = document.getElementById('german-example');
-const showTranslationButtonElement = document.getElementById('show-translation-button');
 const russianTranslationElement = document.getElementById('russian-translation');
 const prevButton = document.getElementById('prev-button');
 const nextButton = document.getElementById('next-button');
 const currentWordNumberElement = document.getElementById('current-word-number');
 const totalWordCountElement = document.getElementById('total-word-count');
 
-// --- НОВЫЙ КОД ДЛЯ ЗАГРУЗКИ JSON ---
+
 async function fetchVocabulary() {
     try {
         const response = await fetch('vocabulary.json');
@@ -39,34 +36,37 @@ async function fetchVocabulary() {
         }
         const data = await response.json();
         vocabulary = data;
-        initializeApp(); // Запускаем приложение после загрузки данных
+        initializeApp();
     } catch (error) {
         console.error("Не удалось загрузить словарь:", error);
-        verbTextElement.textContent = "Ошибка загрузки словаря!";
-        verbTranslationHintElement.textContent = "Проверьте файл vocabulary.json и консоль браузера.";
-        // Можно добавить более явное сообщение об ошибке на странице
+        verbTextElement.textContent = "Ошибка!";
+        verbTranslationHintElement.textContent = "Не удалось загрузить словарь.";
         document.querySelector('.trainer-container').innerHTML = `
             <h2 style="color: red;">Ошибка загрузки словаря!</h2>
-            <p>Пожалуйста, убедитесь, что файл <strong>vocabulary.json</strong> находится в той же папке, что и <strong>index.html</strong>, и не содержит ошибок.</p>
-            <p><small>Детали ошибки: ${error.message}</small></p>`;
+            <p>Пожалуйста, убедитесь, что файл <strong>vocabulary.json</strong> находится в той же папке, что и основной HTML файл, и не содержит ошибок.</p>
+            <p><small>Детали ошибки: ${error.message}</small></p>
+            <footer class="page-footer" style="margin-top: 20px; border-top: none;">
+             <a href="index.html" class="home-link-button">На главную</a>
+            <p class="copyright" style="margin-top:10px;">&copy; 2025 Aleksand Shcherbyna. Alle Rechte vorbehalten.</p>
+            </footer>`;
     }
 }
 
 function initializeApp() {
-    if (vocabulary.length === 0) {
-        // Эта проверка может быть излишней, если fetchVocabulary уже обработал ошибку,
-        // но оставим для надежности, если fetchVocabulary не смог показать ошибку в UI.
+    if (vocabulary.length === 0 && verbTextElement.textContent !== "Ошибка!") { // Не перезаписывать сообщение об ошибке
         verbTextElement.textContent = "Словарь пуст.";
         choiceButtons.forEach(button => button.disabled = true);
         prevButton.disabled = true;
         nextButton.disabled = true;
         return;
     }
-    totalWordCountElement.textContent = vocabulary.length;
-    loadWord(currentWordIndex);
+    if (vocabulary.length > 0) {
+      totalWordCountElement.textContent = vocabulary.length;
+      loadWord(currentWordIndex);
+      prevButton.disabled = currentWordIndex === 0; // Начальная установка кнопки Назад
+      nextButton.disabled = currentWordIndex === vocabulary.length - 1; // Начальная установка кнопки Вперед
+    }
 }
-// --- КОНЕЦ НОВОГО КОДА ---
-
 
 function generateChoices(correctPreposition) {
     let choices = [correctPreposition];
@@ -81,8 +81,13 @@ function generateChoices(correctPreposition) {
             choices.push(randomPreposition);
         }
     }
-    while (choices.length < 4) {
-        choices.push("---");
+    while (choices.length < 4) { // Если уникальных не хватило
+        let dummyCount = 1;
+        while (choices.length < 4) {
+            const dummyPrep = `Предлог ${dummyCount++}`;
+            if (!choices.includes(dummyPrep)) choices.push(dummyPrep);
+            else if (dummyCount > 10) choices.push("---"); // Крайний случай
+        }
     }
 
     for (let i = choices.length - 1; i > 0; i--) {
@@ -94,7 +99,7 @@ function generateChoices(correctPreposition) {
 
 function loadWord(index) {
     answerGiven = false;
-    currentWord = vocabulary[index]; // vocabulary теперь глобальная переменная, заполняемая из JSON
+    currentWord = vocabulary[index];
 
     verbTextElement.textContent = currentWord.verb;
     verbTranslationHintElement.textContent = `(Падеж: ${currentWord.case})`;
@@ -110,10 +115,16 @@ function loadWord(index) {
     germanExampleElement.textContent = '';
     russianTranslationElement.textContent = '';
     russianTranslationElement.style.display = 'none';
-    showTranslationButtonElement.textContent = 'Показать перевод примера';
 
     updateNavigationButtons();
     updateProgressInfo();
+}
+
+function showExampleAndTranslation() {
+    germanExampleElement.textContent = currentWord.exampleGerman;
+    russianTranslationElement.textContent = currentWord.translationExample;
+    exampleAreaElement.style.display = 'block';
+    russianTranslationElement.style.display = 'block';
 }
 
 function handleChoice(event) {
@@ -127,11 +138,9 @@ function handleChoice(event) {
 
     if (selectedPreposition === currentWord.preposition) {
         selectedButton.classList.add('correct');
+        verbTranslationHintElement.textContent = `${currentWord.translationVerbPreposition} (Падеж: ${currentWord.case})`;
         setTimeout(() => {
-            germanExampleElement.textContent = currentWord.exampleGerman;
-            russianTranslationElement.textContent = currentWord.translationExample;
-            exampleAreaElement.style.display = 'block';
-            verbTranslationHintElement.textContent = `${currentWord.translationVerbPreposition} (Падеж: ${currentWord.case})`;
+            showExampleAndTranslation();
         }, 1000);
     } else {
         selectedButton.classList.add('incorrect');
@@ -141,6 +150,7 @@ function handleChoice(event) {
             }
         });
         verbTranslationHintElement.textContent = `Правильно: ${currentWord.verb} ${currentWord.preposition} (${currentWord.translationVerbPreposition}, Падеж: ${currentWord.case})`;
+        showExampleAndTranslation();
     }
 }
 
@@ -151,22 +161,11 @@ function updateNavigationButtons() {
 
 function updateProgressInfo() {
     currentWordNumberElement.textContent = currentWordIndex + 1;
-    // totalWordCountElement.textContent = vocabulary.length; // Это теперь делается в initializeApp
+    // totalWordCountElement устанавливается в initializeApp
 }
 
-
-// Event Listeners (остаются без изменений)
+// Event Listeners
 choiceButtons.forEach(button => button.addEventListener('click', handleChoice));
-
-showTranslationButtonElement.addEventListener('click', () => {
-    if (russianTranslationElement.style.display === 'none') {
-        russianTranslationElement.style.display = 'block';
-        showTranslationButtonElement.textContent = 'Скрыть перевод примера';
-    } else {
-        russianTranslationElement.style.display = 'none';
-        showTranslationButtonElement.textContent = 'Показать перевод примера';
-    }
-});
 
 prevButton.addEventListener('click', () => {
     if (currentWordIndex > 0) {
@@ -182,5 +181,5 @@ nextButton.addEventListener('click', () => {
     }
 });
 
-// Initial load - теперь вызываем функцию загрузки
+// Initial load
 fetchVocabulary();
