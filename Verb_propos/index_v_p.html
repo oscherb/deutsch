@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер немецких глаголов</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="trainer-container">
+        <div class="progress-info">
+            Слово <span id="current-word-number">1</span> из <span id="total-word-count">5</span>
+        </div>
+
+        <div class="verb-display">
+            <h2 id="verb-text">глагол</h2>
+            <p id="verb-translation-hint"></p>
+        </div>
+
+        <div class="preposition-choices">
+            <button class="choice-button" id="choice1"></button>
+            <button class="choice-button" id="choice2"></button>
+            <button class="choice-button" id="choice3"></button>
+            <button class="choice-button" id="choice4"></button>
+        </div>
+
+        <div class="example-area" id="example-area" style="display: none;">
+            <h3>Пример:</h3>
+            <p id="german-example"></p>
+            <button id="show-translation-button">Показать перевод примера</button>
+            <p id="russian-translation" style="display: none;"></p>
+        </div>
+
+        <div class="navigation-controls">
+            <button id="prev-button" disabled>&laquo; Назад</button>
+            <button id="next-button">Вперед &raquo;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

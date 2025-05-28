@@ -1,0 +1,1001 @@
+[
+{
+"id": 1,
+"verb": "abhängen (sich)",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Ob wir fahren, hängt vom Wetter ab.",
+"translationVerbPreposition": "зависеть от (чего-л.)",
+"translationExample": "Поедем ли мы, зависит от погоды." 
+ }, 
+{
+"id": 2,
+"verb": "achten",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Bitte achte auf den neuen Mantel.",
+"translationVerbPreposition": "обращать внимание на (что-л./кого-л.)",
+"translationExample": "Пожалуйста, обрати внимание на новое пальто." 
+ }, 
+{
+"id": 3,
+"verb": "anfangen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Ich fange mit der Übung an.",
+"translationVerbPreposition": "начинать с (чего-л.)",
+"translationExample": "Я начинаю с упражнения." 
+ }, 
+{
+"id": 4,
+"verb": "ankommen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Es kommt auf den richtigen Preis an.",
+"translationVerbPreposition": "зависеть от (чего-л.)",
+"translationExample": "Это зависит от правильной цены." 
+ }, 
+{
+"id": 5,
+"verb": "antworten",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Bitte antworten Sie heute auf den Brief.",
+"translationVerbPreposition": "отвечать на (что-л.)",
+"translationExample": "Пожалуйста, ответьте сегодня на письмо." 
+ }, 
+{
+"id": 6,
+"verb": "sich ärgern",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Wir ärgern uns über den Regen.",
+"translationVerbPreposition": "злиться на (что-л./кого-л.)",
+"translationExample": "Мы злимся из-за дождя." 
+ }, 
+{
+"id": 7,
+"verb": "aufhören",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Er hört um 17.00 Uhr mit der Arbeit auf.",
+"translationVerbPreposition": "прекращать (что-л.)",
+"translationExample": "Он заканчивает работу в 17:00." 
+ }, 
+{
+"id": 8,
+"verb": "aufpassen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Ein Babysitter passt auf kleine Kinder auf.",
+"translationVerbPreposition": "присматривать за (кем-л.)",
+"translationExample": "Няня присматривает за маленькими детьми." 
+ }, 
+{
+"id": 9,
+"verb": "sich aufregen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Deutsche regen sich über Unpünktlichkeit auf.",
+"translationVerbPreposition": "волноваться из-за (чего-л./кого-л.)",
+"translationExample": "Немцы волнуются из-за непунктуальности." 
+ }, 
+{
+"id": 10,
+"verb": "ausgeben",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Manche geben viel Geld für Schuhe aus.",
+"translationVerbPreposition": "тратить на (что-л.)",
+"translationExample": "Некоторые тратят много денег на обувь." 
+ }, 
+{
+"id": 11,
+"verb": "sich bedanken",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Ich bedanke mich herzlich bei dir.",
+"translationVerbPreposition": "благодарить (кого-л.)",
+"translationExample": "Я сердечно благодарю тебя." 
+ }, 
+{
+"id": 12,
+"verb": "sich bedanken",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Martin bedankt sich für das Geschenk.",
+"translationVerbPreposition": "благодарить за (что-л.)",
+"translationExample": "Мартин благодарит за подарок." 
+ }, 
+{
+"id": 13,
+"verb": "beginnen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Wir beginnen pünktlich mit dem Deutschkurs.",
+"translationVerbPreposition": "начинать с (чего-л.)",
+"translationExample": "Мы начинаем курс немецкого языка вовремя." 
+ }, 
+{
+"id": 14,
+"verb": "sich bemühen",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Karla bemüht sich um eine Arbeit.",
+"translationVerbPreposition": "добиваться (чего-л.), стараться",
+"translationExample": "Карла добивается работы (старается найти работу)." 
+ }, 
+{
+"id": 15,
+"verb": "berichten",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Der Reporter berichtet über die Wahlen.",
+"translationVerbPreposition": "сообщать о (чем-л.)",
+"translationExample": "Репортер сообщает о выборах." 
+ }, 
+{
+"id": 16,
+"verb": "sich beschäftigen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Ich beschäftige mich gern mit Pflanzen.",
+"translationVerbPreposition": "заниматься (чем-л.)",
+"translationExample": "Я охотно занимаюсь растениями." 
+ }, 
+{
+"id": 17,
+"verb": "sich beschweren",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Der Gast beschwert sich beim Kellner.",
+"translationVerbPreposition": "жаловаться (кому-л.)",
+"translationExample": "Гость жалуется официанту." 
+ }, 
+{
+"id": 18,
+"verb": "bestehen",
+"preposition": "aus",
+"case": "D",
+"exampleGerman": "Eheringe bestehen aus Gold.",
+"translationVerbPreposition": "состоять из (чего-л.)",
+"translationExample": "Обручальные кольца состоят из золота." 
+ }, 
+{
+"id": 19,
+"verb": "bestehen",
+"preposition": "auf",
+"case": "D",
+"exampleGerman": "Ich bestehe auf sofortiger Bezahlung des Autos.",
+"translationVerbPreposition": "настаивать на (чем-л.)",
+"translationExample": "Я настаиваю на немедленной оплате автомобиля." 
+ }, 
+{
+"id": 20,
+"verb": "sich beteiligen",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Viele Studenten beteiligen sich an den Streiks.",
+"translationVerbPreposition": "участвовать в (чем-л.)",
+"translationExample": "Многие студенты участвуют в забастовках." 
+ }, 
+{
+"id": 21,
+"verb": "sich bewerben",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Er bewirbt sich bei einer Bäckerei.",
+"translationVerbPreposition": "подавать заявление (куда-л.)",
+"translationExample": "Он подает заявление в пекарню." 
+ }, 
+{
+"id": 22,
+"verb": "sich bewerben",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Sie bewirbt sich um eine Stelle als Sekretärin.",
+"translationVerbPreposition": "подавать заявление на (что-л.)",
+"translationExample": "Она подает заявление на должность секретаря." 
+ }, 
+{
+"id": 23,
+"verb": "sich beziehen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Meine Frage bezieht sich auf Ihr Angebot.",
+"translationVerbPreposition": "относиться к (чему-л.)",
+"translationExample": "Мой вопрос относится к вашему предложению." 
+ }, 
+{
+"id": 24,
+"verb": "bitten",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Der Redner bittet um Aufmerksamkeit.",
+"translationVerbPreposition": "просить о (чем-л.)",
+"translationExample": "Оратор просит внимания." 
+ }, 
+{
+"id": 25,
+"verb": "danken",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Sam dankt für Ritas Hilfe.",
+"translationVerbPreposition": "благодарить за (что-л.)",
+"translationExample": "Сэм благодарит за помощь Риты." 
+ }, 
+{
+"id": 26,
+"verb": "denken",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Maria denkt oft an den Urlaub.",
+"translationVerbPreposition": "думать о (ком-л./чем-л.)",
+"translationExample": "Мария часто думает об отпуске." 
+ }, 
+{
+"id": 27,
+"verb": "diskutieren",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Das Kabinett diskutiert über eine neue Steuer.",
+"translationVerbPreposition": "обсуждать (что-л.)",
+"translationExample": "Кабинет обсуждает новый налог." 
+ }, 
+{
+"id": 28,
+"verb": "einladen",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Ich lade dich zu meinem Geburtstag ein.",
+"translationVerbPreposition": "приглашать на (что-л.)",
+"translationExample": "Я приглашаю тебя на мой день рождения." 
+ }, 
+{
+"id": 29,
+"verb": "sich entscheiden",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Kinder entscheiden sich gern für Schokolade.",
+"translationVerbPreposition": "решаться на (что-л.), выбирать",
+"translationExample": "Дети охотно выбирают шоколад." 
+ }, 
+{
+"id": 30,
+"verb": "sich entschließen",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Karl entschließt sich zu einem Studium.",
+"translationVerbPreposition": "решиться на (что-л.)",
+"translationExample": "Карл решается на учебу (в университете)." 
+ }, 
+{
+"id": 31,
+"verb": "sich entschuldigen",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Tom entschuldigt sich bei ihrem Mann.",
+"translationVerbPreposition": "извиняться перед (кем-л.)",
+"translationExample": "Том извиняется перед ее мужем." 
+ }, 
+{
+"id": 32,
+"verb": "sich entschuldigen",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Ich entschuldige mich für das Verhalten meiner Katze.",
+"translationVerbPreposition": "извиняться за (что-л.)",
+"translationExample": "Я извиняюсь за поведение моей кошки." 
+ }, 
+{
+"id": 33,
+"verb": "sich erholen",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Von dem Schock muss ich mich erst erholen.",
+"translationVerbPreposition": "оправляться от (чего-л.)",
+"translationExample": "От шока мне сначала нужно оправиться." 
+ }, 
+{
+"id": 34,
+"verb": "sich erinnern",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Wir erinnern uns gern an unser erstes Ehejahr.",
+"translationVerbPreposition": "вспоминать о (ком-л./чем-л.)",
+"translationExample": "Мы охотно вспоминаем наш первый год брака." 
+ }, 
+{
+"id": 35,
+"verb": "erkennen",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Man erkennt Pinocchio an seiner langen Nase.",
+"translationVerbPreposition": "узнавать по (чему-л.)",
+"translationExample": "Пиноккио можно узнать по его длинному носу." 
+ }, 
+{
+"id": 36,
+"verb": "sich erkundigen",
+"preposition": "nach",
+"case": "D",
+"exampleGerman": "Oma erkundigt sich oft nach meinen Plänen.",
+"translationVerbPreposition": "наводить справки о (ком-л./чем-л.)",
+"translationExample": "Бабушка часто расспрашивает о моих планах." 
+ }, 
+{
+"id": 37,
+"verb": "erschrecken",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Der Koch erschrickt über eine Maus.",
+"translationVerbPreposition": "испугаться (чего-л.)",
+"translationExample": "Повар испугался мыши." 
+ }, 
+{
+"id": 38,
+"verb": "erzählen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Ein Ostberliner erzählt über sein Leben in der ehemaligen DDR.",
+"translationVerbPreposition": "рассказывать о (ком-л./чем-л.)",
+"translationExample": "Восточноберлинец рассказывает о своей жизни в бывшей ГДР." 
+ }, 
+{
+"id": 39,
+"verb": "erzählen",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Der Bischoff erzählt von der Reise nach Rom.",
+"translationVerbPreposition": "рассказывать о (ком-л./чем-л.)",
+"translationExample": "Епископ рассказывает о поездке в Рим." 
+ }, 
+{
+"id": 40,
+"verb": "fragen",
+"preposition": "nach",
+"case": "D",
+"exampleGerman": "Die Journalistin fragt nach den Konsequenzen der Gesetzesänderung.",
+"translationVerbPreposition": "спрашивать о (чем-л.)",
+"translationExample": "Журналистка спрашивает о последствиях изменения закона." 
+ }, 
+{
+"id": 41,
+"verb": "sich freuen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Kinder freuen sich auf die Ferien.",
+"translationVerbPreposition": "радоваться (предстоящему)",
+"translationExample": "Дети радуются каникулам." 
+ }, 
+{
+"id": 42,
+"verb": "sich freuen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Jeder freut sich über eine Gehaltserhöhung.",
+"translationVerbPreposition": "радоваться (свершившемуся)",
+"translationExample": "Каждый радуется повышению зарплаты." 
+ }, 
+{
+"id": 43,
+"verb": "gehen",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Immer geht es um Geld.",
+"translationVerbPreposition": "речь идет о (ком-л./чем-л.)",
+"translationExample": "Всегда речь идет о деньгах." 
+ }, 
+{
+"id": 44,
+"verb": "gehören",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Das Elsass gehört zu Frankreich.",
+"translationVerbPreposition": "принадлежать к (чему-л.)",
+"translationExample": "Эльзас принадлежит Франции." 
+ }, 
+{
+"id": 45,
+"verb": "sich gewöhnen",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Ich kann mich nicht an die Zeitumstellung gewöhnen.",
+"translationVerbPreposition": "привыкать к (чему-л.)",
+"translationExample": "Я не могу привыкнуть к переходу на летнее время." 
+ }, 
+{
+"id": 46,
+"verb": "glauben",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Teenager glauben an die große Liebe.",
+"translationVerbPreposition": "верить в (кого-л./что-л.)",
+"translationExample": "Подростки верят в большую любовь." 
+ }, 
+{
+"id": 47,
+"verb": "gratulieren",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Wir gratulieren dir zum 18. Geburtstag.",
+"translationVerbPreposition": "поздравлять с (чем-л.)",
+"translationExample": "Мы поздравляем тебя с 18-м днем рождения." 
+ }, 
+{
+"id": 48,
+"verb": "halten",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Ich halte das für keine gute Idee.",
+"translationVerbPreposition": "считать (чем-л.)",
+"translationExample": "Я считаю это не очень хорошей идеей." 
+ }, 
+{
+"id": 49,
+"verb": "halten",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Kinder halten nicht viel von Ordnung.",
+"translationVerbPreposition": "иметь мнение о (чем-л.)",
+"translationExample": "Дети не очень-то любят порядок." 
+ }, 
+{
+"id": 50,
+"verb": "sich handeln",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Bei der Kopie handelt es sich nicht um Originalsoftware.",
+"translationVerbPreposition": "речь идет о (чем-л.)",
+"translationExample": "В случае с этой копией речь не идет об оригинальном программном обеспечении." 
+ }, 
+{
+"id": 51,
+"verb": "handeln",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Märchen handeln von Gut und Böse.",
+"translationVerbPreposition": "повествовать о (чем-л.)",
+"translationExample": "Сказки повествуют о добре и зле." 
+ }, 
+{
+"id": 52,
+"verb": "helfen",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Kann ich dir beim Tischdecken helfen?",
+"translationVerbPreposition": "помогать с (чем-л.)",
+"translationExample": "Могу я помочь тебе накрыть на стол?" 
+ }, 
+{
+"id": 53,
+"verb": "hindern",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Ein langsamer Fahrer hindert Greta am Überholen.",
+"translationVerbPreposition": "мешать (чему-л.)",
+"translationExample": "Медленный водитель мешает Грете обогнать." 
+ }, 
+{
+"id": 54,
+"verb": "hoffen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Im März hoffen alle auf warme Frühlingstage.",
+"translationVerbPreposition": "надеяться на (что-л.)",
+"translationExample": "В марте все надеются на теплые весенние дни." 
+ }, 
+{
+"id": 55,
+"verb": "hören",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Ich habe seit Sonntag nichts von Piet gehört.",
+"translationVerbPreposition": "слышать о (ком-л./чем-л.)",
+"translationExample": "Я ничего не слышал о Пите с воскресенья." 
+ }, 
+{
+"id": 56,
+"verb": "sich informieren",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Auf der Messe kann man sich über die neue Technologie informieren.",
+"translationVerbPreposition": "информироваться о (чем-л.)",
+"translationExample": "На выставке можно узнать о новой технологии." 
+ }, 
+{
+"id": 57,
+"verb": "sich interessieren",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Monika interessiert sich für ein Smartphone.",
+"translationVerbPreposition": "интересоваться (чем-л.)",
+"translationExample": "Моника интересуется смартфоном." 
+ }, 
+{
+"id": 58,
+"verb": "klagen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Tim klagt häufig über Kopfschmerzen.",
+"translationVerbPreposition": "жаловаться на (что-л.)",
+"translationExample": "Тим часто жалуется на головные боли." 
+ }, 
+{
+"id": 59,
+"verb": "kämpfen",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Die Gewerkschaft kämpft für höhere Löhne.",
+"translationVerbPreposition": "бороться за (что-л.)",
+"translationExample": "Профсоюз борется за повышение зарплаты." 
+ }, 
+{
+"id": 60,
+"verb": "kommen",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "In der Besprechung kam es zu einem Streit.",
+"translationVerbPreposition": "доходить до (чего-л.)",
+"translationExample": "На совещании дошло до ссоры." 
+ }, 
+{
+"id": 61,
+"verb": "sich konzentrieren",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Karl konzentriert sich auf seine Hausaufgaben.",
+"translationVerbPreposition": "концентрироваться на (чем-л.)",
+"translationExample": "Карл концентрируется на своих домашних заданиях." 
+ }, 
+{
+"id": 62,
+"verb": "sich kümmern",
+"preposition": "um",
+"case": "A",
+"exampleGerman": "Im Pflegeheim kümmert man sich um alte Leute, die krank sind.",
+"translationVerbPreposition": "заботиться о (ком-л./чем-л.)",
+"translationExample": "В доме престарелых заботятся о пожилых людях, которые больны." 
+ }, 
+{
+"id": 63,
+"verb": "lachen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Über einen guten Witz muss man laut lachen.",
+"translationVerbPreposition": "смеяться над (кем-л./чем-л.)",
+"translationExample": "Над хорошей шуткой нужно громко смеяться." 
+ }, 
+{
+"id": 64,
+"verb": "leiden",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Jeder fünfte Manager leidet an Burn-out.",
+"translationVerbPreposition": "страдать от (болезни)",
+"translationExample": "Каждый пятый менеджер страдает от выгорания." 
+ }, 
+{
+"id": 65,
+"verb": "leiden",
+"preposition": "unter",
+"case": "D",
+"exampleGerman": "Kaffeetrinker leiden unter Schlafproblemen.",
+"translationVerbPreposition": "страдать от (чего-л., последствия)",
+"translationExample": "Любители кофе страдают от проблем со сном." 
+ }, 
+{
+"id": 66,
+"verb": "nachdenken",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Beamte müssen nicht über ihre Rente nachdenken.",
+"translationVerbPreposition": "размышлять о (чем-л.)",
+"translationExample": "Чиновникам не нужно думать о своей пенсии." 
+ }, 
+{
+"id": 67,
+"verb": "protestieren",
+"preposition": "gegen",
+"case": "A",
+"exampleGerman": "Viele Menschen protestieren gegen Atomkraft.",
+"translationVerbPreposition": "протестовать против (чего-л.)",
+"translationExample": "Многие люди протестуют против атомной энергии." 
+ }, 
+{
+"id": 68,
+"verb": "rechnen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Im Januar muss man mit Schnee rechnen.",
+"translationVerbPreposition": "рассчитывать на (что-л.), ожидать",
+"translationExample": "В январе нужно рассчитывать на снег (ожидать снега)." 
+ }, 
+{
+"id": 69,
+"verb": "reden",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Deine Mutter redet gern über Krankheiten.",
+"translationVerbPreposition": "говорить о (чем-л.)",
+"translationExample": "Твоя мама охотно говорит о болезнях." 
+ }, 
+{
+"id": 70,
+"verb": "reden",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Großvater redet von den guten alten Zeiten.",
+"translationVerbPreposition": "говорить о (чем-л.)",
+"translationExample": "Дедушка говорит о старых добрых временах." 
+ }, 
+{
+"id": 71,
+"verb": "riechen",
+"preposition": "nach",
+"case": "D",
+"exampleGerman": "Hier riecht es nach Kuchen.",
+"translationVerbPreposition": "пахнуть (чем-л.)",
+"translationExample": "Здесь пахнет пирогом." 
+ }, 
+{
+"id": 72,
+"verb": "sagen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Brigitte sagt über Dietmar, dass er oft lügt.",
+"translationVerbPreposition": "говорить о (ком-л./чем-л.)",
+"translationExample": "Бригитта говорит о Дитмаре, что он часто лжет." 
+ }, 
+{
+"id": 73,
+"verb": "sagen",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Was sagst du zu meinem neuen Haarschnitt?",
+"translationVerbPreposition": "сказать по поводу (чего-л.)",
+"translationExample": "Что ты скажешь по поводу моей новой прически?" 
+ }, 
+{
+"id": 74,
+"verb": "schicken",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Die E-Mail schicke ich dir morgen.",
+"translationVerbPreposition": "отправлять (кому-л., на адрес)",
+"translationExample": "Я отправлю тебе электронное письмо завтра." 
+ }, 
+{
+"id": 75,
+"verb": "schicken",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Der Allgemeinmediziner schickt den Patienten zu einem Spezialisten.",
+"translationVerbPreposition": "отправлять (к кому-л.)",
+"translationExample": "Терапевт отправляет пациента к специалисту." 
+ }, 
+{
+"id": 76,
+"verb": "schimpfen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Alle schimpfen über den Regen.",
+"translationVerbPreposition": "ругаться на (что-л./кого-л.)",
+"translationExample": "Все ругаются из-за дождя." 
+ }, 
+{
+"id": 77,
+"verb": "schmecken",
+"preposition": "nach",
+"case": "D",
+"exampleGerman": "Muscheln schmecken nach Meerwasser.",
+"translationVerbPreposition": "иметь вкус (чего-л.)",
+"translationExample": "Мидии имеют вкус морской воды." 
+ }, 
+{
+"id": 78,
+"verb": "schreiben",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Bitte schreibe noch heute an deine Mutter.",
+"translationVerbPreposition": "писать (кому-л., на адрес)",
+"translationExample": "Пожалуйста, напиши сегодня же своей маме." 
+ }, 
+{
+"id": 79,
+"verb": "sich schützen",
+"preposition": "vor",
+"case": "D",
+"exampleGerman": "Den Computer muss man vor Hackern schützen.",
+"translationVerbPreposition": "защищаться от (чего-л.)",
+"translationExample": "Компьютер нужно защищать от хакеров." 
+ }, 
+{
+"id": 80,
+"verb": "sein",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Ich bin für die Abschaffung der Kinderarbeit.",
+"translationVerbPreposition": "быть за (что-л.)",
+"translationExample": "Я за отмену детского труда." 
+ }, 
+{
+"id": 81,
+"verb": "sein",
+"preposition": "gegen",
+"case": "A",
+"exampleGerman": "Viele sind gegen Steuererhöhungen.",
+"translationVerbPreposition": "быть против (чего-л.)",
+"translationExample": "Многие против повышения налогов." 
+ }, 
+{
+"id": 82,
+"verb": "sorgen",
+"preposition": "für",
+"case": "A",
+"exampleGerman": "Kinder müssen im Alter für ihre Eltern sorgen.",
+"translationVerbPreposition": "заботиться о (ком-л./чем-л.)",
+"translationExample": "Дети должны заботиться о своих родителях в старости." 
+ }, 
+{
+"id": 83,
+"verb": "sprechen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Ich spreche noch einmal mit deinem Vater.",
+"translationVerbPreposition": "разговаривать с (кем-л.)",
+"translationExample": "Я еще раз поговорю с твоим отцом." 
+ }, 
+{
+"id": 84,
+"verb": "sprechen",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Lass uns über deine Zukunft sprechen.",
+"translationVerbPreposition": "говорить о (чем-л.)",
+"translationExample": "Давай поговорим о твоем будущем." 
+ }, 
+{
+"id": 85,
+"verb": "sterben",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Zwei Deutsche sind an der Grippe gestorben.",
+"translationVerbPreposition": "умереть от (болезни)",
+"translationExample": "Двое немцев умерли от гриппа." 
+ }, 
+{
+"id": 86,
+"verb": "streiten",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Ich möchte nicht mit dir streiten.",
+"translationVerbPreposition": "спорить с (кем-л.)",
+"translationExample": "Я не хочу с тобой спорить." 
+ }, 
+{
+"id": 87,
+"verb": "streiten",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Die USA und Deutschland streiten über eine neue Strategie.",
+"translationVerbPreposition": "спорить о (чем-л.)",
+"translationExample": "США и Германия спорят о новой стратегии." 
+ }, 
+{
+"id": 88,
+"verb": "teilnehmen",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "Nordkorea nimmt an der Fußball-WM teil.",
+"translationVerbPreposition": "принимать участие в (чем-л.)",
+"translationExample": "Северная Корея принимает участие в Чемпионате мира по футболу." 
+ }, 
+{
+"id": 89,
+"verb": "telefonieren",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Hast du schon mit dem Arzt telefoniert?",
+"translationVerbPreposition": "разговаривать по телефону с (кем-л.)",
+"translationExample": "Ты уже разговаривал с врачом по телефону?" 
+ }, 
+{
+"id": 90,
+"verb": "sich treffen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Die Kanzlerin trifft sich täglich mit ihrem Pressesprecher.",
+"translationVerbPreposition": "встречаться с (кем-л.)",
+"translationExample": "Канцлер ежедневно встречается со своим пресс-секретарем." 
+ }, 
+{
+"id": 91,
+"verb": "sich treffen",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Sie treffen sich nur zu einem kurzen Gespräch.",
+"translationVerbPreposition": "встречаться для (чего-л.)",
+"translationExample": "Они встречаются только для короткого разговора." 
+ }, 
+{
+"id": 92,
+"verb": "überreden",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Kann ich dich zu einem Glas Wein überreden?",
+"translationVerbPreposition": "уговорить на (что-л.)",
+"translationExample": "Могу я уговорить тебя на бокал вина?" 
+ }, 
+{
+"id": 93,
+"verb": "sich unterhalten",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Der Sänger unterhält sich mit dem Bassisten.",
+"translationVerbPreposition": "беседовать с (кем-л.)",
+"translationExample": "Певец беседует с басистом." 
+ }, 
+{
+"id": 94,
+"verb": "sich unterhalten",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Die Modedesigner unterhalten sich über die neuesten Trends.",
+"translationVerbPreposition": "беседовать о (чем-л.)",
+"translationExample": "Модельеры беседуют о новейших тенденциях." 
+ }, 
+{
+"id": 95,
+"verb": "sich verabreden",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Heute verabrede ich mich mit einer Freundin.",
+"translationVerbPreposition": "договариваться о встрече с (кем-л.)",
+"translationExample": "Сегодня я договариваюсь о встрече с подругой." 
+ }, 
+{
+"id": 96,
+"verb": "sich verabschieden",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Nun wollen wir uns von euch verabschieden.",
+"translationVerbPreposition": "прощаться с (кем-л.)",
+"translationExample": "Теперь мы хотим с вами попрощаться." 
+ }, 
+{
+"id": 97,
+"verb": "vergleichen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Vergleichen Sie München mit Berlin.",
+"translationVerbPreposition": "сравнивать с (чем-л.)",
+"translationExample": "Сравните Мюнхен с Берлином." 
+ }, 
+{
+"id": 98,
+"verb": "sich verlassen",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Auf mich kann man sich verlassen.",
+"translationVerbPreposition": "полагаться на (кого-л./что-л.)",
+"translationExample": "На меня можно положиться." 
+ }, 
+{
+"id": 99,
+"verb": "sich verlieben",
+"preposition": "in",
+"case": "A",
+"exampleGerman": "Britta hat sich in das alte Bauernhaus verliebt.",
+"translationVerbPreposition": "влюбляться в (кого-л./что-л.)",
+"translationExample": "Бритта влюбилась в старый фермерский дом." 
+ }, 
+{
+"id": 100,
+"verb": "sich verstehen",
+"preposition": "mit",
+"case": "D",
+"exampleGerman": "Daniel versteht sich gut mit seinem Chef.",
+"translationVerbPreposition": "ладить с (кем-л.)",
+"translationExample": "Даниэль хорошо ладит со своим начальником." 
+ }, 
+{
+"id": 101,
+"verb": "verstehen",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Verstehst du etwas von Elektrik?",
+"translationVerbPreposition": "понимать в (чем-л.)",
+"translationExample": "Ты что-нибудь понимаешь в электрике?" 
+ }, 
+{
+"id": 102,
+"verb": "sich vorbereiten",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Karl bereitet sich auf eine Präsentation vor.",
+"translationVerbPreposition": "готовиться к (чему-л.)",
+"translationExample": "Карл готовится к презентации." 
+ }, 
+{
+"id": 103,
+"verb": "warnen",
+"preposition": "vor",
+"case": "D",
+"exampleGerman": "Man hatte ihn vor den hohen Kosten für das alte Auto gewarnt.",
+"translationVerbPreposition": "предупреждать о (чем-л.)",
+"translationExample": "Его предупреждали о высоких затратах на старый автомобиль." 
+ }, 
+{
+"id": 104,
+"verb": "warten",
+"preposition": "auf",
+"case": "A",
+"exampleGerman": "Hier wartet man lange auf einen Bus.",
+"translationVerbPreposition": "ждать (кого-л./что-л.)",
+"translationExample": "Здесь долго ждут автобус." 
+ }, 
+{
+"id": 105,
+"verb": "sich wenden",
+"preposition": "an",
+"case": "A",
+"exampleGerman": "Bitte wenden Sie sich an die Buchhaltung.",
+"translationVerbPreposition": "обращаться к (кому-л.)",
+"translationExample": "Пожалуйста, обратитесь в бухгалтерию." 
+ }, 
+{
+"id": 106,
+"verb": "werden",
+"preposition": "zu",
+"case": "D",
+"exampleGerman": "Unter null Grad wird Wasser zu Eis.",
+"translationVerbPreposition": "превращаться в (кого-л./что-л.)",
+"translationExample": "Ниже нуля градусов вода превращается в лед." 
+ }, 
+{
+"id": 107,
+"verb": "wissen",
+"preposition": "von",
+"case": "D",
+"exampleGerman": "Ich weiß nichts von neuen Computern für unser Team.",
+"translationVerbPreposition": "знать о (чем-л.)",
+"translationExample": "Я ничего не знаю о новых компьютерах для нашей команды." 
+ }, 
+{
+"id": 108,
+"verb": "sich wundern",
+"preposition": "über",
+"case": "A",
+"exampleGerman": "Viele Deutsche wundern sich über die plötzlich so hohen Stromkosten.",
+"translationVerbPreposition": "удивляться (чему-л.)",
+"translationExample": "Многие немцы удивляются внезапно таким высоким затратам на электроэнергию." 
+ }, 
+{
+"id": 109,
+"verb": "zuschauen",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Kann ich dir bei der Reparatur zuschauen?",
+"translationVerbPreposition": "наблюдать за (чем-л.)",
+"translationExample": "Могу я понаблюдать, как ты ремонтируешь?" 
+ }, 
+{
+"id": 110,
+"verb": "zusehen",
+"preposition": "bei",
+"case": "D",
+"exampleGerman": "Willst du mir beim Kochen zusehen?",
+"translationVerbPreposition": "наблюдать за (чем-л.)",
+"translationExample": "Хочешь понаблюдать, как я готовлю?" 
+ }, 
+{
+"id": 111,
+"verb": "zweifeln",
+"preposition": "an",
+"case": "D",
+"exampleGerman": "John zweifelt daran, dass sein Sohn die Wahrheit gesagt hat.",
+"translationVerbPreposition": "сомневаться в (чем-л.)",
+"translationExample": "Джон сомневается в том, что его сын сказал правду."  }
+
+]
