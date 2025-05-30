@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица Деления</title> <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header-stats">
+        <div id="language-switcher">
+            <select id="lang-select">
+                <option value="ru">Русский</option>
+                <option value="uk">Українська</option>
+                <option value="de">Deutsch</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <div id="overall-stats" style="display: none;">
+            <p>Общее время: <span id="total-time">0</span> с</p>
+            <p>Всего попыток: <span id="total-attempts">0</span></p>
+            <p>Решено примеров: <span id="solved-count">0</span>/15</p>
+        </div>
+        <button id="restart-btn">Перезапустить</button>
+    </div>
+
+    <div class="score-board">
+        <p>Правильно: <span id="correct-score">0</span></p>
+        <p>Неправильно: <span id="incorrect-score">0</span></p>
+    </div>
+
+    <div class="container">
+        <div class="column left-column" id="questions-column">
+            </div>
+        <div class="column right-column" id="answers-column">
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

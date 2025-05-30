@@ -1,0 +1,198 @@
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header-stats {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Для мобильной адаптации */
+}
+
+.header-stats #lang-select,
+.header-stats #restart-btn {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 5px; /* Для мобильной адаптации */
+}
+
+#overall-stats {
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 600px;
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.column {
+    flex: 1;
+    padding: 15px;
+}
+
+.left-column {
+    border-right: 1px solid #eee;
+}
+
+/* Стили для кнопок примеров */
+.question-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.question-btn {
+    width: 70%; /* чтобы осталось место для таймера */
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0f7fa; /* Бледно-голубой по умолчанию */
+    color: #81d4fa; /* Светлый шрифт по умолчанию */
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.question-btn.active {
+    background-color: #00bcd4; /* Ярче при активации */
+    color: #fff; /* Ярче шрифт при активации */
+}
+
+.question-btn.correct-solved {
+    background-color: #4CAF50; /* Темно-зеленый при правильном ответе */
+    color: #fff;
+    cursor: default;
+}
+
+.question-btn.inactive {
+    pointer-events: none; /* Делаем неактивной */
+    opacity: 0.6; /* Немного затемняем */
+}
+
+.time-taken {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 10px;
+    width: 30%; /* Место для таймера */
+    text-align: right;
+}
+
+/* Стили для кнопок ответов */
+.answer-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.answer-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0f7fa; /* Бледно-голубой по умолчанию */
+    color: #81d4fa; /* Светлый шрифт по умолчанию */
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin: 0 5px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.answer-btn.active {
+    background-color: #00bcd4; /* Ярче при активации */
+    color: #fff; /* Ярче шрифт при активации */
+}
+
+.answer-btn.incorrect {
+    background-color: #f44336; /* Бардовый при неправильном ответе */
+    color: #fff;
+}
+
+.answer-btn.correct-answer {
+    background-color: #4CAF50; /* Темно-зеленый при правильном ответе */
+    color: #fff;
+}
+
+.answer-btn.inactive {
+    pointer-events: none; /* Делаем неактивной */
+    opacity: 0.6; /* Немного затемняем */
+}
+
+/* Иероглифы/заглушки для скрытия */
+.hidden-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #bbb;
+}
+
+/* Медиа-запросы для мобильной адаптации */
+@media (max-width: 600px) {
+    .container {
+        flex-direction: column; /* Колонки одна под другой на маленьких экранах */
+    }
+
+    .left-column {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .question-btn {
+        width: 100%; /* Занимает всю ширину */
+    }
+    .time-taken {
+        width: auto;
+        margin-top: 5px;
+        text-align: center;
+    }
+    .question-item {
+        flex-direction: column;
+    }
+    .answer-row {
+        flex-wrap: wrap; /* Ответы могут переноситься на новую строку */
+    }
+    .answer-btn {
+        flex: 1 1 45%; /* Два ответа в ряд */
+        margin-bottom: 10px;
+    }
+    .header-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+}
