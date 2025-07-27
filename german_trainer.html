@@ -223,6 +223,35 @@
             50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
         }
+
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 500;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -260,6 +289,12 @@
                 <div class="stat-number" id="totalPairs">0</div>
                 <div class="stat-label">Всего пар</div>
             </div>
+        </div>
+
+        <div class="navigation">
+            <button class="home-button" onclick="window.location.href='index.html'">
+                🏠 На главную
+            </button>
         </div>
     </div>
 
