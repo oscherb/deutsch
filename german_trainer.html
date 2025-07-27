@@ -161,13 +161,13 @@
         }
 
         .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 30px;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
             background: #f8f9fa;
-            border-radius: 15px;
+            border-radius: 12px;
         }
 
         .stat-item {
@@ -175,14 +175,98 @@
         }
 
         .stat-number {
-            font-size: 2em;
+            font-size: 1.5em;
             font-weight: bold;
             color: #007bff;
         }
 
         .stat-label {
             color: #666;
-            font-size: 0.9em;
+            font-size: 0.8em;
+            margin-top: 2px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            min-height: 44px;
+        }
+
+        /* Медиа-запросы для лучшей адаптации */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1000px;
+                padding: 30px;
+                border-radius: 20px;
+            }
+            
+            .game-area {
+                gap: 40px;
+                min-height: 500px;
+            }
+            
+            .column {
+                padding: 20px;
+                border-radius: 15px;
+                border: 3px solid #e9ecef;
+            }
+            
+            .word-button {
+                margin-bottom: 15px;
+                padding: 15px 20px;
+                font-size: 1.1em;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .score {
+                font-size: 1.2em;
+            }
+            
+            .column-title {
+                display: block; /* Показываем заголовки на десктопе */
+                text-align: center;
+                font-size: 1.5em;
+                font-weight: bold;
+                margin-bottom: 20px;
+                padding: 10px;
+                border-radius: 10px;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 40px;
+                padding: 20px;
+            }
+            
+            .stat-number {
+                font-size: 2em;
+            }
+            
+            .stat-label {
+                font-size: 0.9em;
+            }
+            
+            .home-button {
+                padding: 15px 30px;
+                font-size: 1.1em;
+            }
         }
 
         .progress-bar {
@@ -361,7 +445,7 @@
                 this.updateStats();
             }
 
-            getRandomWords(count = 7) {
+            getRandomWords(count = 6) {
                 let selectedWords = [];
                 
                 // Сначала добавляем слова для повторения из очереди
