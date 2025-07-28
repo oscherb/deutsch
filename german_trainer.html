@@ -20,6 +20,7 @@
 
         .container {
             max-width: 1000px;
+			width: 100%;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -48,7 +49,7 @@
             display: flex;
             justify-content: space-between;
             gap: 40px;
-            min-height: 500px;
+
         }
 
         .column {
@@ -266,8 +267,8 @@
             }
             
             .game-area {
-                gap: 40px;
-                min-height: 500px;
+                gap: 10px;
+
             }
             
             .column {
@@ -384,7 +385,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div class="container">
         <div class="header">
             <h1>🇩🇪 Тренажер немецкого языка</h1>
@@ -432,6 +433,11 @@
 
     <script src="words_database.js"></script>
     <script>
+		
+		document.onkeydown = function(e) {
+		if (e.keyCode === 123) return false; // F12
+		};	
+	
         class GermanTrainer {
             constructor() {
                 this.currentPairs = [];
