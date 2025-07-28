@@ -329,7 +329,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div class="container">
         <div class="header">
             <h1>🇩🇪 Тренажер немецкого языка</h1>
@@ -3425,6 +3425,10 @@
     { id: 3045, russian: "состояние", german: "der Zustand, - e" },
     { id: 3046, russian: "прежде", german: "zuvor" }
         ];
+
+		document.onkeydown = function(e) {
+		if (e.keyCode === 123) return false; // F12
+		};
 
         class GermanTrainer {
             constructor() {
