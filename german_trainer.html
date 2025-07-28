@@ -229,9 +229,9 @@
             
             .word-button {
                 font-size: 0.75em;
-                padding: 6px 4px;
+                padding: 8px 4px;
                 margin-bottom: 4px;
-                min-height: 36px;
+                min-height: 44px;
                 border-radius: 4px;
             }
             
@@ -271,7 +271,8 @@
             }
             
             .column {
-                /* Убираем стили блока колонки на десктопе тоже */
+                display: flex;
+                flex-direction: column;
             }
             
             .word-button {
@@ -279,6 +280,7 @@
                 padding: 15px 20px;
                 font-size: 1.1em;
                 border-radius: 12px;
+                min-height: 56px;
             }
             
             .header h1 {
