@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Электрическая цепь — симулятор</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #141720;
+  --bg3: #1c2030;
+  --panel: #1e2235;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8eaf0;
+  --muted: #7a7f96;
+  --accent: #4f8ef7;
+  --accent2: #38c9a0;
+  --warn: #f5a623;
+  --danger: #f05e5e;
+  --r1c: #e05ce2;
+  --r2c: #4f8ef7;
+  --r3c: #38c9a0;
+  --wire: #3a4060;
+  --wire-hi: #5a6090;
+  --particle: #fff9a0;
+  --glow: rgba(79,142,247,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.mode-switch {
+  display: flex;
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+}
+.mode-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+.sidebar-right {
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 20px;
+  overflow: hidden;
+}
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.slider-label span:last-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+input[type=range] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 2px rgba(79,142,247,0.3);
+  cursor: pointer;
+}
+input[type=range].r1::-webkit-slider-thumb { background: var(--r1c); box-shadow: 0 0 0 2px rgba(224,92,226,0.3); }
+input[type=range].r2::-webkit-slider-thumb { background: var(--r2c); box-shadow: 0 0 0 2px rgba(79,142,247,0.3); }
+input[type=range].r3::-webkit-slider-thumb { background: var(--r3c); box-shadow: 0 0 0 2px rgba(56,201,160,0.3); }
+input[type=range].volt::-webkit-slider-thumb { background: var(--warn); box-shadow: 0 0 0 2px rgba(245,166,35,0.3); }
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.result-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.result-card .label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.result-card .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+.result-card .unit {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+.ohm-law {
+  background: linear-gradient(135deg, rgba(79,142,247,0.08), rgba(56,201,160,0.08));
+  border: 1px solid rgba(79,142,247,0.25);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ohm-law .title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.ohm-formula {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ohm-pill {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .3s;
+}
+.ohm-pill.highlight {
+  border-color: var(--accent);
+  background: rgba(79,142,247,0.12);
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(79,142,247,0.2);
+}
+.ohm-sep { color: var(--muted); font-size: 14px; font-weight: 600; }
+
+.res-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.res-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+}
+.res-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.res-row-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.res-row-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+.res-row-vals {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.power-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.power-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+
+/* Canvas + circuit */
+#circuit-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+}
+canvas#circuit {
+  width: 100%;
+  display: block;
+}
+
+/* Chart */
+.chart-wrap {
+  width: 100%;
+  max-width: 580px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.chart-canvas-wrap { position: relative; height: 140px; }
+
+.badge {
+  background: rgba(79,142,247,0.12);
+  border: 1px solid rgba(79,142,247,0.25);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <h1>⚡ Симулятор электрической цепи</h1>
+    <span class="badge">Закон Ома</span>
+  </div>
+  <div class="mode-switch">
+    <button class="mode-btn active" id="btn-series" onclick="setMode('series')">Последовательное</button>
+    <button class="mode-btn" id="btn-parallel" onclick="setMode('parallel')">Параллельное</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Left sidebar: sliders -->
+  <div class="sidebar">
+    <div class="section-title">Параметры</div>
+
+    <div class="slider-group">
+      <div class="slider-label">
+        <span>Напряжение U</span>
+        <span><span id="lbl-U">12</span> В</span>
+      </div>
+      <input type="range" class="volt" id="sl-U" min="1" max="60" value="12" oninput="onSlider()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label" style="color:var(--r1c)">
+        <span>R₁</span>
+        <span><span id="lbl-R1">10</span> Ом</span>
+      </div>
+      <input type="range" class="r1" id="sl-R1" min="1" max="100" value="10" oninput="onSlider()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label" style="color:var(--r2c)">
+        <span>R₂</span>
+        <span><span id="lbl-R2">20</span> Ом</span>
+      </div>
+      <input type="range" class="r2" id="sl-R2" min="1" max="100" value="20" oninput="onSlider()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label" style="color:var(--r3c)">
+        <span>R₃</span>
+        <span><span id="lbl-R3">30</span> Ом</span>
+      </div>
+      <input type="range" class="r3" id="sl-R3" min="1" max="100" value="30" oninput="onSlider()">
+    </div>
+
+    <div class="section-title" style="margin-top:4px">Результаты</div>
+
+    <div class="result-card">
+      <span class="label">Общее сопротивление R</span>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span class="value" id="res-R">60</span>
+        <span class="unit">Ом</span>
+      </div>
+    </div>
+    <div class="result-card">
+      <span class="label">Сила тока I</span>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span class="value" id="res-I">0.200</span>
+        <span class="unit">А</span>
+      </div>
+    </div>
+
+    <div class="ohm-law">
+      <div class="title">Закон Ома</div>
+      <div class="ohm-formula">
+        <span class="ohm-pill" id="op-U">U</span>
+        <span class="ohm-sep">=</span>
+        <span class="ohm-pill" id="op-I">I</span>
+        <span class="ohm-sep">·</span>
+        <span class="ohm-pill" id="op-R">R</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px" id="ohm-display">12 В = 0.200 А · 60 Ом</div>
+    </div>
+  </div>
+
+  <!-- Main canvas area -->
+  <div class="main">
+    <div id="circuit-wrap">
+      <canvas id="circuit" width="580" height="310"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">График I(U) — зависимость тока от напряжения</div>
+      <div class="chart-canvas-wrap">
+        <canvas id="iv-chart" aria-label="График зависимости тока от напряжения для трёх резисторов">Токи через резисторы при изменении напряжения.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right sidebar: per-resistor data -->
+  <div class="sidebar-right">
+    <div class="section-title">Резисторы</div>
+    <div class="res-breakdown" id="res-breakdown"></div>
+
+    <div class="section-title" style="margin-top:8px">Мощность</div>
+    <div class="res-breakdown" id="power-breakdown"></div>
+
+    <div class="result-card" style="margin-top:4px">
+      <span class="label">Суммарная мощность P</span>
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <span class="value" id="res-P">2.400</span>
+        <span class="unit">Вт</span>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:4px">Справка</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7">
+      <div style="margin-bottom:6px"><b style="color:var(--text)">Последовательное:</b><br>R = R₁ + R₂ + R₃<br>I = одинаковый через все</div>
+      <div><b style="color:var(--text)">Параллельное:</b><br>1/R = 1/R₁ + 1/R₂ + 1/R₃<br>U = одинаковое на всех</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let mode = 'series';
+let chart = null;
+const particles = [];
+
+const colors = {
+  R1: '#e05ce2',
+  R2: '#4f8ef7',
+  R3: '#38c9a0',
+};
+
+// ---- Physics ----
+function calcSeries(U, R1, R2, R3) {
+  const R = R1 + R2 + R3;
+  const I = U / R;
+  return {
+    R, I,
+    I1: I, I2: I, I3: I,
+    U1: I * R1, U2: I * R2, U3: I * R3,
+    P1: I * I * R1, P2: I * I * R2, P3: I * I * R3,
+    P: I * I * R,
+  };
+}
+function calcParallel(U, R1, R2, R3) {
+  const I1 = U / R1, I2 = U / R2, I3 = U / R3;
+  const I = I1 + I2 + I3;
+  const R = U / I;
+  return {
+    R, I,
+    I1, I2, I3,
+    U1: U, U2: U, U3: U,
+    P1: U * I1, P2: U * I2, P3: U * I3,
+    P: U * I,
+  };
+}
+
+function getValues() {
+  const U = +document.getElementById('sl-U').value;
+  const R1 = +document.getElementById('sl-R1').value;
+  const R2 = +document.getElementById('sl-R2').value;
+  const R3 = +document.getElementById('sl-R3').value;
+  return mode === 'series' ? calcSeries(U, R1, R2, R3) : calcParallel(U, R1, R2, R3);
+}
+
+function fmt(v, d) { return v.toFixed(d !== undefined ? d : 3); }
+
+function onSlider() {
+  const U = +document.getElementById('sl-U').value;
+  const R1 = +document.getElementById('sl-R1').value;
+  const R2 = +document.getElementById('sl-R2').value;
+  const R3 = +document.getElementById('sl-R3').value;
+  document.getElementById('lbl-U').textContent = U;
+  document.getElementById('lbl-R1').textContent = R1;
+  document.getElementById('lbl-R2').textContent = R2;
+  document.getElementById('lbl-R3').textContent = R3;
+
+  const v = mode === 'series' ? calcSeries(U, R1, R2, R3) : calcParallel(U, R1, R2, R3);
+
+  document.getElementById('res-R').textContent = fmt(v.R, 2);
+  document.getElementById('res-I').textContent = fmt(v.I, 4);
+  document.getElementById('res-P').textContent = fmt(v.P, 3);
+  document.getElementById('ohm-display').textContent = `${U} В = ${fmt(v.I,4)} А · ${fmt(v.R,2)} Ом`;
+
+  // Ohm pill highlights
+  ['op-U','op-I','op-R'].forEach(id => document.getElementById(id).classList.remove('highlight'));
+  const maxChange = Math.random(); // just pulse all on change
+  document.getElementById('op-U').classList.add('highlight');
+  setTimeout(() => document.getElementById('op-U').classList.remove('highlight'), 300);
+  document.getElementById('op-I').classList.add('highlight');
+  setTimeout(() => document.getElementById('op-I').classList.remove('highlight'), 300);
+  document.getElementById('op-R').classList.add('highlight');
+  setTimeout(() => document.getElementById('op-R').classList.remove('highlight'), 300);
+
+  // Resistor breakdown
+  const bd = document.getElementById('res-breakdown');
+  bd.innerHTML = ['R1','R2','R3'].map((r,i) => {
+    const clr = colors[r];
+    const Rx = [R1,R2,R3][i];
+    const Ix = fmt([v.I1,v.I2,v.I3][i], 4);
+    const Ux = fmt([v.U1,v.U2,v.U3][i], 3);
+    return `<div class="res-row">
+      <div class="res-dot" style="background:${clr}"></div>
+      <div class="res-row-info">
+        <div class="res-row-name">${r} = ${Rx} Ом</div>
+        <div class="res-row-vals">I = ${Ix} А &nbsp; U = ${Ux} В</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Power breakdown
+  const totalP = v.P || 0.001;
+  const pb = document.getElementById('power-breakdown');
+  pb.innerHTML = ['R1','R2','R3'].map((r,i) => {
+    const clr = colors[r];
+    const Px = [v.P1,v.P2,v.P3][i];
+    const pct = (Px / totalP * 100).toFixed(1);
+    return `<div class="res-row">
+      <div class="res-dot" style="background:${clr}"></div>
+      <div class="res-row-info">
+        <div class="res-row-name">${r}: ${fmt(Px, 3)} Вт</div>
+        <div class="power-bar-wrap"><div class="power-bar" style="width:${pct}%;background:${clr}"></div></div>
+      </div>
+      <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:36px;text-align:right">${pct}%</div>
+    </div>`;
+  }).join('');
+
+  updateChart(R1, R2, R3);
+  // Update particle speed based on current
+  particleSpeed = Math.min(4, 0.3 + v.I * 4);
+}
+
+// ---- Mode switch ----
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-series').classList.toggle('active', m === 'series');
+  document.getElementById('btn-parallel').classList.toggle('active', m === 'parallel');
+  onSlider();
+  initParticles();
+}
+
+// ---- I-V Chart ----
+function updateChart(R1, R2, R3) {
+  const Us = Array.from({length: 20}, (_,i) => (i+1)*3);
+  const I1s = Us.map(u => mode === 'series' ? u/(R1+R2+R3) : u/R1);
+  const I2s = Us.map(u => mode === 'series' ? u/(R1+R2+R3) : u/R2);
+  const I3s = Us.map(u => mode === 'series' ? u/(R1+R2+R3) : u/R3);
+
+  if (!chart) {
+    chart = new Chart(document.getElementById('iv-chart'), {
+      type: 'line',
+      data: {
+        labels: Us.map(u => u + ' В'),
+        datasets: [
+          { label: 'R1', data: I1s, borderColor: colors.R1, backgroundColor: 'transparent', tension: 0.1, borderWidth: 2, pointRadius: 2 },
+          { label: 'R2', data: I2s, borderColor: colors.R2, backgroundColor: 'transparent', tension: 0.1, borderWidth: 2, pointRadius: 2 },
+          { label: 'R3', data: I3s, borderColor: colors.R3, backgroundColor: 'transparent', tension: 0.1, borderWidth: 2, pointRadius: 2 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, labels: { color: '#7a7f96', font: { size: 11 }, boxWidth: 12, padding: 10 } },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { ticks: { color: '#7a7f96', font: { size: 10 }, maxTicksLimit: 8 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          y: { ticks: { color: '#7a7f96', font: { size: 10 }, callback: v => v.toFixed(3) + ' А' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        },
+        animation: { duration: 250 }
+      }
+    });
+  } else {
+    chart.data.datasets[0].data = I1s;
+    chart.data.datasets[1].data = I2s;
+    chart.data.datasets[2].data = I3s;
+    chart.update('none');
+  }
+}
+
+// ---- Circuit drawing ----
+const cvs = document.getElementById('circuit');
+const ctx = cvs.getContext('2d');
+const W = 580, H = 310;
+
+// Resistor box render
+function drawResistor(x, y, w, h, label, color, vLabel, iLabel, pLabel) {
+  ctx.save();
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = color + '55';
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  roundRect(ctx, x, y, w, h, 6);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // zigzag
+  const zx = x + 10, zy = y + h/2, zw = w - 20;
+  ctx.beginPath();
+  ctx.strokeStyle = color + 'cc';
+  ctx.lineWidth = 1.5;
+  const segs = 6;
+  ctx.moveTo(zx, zy);
+  for (let i = 0; i <= segs; i++) {
+    const px = zx + zw * i / segs;
+    const py = zy + (i % 2 === 0 ? -6 : 6);
+    ctx.lineTo(px, py);
+  }
+  ctx.lineTo(zx + zw, zy);
+  ctx.stroke();
+  // Label
+  ctx.fillStyle = color;
+  ctx.font = '600 13px Manrope, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, x + w/2, y - 7);
+  // Values
+  ctx.fillStyle = '#7a7f96';
+  ctx.font = '400 10px JetBrains Mono, monospace';
+  ctx.fillText(vLabel, x + w/2, y + h + 14);
+  ctx.fillText(iLabel, x + w/2, y + h + 26);
+  ctx.fillText(pLabel, x + w/2, y + h + 38);
+  ctx.restore();
+}
+
+// Resistor rendered as a box, but wire enters/exits top and bottom center
+function drawResistorVertical(cx, y, w, h, label, color, vLabel, iLabel, pLabel) {
+  const x = cx - w/2;
+  ctx.save();
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = color + '55';
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.fillStyle = 'rgba(255,255,255,0.03)';
+  roundRect(ctx, x, y, w, h, 6);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // Zigzag inside box (horizontal)
+  const zx = x + 10, zy = y + h/2, zw = w - 20;
+  ctx.beginPath();
+  ctx.strokeStyle = color + 'cc';
+  ctx.lineWidth = 1.5;
+  const segs = 6;
+  ctx.moveTo(zx, zy);
+  for (let i = 0; i <= segs; i++) {
+    const px = zx + zw * i / segs;
+    const py = zy + (i % 2 === 0 ? -6 : 6);
+    ctx.lineTo(px, py);
+  }
+  ctx.lineTo(zx + zw, zy);
+  ctx.stroke();
+  // Label above
+  ctx.fillStyle = color;
+  ctx.font = '600 12px Manrope, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, cx, y - 6);
+  // Values below
+  ctx.fillStyle = '#7a7f96';
+  ctx.font = '400 10px JetBrains Mono, monospace';
+  ctx.fillText(vLabel, cx, y + h + 13);
+  ctx.fillText(iLabel, cx, y + h + 25);
+  ctx.fillText(pLabel, cx, y + h + 37);
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h);
+  ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r);
+  ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function drawWire(x1, y1, x2, y2) {
+  ctx.strokeStyle = '#3a4060';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function drawBattery(x, y, U) {
+  ctx.save();
+  ctx.strokeStyle = '#f5a623';
+  ctx.fillStyle = '#f5a623';
+  ctx.lineWidth = 2;
+  // body
+  roundRect(ctx, x-24, y-26, 48, 52, 6);
+  ctx.fillStyle = 'rgba(245,166,35,0.07)';
+  ctx.fill();
+  ctx.strokeStyle = '#f5a623cc';
+  ctx.stroke();
+  // + / - terminals
+  ctx.fillStyle = '#f5a623';
+  ctx.font = '700 14px Manrope';
+  ctx.textAlign = 'center';
+  ctx.fillText('+', x, y - 30);
+  ctx.fillText('−', x, y + 40);
+  ctx.font = '600 11px Manrope';
+  ctx.fillText(U + ' В', x, y + 3);
+  ctx.font = '500 10px Manrope';
+  ctx.fillStyle = '#7a7f96';
+  ctx.fillText('U', x, y + 14);
+  ctx.restore();
+}
+
+function drawAmmeter(x, y) {
+  ctx.save();
+  ctx.strokeStyle = '#f5a623';
+  ctx.fillStyle = 'rgba(245,166,35,0.06)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, 16, 0, Math.PI*2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#f5a623';
+  ctx.font = '700 13px Manrope';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('A', x, y);
+  ctx.restore();
+}
+
+function drawVoltmeter(x, y) {
+  ctx.save();
+  ctx.strokeStyle = '#38c9a0';
+  ctx.fillStyle = 'rgba(56,201,160,0.06)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, 16, 0, Math.PI*2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#38c9a0';
+  ctx.font = '700 13px Manrope';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('V', x, y);
+  ctx.restore();
+}
+
+// ---- Particles ----
+let particleSpeed = 1.5;
+
+function initParticles() {
+  particles.length = 0;
+  if (mode === 'series') {
+    const path = getSeriesPath();
+    const total = totalPathLength(path);
+    for (let i = 0; i < 18; i++) {
+      particles.push({ t: (i / 18) * total, path, speed: 1, branch: 0 });
+    }
+  } else {
+    for (let b = 0; b < 3; b++) {
+      const path = getParallelPath(b);
+      const total = totalPathLength(path);
+      for (let i = 0; i < 8; i++) {
+        particles.push({ t: (i / 8) * total, path, speed: 1, branch: b });
+      }
+    }
+  }
+}
+
+function getSeriesPath() {
+  // topY=70, botY=230, batX=50, ammeter at x=130, R1@175-265, R2@285-375, R3@395-485
+  return [
+    [50,170],[50,70],[114,70],
+    [146,70],[175,70],[265,70],[285,70],[375,70],[395,70],[485,70],
+    [530,70],[530,230],[50,230],[50,170]
+  ];
+}
+
+function getParallelPath(branch) {
+  const bxC = [140, 240, 340];
+  const cx = bxC[branch];
+  const topRail = 55, botRail = 225, batX = 40;
+  const rh = 40;
+  const ry = topRail + (botRail - topRail) / 2 - rh / 2;
+  return [
+    [batX, (topRail+botRail)/2], // battery mid
+    [batX, topRail],             // top-left
+    [cx, topRail],               // top of branch
+    [cx, ry],                    // top of resistor
+    [cx, ry + rh],               // bottom of resistor
+    [cx, botRail],               // bottom of branch
+    [batX, botRail],             // bottom-left
+    [batX, (topRail+botRail)/2]  // back to battery
+  ];
+}
+
+function totalPathLength(pts) {
+  let len = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0]-pts[i-1][0], dy = pts[i][1]-pts[i-1][1];
+    len += Math.sqrt(dx*dx+dy*dy);
+  }
+  return len;
+}
+
+function getPointOnPath(pts, t) {
+  let rem = t;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0]-pts[i-1][0], dy = pts[i][1]-pts[i-1][1];
+    const seg = Math.sqrt(dx*dx+dy*dy);
+    if (rem <= seg) {
+      const r = rem / seg;
+      return [pts[i-1][0]+dx*r, pts[i-1][1]+dy*r];
+    }
+    rem -= seg;
+  }
+  return pts[pts.length-1];
+}
+
+// ---- Draw loop ----
+function drawSeries(v) {
+  ctx.clearRect(0,0,W,H);
+  const U = +document.getElementById('sl-U').value;
+
+  // Layout (y):  voltmeter rail at y=18, top main wire at y=70, bottom wire at y=230
+  // Battery on left vertical (x=50), components on top wire left→right:
+  //   ammeter centre x=130, R1 x=175..265, R2 x=285..375, R3 x=395..485
+  // Voltmeter contacts: left=x=114 (just after battery/before A), right=x=500 (after R3)
+
+  const topY = 70, botY = 230, vmY = 20;
+  const batX = 50;
+  // Ammeter at x=130 (radius 16 → gap 114..146 on top wire)
+  const amX = 130;
+  // Resistors
+  const rw = 90, rh = 40, ry = topY - rh/2;
+  const rx1 = 175, rx2 = 285, rx3 = 395;
+  // Voltmeter contact x positions (just outside ammeter left, just after R3 right)
+  const vmLx = 114, vmRx = rx3 + rw + 5; // 500
+
+  ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#3a4060';
+
+  // Top wire segments (gap around ammeter at amX±16)
+  ctx.beginPath(); ctx.moveTo(batX, topY); ctx.lineTo(amX - 16, topY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(amX + 16, topY); ctx.lineTo(530, topY); ctx.stroke();
+  // Bottom wire
+  ctx.beginPath(); ctx.moveTo(batX, botY); ctx.lineTo(530, botY); ctx.stroke();
+  // Left vertical (battery)
+  ctx.beginPath(); ctx.moveTo(batX, topY + 26); ctx.lineTo(batX, botY - 26); ctx.stroke();
+  // Right vertical
+  ctx.beginPath(); ctx.moveTo(530, topY + 10); ctx.lineTo(530, botY - 10); ctx.stroke();
+
+  // Battery
+  drawBattery(batX, 150, U);
+
+  // Ammeter in series
+  drawAmmeter(amX, topY);
+
+  // Resistors
+  drawResistor(rx1, ry, rw, rh, 'R₁', colors.R1,
+    'U₁='+fmt(v.U1,2)+'В', 'I='+fmt(v.I1,3)+'А', 'P='+fmt(v.P1,3)+'Вт');
+  drawResistor(rx2, ry, rw, rh, 'R₂', colors.R2,
+    'U₂='+fmt(v.U2,2)+'В', 'I='+fmt(v.I2,3)+'А', 'P='+fmt(v.P2,3)+'Вт');
+  drawResistor(rx3, ry, rw, rh, 'R₃', colors.R3,
+    'U₃='+fmt(v.U3,2)+'В', 'I='+fmt(v.I3,3)+'А', 'P='+fmt(v.P3,3)+'Вт');
+
+  // Voltmeter — above the circuit, contacts at vmLx and vmRx on the top wire
+  // Left contact drops UP from top wire to vmY, horizontal to V, same on right
+  ctx.strokeStyle = '#3a4060'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+  // Left leg up
+  ctx.beginPath(); ctx.moveTo(vmLx, topY); ctx.lineTo(vmLx, vmY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(vmLx, vmY); ctx.lineTo(282, vmY); ctx.stroke();
+  // Right leg up
+  ctx.beginPath(); ctx.moveTo(vmRx, topY); ctx.lineTo(vmRx, vmY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(vmRx, vmY); ctx.lineTo(318, vmY); ctx.stroke();
+  drawVoltmeter(300, vmY);
+}
+
+function drawParallel(v) {
+  ctx.clearRect(0,0,W,H);
+  const U = +document.getElementById('sl-U').value;
+
+  // Layout: battery on far left, then 4 vertical branches (R1, R2, R3, V)
+  // connected by top and bottom rails only between battery and rightmost branch.
+  // Ammeter is in series on the top rail between battery and first branch.
+  const topRail = 55, botRail = 225;
+  const batX = 40;
+  // Branch centers: R1=140, R2=240, R3=340, Voltmeter=460
+  const bxC  = [140, 240, 340, 460];
+  const rw = 76, rh = 40;
+  const ry = topRail + (botRail - topRail) / 2 - rh / 2;
+
+  // ── Rails ──────────────────────────────────────────────────────────────────
+  ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#3a4060';
+
+  // Top rail: battery → ammeter → branch junction line
+  // Split around ammeter (center at batX+50)
+  const amX = batX + 50;
+  ctx.beginPath(); ctx.moveTo(batX, topRail); ctx.lineTo(amX - 16, topRail); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(amX + 16, topRail); ctx.lineTo(bxC[3], topRail); ctx.stroke();
+
+  // Bottom rail: battery → all branches
+  ctx.beginPath(); ctx.moveTo(batX, botRail); ctx.lineTo(bxC[3], botRail); ctx.stroke();
+
+  // Left vertical (battery side)
+  ctx.beginPath(); ctx.moveTo(batX, topRail); ctx.lineTo(batX, botRail); ctx.stroke();
+
+  // ── Battery ───────────────────────────────────────────────────────────────
+  drawBattery(batX, (topRail + botRail) / 2, U);
+
+  // ── Ammeter (series, top rail) ────────────────────────────────────────────
+  drawAmmeter(amX, topRail);
+
+  // ── R1, R2, R3 branches ───────────────────────────────────────────────────
+  const res  = ['R₁','R₂','R₃'];
+  const clrs = [colors.R1, colors.R2, colors.R3];
+  const Is   = [v.I1, v.I2, v.I3];
+  const Ps   = [v.P1, v.P2, v.P3];
+
+  [0, 1, 2].forEach(i => {
+    const cx = bxC[i];
+    ctx.strokeStyle = '#3a4060'; ctx.lineWidth = 2;
+    // Wire top rail → top of resistor
+    ctx.beginPath(); ctx.moveTo(cx, topRail); ctx.lineTo(cx, ry); ctx.stroke();
+    // Wire bottom of resistor → bottom rail
+    ctx.beginPath(); ctx.moveTo(cx, ry + rh); ctx.lineTo(cx, botRail); ctx.stroke();
+    drawResistorVertical(cx, ry, rw, rh, res[i], clrs[i],
+      'U='+fmt(U,2)+'В', 'I='+fmt(Is[i],3)+'А', 'P='+fmt(Ps[i],3)+'Вт');
+  });
+
+  // ── Voltmeter branch (4th, rightmost) ────────────────────────────────────
+  // Exactly like a resistor branch: wire from top rail down, circle, wire down to bottom rail.
+  // No connection to any other horizontal conductor — it IS the rightmost branch end.
+  const vmX = bxC[3];
+  const vmY = (topRail + botRail) / 2;
+  const vmR = 18;
+  ctx.strokeStyle = '#3a4060'; ctx.lineWidth = 2;
+  // Wire top rail → top of voltmeter circle
+  ctx.beginPath(); ctx.moveTo(vmX, topRail); ctx.lineTo(vmX, vmY - vmR); ctx.stroke();
+  // Wire bottom of voltmeter circle → bottom rail
+  ctx.beginPath(); ctx.moveTo(vmX, vmY + vmR); ctx.lineTo(vmX, botRail); ctx.stroke();
+  // Voltmeter circle
+  drawVoltmeter(vmX, vmY);
+  // Label
+  ctx.fillStyle = '#38c9a0';
+  ctx.font = '600 11px Manrope, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('V', vmX, vmY - vmR - 7);
+}
+
+function drawParticles() {
+  const R1 = +document.getElementById('sl-R1').value;
+  const R2 = +document.getElementById('sl-R2').value;
+  const R3 = +document.getElementById('sl-R3').value;
+  const U = +document.getElementById('sl-U').value;
+
+  particles.forEach(p => {
+    const total = totalPathLength(p.path);
+    let speed = particleSpeed;
+    // In parallel, branch current determines speed per branch
+    if (mode === 'parallel') {
+      const Rs = [R1, R2, R3];
+      speed = Math.min(5, 0.3 + (U / Rs[p.branch]) * 3);
+    }
+    p.t = (p.t + speed) % total;
+    const [x, y] = getPointOnPath(p.path, p.t);
+
+    ctx.save();
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#fff9a0';
+    ctx.beginPath();
+    ctx.arc(x, y, 3.5, 0, Math.PI*2);
+    ctx.fillStyle = '#fff9a0';
+    ctx.fill();
+    // Trail
+    const trail = getPointOnPath(p.path, Math.max(0, p.t - speed*3));
+    const grad = ctx.createLinearGradient(trail[0], trail[1], x, y);
+    grad.addColorStop(0, 'rgba(255,249,160,0)');
+    grad.addColorStop(1, 'rgba(255,249,160,0.5)');
+    ctx.beginPath();
+    ctx.moveTo(trail[0], trail[1]);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+  });
+}
+
+function frame() {
+  const U = +document.getElementById('sl-U').value;
+  const R1 = +document.getElementById('sl-R1').value;
+  const R2 = +document.getElementById('sl-R2').value;
+  const R3 = +document.getElementById('sl-R3').value;
+  const v = mode === 'series' ? calcSeries(U,R1,R2,R3) : calcParallel(U,R1,R2,R3);
+
+  if (mode === 'series') drawSeries(v); else drawParallel(v);
+  drawParticles();
+  requestAnimationFrame(frame);
+}
+
+// Init
+onSlider();
+initParticles();
+frame();
+</script>
+</body>
+</html>
