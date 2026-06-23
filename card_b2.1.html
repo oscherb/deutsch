@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch Trainer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --border: #252a38;
+    --accent: #5b8fff;
+    --accent-soft: rgba(91,143,255,0.12);
+    --accent-glow: rgba(91,143,255,0.3);
+    --green: #3ecf8e;
+    --green-soft: rgba(62,207,142,0.12);
+    --red: #f26f6f;
+    --red-soft: rgba(242,111,111,0.12);
+    --text: #e8eaf2;
+    --muted: #6b7280;
+    --card-bg: #1a1f2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    max-width: 720px;
+    padding: 36px 24px 0;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  header span.tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-glow);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  .mode-bar {
+    width: 100%;
+    max-width: 720px;
+    padding: 20px 24px 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.02em;
+  }
+
+  .mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mode-btn.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 720px;
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+  }
+
+  .progress-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .score-pill {
+    display: flex;
+    gap: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .score-pill .s-ok { color: var(--green); }
+  .score-pill .s-err { color: var(--red); }
+
+  .main {
+    width: 100%;
+    max-width: 720px;
+    padding: 28px 24px 60px;
+    flex: 1;
+  }
+
+  /* ---- FLASHCARD ---- */
+  .flashcard-wrap {
+    perspective: 1200px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 20px;
+  }
+
+  .flashcard {
+    position: relative;
+    width: 100%;
+    min-height: 220px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .flashcard.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 36px 32px;
+    min-height: 220px;
+  }
+
+  .card-face.back {
+    transform: rotateY(180deg);
+    background: var(--surface);
+    border-color: var(--accent-glow);
+  }
+
+  .card-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card-word {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .card-hint {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  .card-translation {
+    font-size: 1.1rem;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  .tap-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: -8px;
+    margin-bottom: 16px;
+  }
+
+  .flash-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .flash-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 28px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .flash-btn.knew {
+    background: var(--green-soft);
+    color: var(--green);
+    border: 1px solid rgba(62,207,142,0.3);
+  }
+  .flash-btn.knew:hover { background: rgba(62,207,142,0.22); }
+
+  .flash-btn.forgot {
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid rgba(242,111,111,0.3);
+  }
+  .flash-btn.forgot:hover { background: rgba(242,111,111,0.22); }
+
+  /* ---- QUIZ ---- */
+  .quiz-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px 32px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-q-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .quiz-question {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    line-height: 1.2;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 14px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s;
+    line-height: 1.4;
+  }
+
+  .quiz-opt:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-soft); }
+  .quiz-opt.correct { border-color: var(--green) !important; background: var(--green-soft) !important; color: var(--green) !important; }
+  .quiz-opt.wrong { border-color: var(--red) !important; background: var(--red-soft) !important; color: var(--red) !important; }
+
+  /* ---- WRITE ---- */
+  .write-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px 32px;
+    margin-bottom: 20px;
+  }
+
+  .write-prompt {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .write-sublabel {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .write-input-wrap {
+    display: flex;
+    gap: 10px;
+  }
+
+  .write-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    padding: 12px 16px;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.18s;
+  }
+
+  .write-input:focus { border-color: var(--accent); }
+  .write-input.ok { border-color: var(--green) !important; background: var(--green-soft); }
+  .write-input.err { border-color: var(--red) !important; background: var(--red-soft); }
+
+  .write-submit {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-glow);
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .write-submit:hover { background: rgba(91,143,255,0.22); }
+
+  .write-feedback {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    min-height: 22px;
+    transition: all 0.2s;
+  }
+  .write-feedback.ok { color: var(--green); }
+  .write-feedback.err { color: var(--red); }
+
+  /* ---- GLOSSARY ---- */
+  .glossary-search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    border-radius: 10px;
+    width: 100%;
+    outline: none;
+    margin-bottom: 18px;
+    transition: border-color 0.18s;
+  }
+  .glossary-search:focus { border-color: var(--accent); }
+
+  .glossary-section {
+    margin-bottom: 28px;
+  }
+
+  .glossary-section-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .glossary-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .glossary-item:last-child { border-bottom: none; }
+
+  .glo-de {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.05rem;
+    color: var(--text);
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .glo-ru {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Done screen */
+  .done-screen {
+    text-align: center;
+    padding: 60px 0;
+  }
+
+  .done-screen h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+  }
+
+  .done-screen p {
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .restart-btn {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-glow);
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .restart-btn:hover { background: rgba(91,143,255,0.22); }
+
+  @media (max-width: 500px) {
+    .quiz-options { grid-template-columns: 1fr; }
+    .card-word { font-size: 1.8rem; }
+    .write-input-wrap { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Deutsch Trainer</h1>
+  <span class="tag">Arbeit & Beruf</span>
+</header>
+
+<div class="mode-bar">
+  <button class="mode-btn active" onclick="setMode('flash')">📇 Карточки</button>
+  <button class="mode-btn" onclick="setMode('quiz')">🎯 Тест</button>
+  <button class="mode-btn" onclick="setMode('write')">✏️ Написать</button>
+  <button class="mode-btn" onclick="setMode('glossary')">📖 Словарь</button>
+</div>
+
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-label" id="progressLabel"></span>
+  <div class="score-pill">
+    <span class="s-ok" id="scoreOk">✓ 0</span>
+    <span class="s-err" id="scoreErr">✗ 0</span>
+  </div>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+const VOCAB = [
+  // General
+  { de: "sich interessieren für + A.", ru: "интересоваться чем-либо", cat: "Общее" },
+  { de: "pflegen", ru: "ухаживать, заботиться", cat: "Общее" },
+  { de: "entwickeln", ru: "развивать, разрабатывать", cat: "Общее" },
+  { de: "transportieren", ru: "перевозить, транспортировать", cat: "Общее" },
+  { de: "die Hektik", ru: "суета, спешка", cat: "Общее" },
+  { de: "die Dienstreise, -n", ru: "командировка", cat: "Общее" },
+  { de: "die Anfahrt, -en", ru: "подъезд, дорога (путь к месту)", cat: "Общее" },
+  { de: "die Langeweile", ru: "скука", cat: "Общее" },
+  { de: "das Großraumbüro, -s", ru: "офис открытого типа", cat: "Общее" },
+  { de: "die Karrierechance, -n", ru: "шанс на карьерный рост", cat: "Общее" },
+  { de: "die Ausstattung, -en", ru: "оборудование, оснащение", cat: "Общее" },
+  { de: "der/die Vorgesetzte, -n", ru: "начальник / начальница", cat: "Сотрудники" },
+  { de: "der berufliche Werdegang, ⸚e", ru: "профессиональный путь, карьера", cat: "Общее" },
+  // Modul 1
+  { de: "der Minijob, -s", ru: "мини-работа с частичной занятостью", cat: "Modul 1" },
+  { de: "das Praktikum, Praktika", ru: "практика, стажировка", cat: "Modul 1" },
+  { de: "reinschnuppern in + A.", ru: "присмотреться к чему-то, попробовать себя в сфере", cat: "Modul 1" },
+  { de: "der Aushilfsjob, -s", ru: "подработка, временная работа", cat: "Modul 1" },
+  { de: "die Zeitarbeit", ru: "временная работа через агентство", cat: "Modul 1" },
+  { de: "befristet", ru: "ограниченный сроком, временный", cat: "Modul 1" },
+  { de: "frühestmöglich", ru: "как можно скорее", cat: "Modul 1" },
+  { de: "der Antrittstermin, -e", ru: "дата начала работы", cat: "Modul 1" },
+  { de: "die Voraussetzung, -en", ru: "условие, требование, предпосылка", cat: "Modul 1" },
+  { de: "der Schulabschluss, ⸚e", ru: "школьный аттестат, окончание школы", cat: "Modul 1" },
+  { de: "praxisorientiert", ru: "ориентированный на практику", cat: "Modul 1" },
+  { de: "die Schicht, -en", ru: "смена (на работе)", cat: "Modul 1" },
+  { de: "die Einarbeitung", ru: "введение в работу, ознакомление с обязанностями", cat: "Modul 1" },
+  { de: "motiviert", ru: "мотивированный", cat: "Modul 1" },
+  { de: "erfolgreich", ru: "успешный", cat: "Modul 1" },
+  { de: "zuverlässig", ru: "надёжный", cat: "Modul 1" },
+  { de: "gepflegt", ru: "ухоженный, опрятный", cat: "Modul 1" },
+  { de: "innovativ", ru: "инновационный", cat: "Modul 1" },
+  { de: "die Herausforderung, -en", ru: "вызов, сложная задача", cat: "Modul 1" },
+  { de: "die Umgebung, -en", ru: "окружение, обстановка / окрестности", cat: "Modul 1" },
+  { de: "die Spedition, -en", ru: "транспортно-экспедиторская компания", cat: "Modul 1" },
+  { de: "profitieren von + D.", ru: "получать выгоду (пользу) от чего-либо", cat: "Modul 1" },
+  // Modul 2
+  { de: "verfügbar", ru: "доступный, свободный", cat: "Modul 2" },
+  { de: "die Verfügbarkeit", ru: "доступность, наличие", cat: "Modul 2" },
+  { de: "zur Probe arbeiten", ru: "работать на испытательном сроке", cat: "Modul 2" },
+  { de: "der Probetag, -e", ru: "пробный рабочий день", cat: "Modul 2" },
+  { de: "der/die Praktikant/in", ru: "практикант / практикантка", cat: "Сотрудники" },
+  { de: "der Handwerksbetrieb, -e", ru: "ремесленное предприятие", cat: "Modul 2" },
+  { de: "sich auskennen mit + D.", ru: "разбираться в чём-либо", cat: "Modul 2" },
+  { de: "Verstärkung suchen", ru: "искать новых сотрудников в команду", cat: "Modul 2" },
+  { de: "sich bemühen um + A.", ru: "стараться, стремиться к чему-либо", cat: "Modul 2" },
+  // Modul 3
+  { de: "die Sonnenenergie", ru: "солнечная энергия", cat: "Modul 3" },
+  { de: "nachhaltig", ru: "устойчивый, экологичный, долгосрочный", cat: "Modul 3" },
+  { de: "die interne Fortbildung, -en", ru: "внутреннее повышение квалификации", cat: "Modul 3" },
+  { de: "die Abteilung, -en", ru: "отдел, подразделение", cat: "Места работы" },
+  { de: "die Personalabteilung, -en", ru: "отдел кадров", cat: "Modul 3" },
+  { de: "die Buchhaltung", ru: "бухгалтерия", cat: "Modul 3" },
+  { de: "die Niederlassung, -en", ru: "филиал, отделение", cat: "Modul 3" },
+  { de: "die Wochenendzulage, -n", ru: "надбавка за работу в выходные", cat: "Modul 3" },
+  { de: "die Arbeitszeiterfassung", ru: "учёт рабочего времени", cat: "Modul 3" },
+  { de: "die Überstunde, -n", ru: "сверхурочный час", cat: "Modul 3" },
+  { de: "die Minusstunde, -n", ru: "неотработанный час", cat: "Modul 3" },
+  { de: "die Gleitzeit", ru: "гибкий график работы", cat: "Modul 3" },
+  // Aufgaben
+  { de: "die Qualität sichern", ru: "обеспечивать качество", cat: "Обязанности" },
+  { de: "Anlagen warten", ru: "обслуживать оборудование", cat: "Обязанности" },
+  { de: "Teile montieren", ru: "монтировать, собирать детали", cat: "Обязанности" },
+  { de: "Produkte herstellen", ru: "производить продукцию", cat: "Обязанности" },
+  { de: "Waren verkaufen", ru: "продавать товары", cat: "Обязанности" },
+  { de: "Waren liefern", ru: "доставлять товары", cat: "Обязанности" },
+  { de: "Dinge reparieren", ru: "ремонтировать вещи", cat: "Обязанности" },
+  { de: "Lebensmittel lagern", ru: "хранить продукты питания", cat: "Обязанности" },
+  // Arbeitsorte
+  { de: "die Halle", ru: "цех, павильон, ангар", cat: "Места работы" },
+  { de: "das Labor", ru: "лаборатория", cat: "Места работы" },
+  { de: "das Lager", ru: "склад", cat: "Места работы" },
+  { de: "die Werkstatt", ru: "мастерская", cat: "Места работы" },
+  { de: "der Supermarkt", ru: "супермаркет", cat: "Места работы" },
+  // Personen
+  { de: "der/die Arbeitnehmende", ru: "работник / работница (наёмный рабочий)", cat: "Сотрудники" },
+  { de: "die Fachkraft", ru: "квалифицированный специалист", cat: "Сотрудники" },
+  { de: "die Aushilfe", ru: "временный помощник, подсобный рабочий", cat: "Сотрудники" },
+  { de: "der/die Angestellte", ru: "служащий / служащая", cat: "Сотрудники" },
+];
+
+let mode = 'flash';
+let deck = [];
+let cur = 0;
+let flipped = false;
+let scoreOk = 0, scoreErr = 0;
+let answered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getWrongOptions(correct, count = 3) {
+  const pool = VOCAB.filter(v => v.ru !== correct.ru);
+  return shuffle(pool).slice(0, count).map(v => v.ru);
+}
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['flash','quiz','write','glossary'][i] === m);
+  });
+  resetSession();
+}
+
+function resetSession() {
+  deck = shuffle(VOCAB);
+  cur = 0; flipped = false; scoreOk = 0; scoreErr = 0; answered = false;
+  updateScore();
+  renderCurrent();
+}
+
+function updateProgress() {
+  const pct = deck.length ? (cur / deck.length) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = mode !== 'glossary'
+    ? `${cur} / ${deck.length}` : '';
+  document.getElementById('progressWrap').style.display = mode === 'glossary' ? 'none' : '';
+}
+
+function updateScore() {
+  document.getElementById('scoreOk').textContent = '✓ ' + scoreOk;
+  document.getElementById('scoreErr').textContent = '✗ ' + scoreErr;
+  updateProgress();
+}
+
+function renderCurrent() {
+  updateProgress();
+  const main = document.getElementById('main');
+
+  if (mode === 'glossary') {
+    renderGlossary();
+    return;
+  }
+
+  if (cur >= deck.length) {
+    renderDone();
+    return;
+  }
+
+  const word = deck[cur];
+
+  if (mode === 'flash') renderFlash(word, main);
+  else if (mode === 'quiz') renderQuiz(word, main);
+  else if (mode === 'write') renderWrite(word, main);
+}
+
+function renderFlash(word, main) {
+  flipped = false;
+  answered = false;
+  main.innerHTML = `
+    <div class="flashcard-wrap" onclick="flipCard()" id="fcWrap">
+      <div class="flashcard" id="fc">
+        <div class="card-face front">
+          <div class="card-label">Немецкий</div>
+          <div class="card-word">${word.de}</div>
+          <div class="card-hint">${word.cat}</div>
+        </div>
+        <div class="card-face back">
+          <div class="card-label">Перевод</div>
+          <div class="card-translation">${word.ru}</div>
+        </div>
+      </div>
+    </div>
+    <p class="tap-hint">Нажми на карточку, чтобы увидеть перевод</p>
+    <div class="flash-btns" id="flashBtns" style="display:none">
+      <button class="flash-btn forgot" onclick="markCard(false)">Не знал</button>
+      <button class="flash-btn knew" onclick="markCard(true)">Знал ✓</button>
+    </div>
+  `;
+}
+
+function flipCard() {
+  if (answered) return;
+  flipped = !flipped;
+  document.getElementById('fc').classList.toggle('flipped', flipped);
+  if (flipped) {
+    document.getElementById('flashBtns').style.display = 'flex';
+    document.querySelector('.tap-hint').textContent = 'Ты знал это слово?';
+  }
+}
+
+function markCard(knew) {
+  answered = true;
+  if (knew) scoreOk++; else scoreErr++;
+  cur++;
+  updateScore();
+  setTimeout(renderCurrent, 200);
+}
+
+function renderQuiz(word, main) {
+  const wrongs = getWrongOptions(word);
+  const opts = shuffle([word.ru, ...wrongs]);
+  answered = false;
+
+  main.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-q-label">Выбери перевод</div>
+      <div class="quiz-question">${word.de}</div>
+      <div class="quiz-options">
+        ${opts.map(o => `<button class="quiz-opt" onclick="checkQuiz(this,'${o.replace(/'/g,"\\'")}','${word.ru.replace(/'/g,"\\'")}',event)">${o}</button>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function checkQuiz(btn, chosen, correct, e) {
+  if (answered) return;
+  answered = true;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(b => {
+    b.disabled = true;
+    if (b.textContent.trim() === correct) b.classList.add('correct');
+  });
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    scoreOk++;
+  } else {
+    btn.classList.add('wrong');
+    scoreErr++;
+  }
+  updateScore();
+  setTimeout(() => { cur++; renderCurrent(); }, 1100);
+}
+
+function renderWrite(word, main) {
+  answered = false;
+  // DE → RU direction
+  main.innerHTML = `
+    <div class="write-card">
+      <div class="quiz-q-label">Напиши перевод</div>
+      <div class="write-prompt">${word.de}</div>
+      <div class="write-sublabel">Введи перевод на русском</div>
+      <div class="write-input-wrap">
+        <input class="write-input" id="wInput" placeholder="перевод..." autocomplete="off" onkeydown="if(event.key==='Enter')checkWrite()">
+        <button class="write-submit" onclick="checkWrite()">Проверить</button>
+      </div>
+      <div class="write-feedback" id="wFeedback"></div>
+    </div>
+  `;
+  document.getElementById('wInput').focus();
+
+  window._writeCorrect = word.ru;
+  window._writeAlt = word.de;
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function checkWrite() {
+  if (answered) { cur++; updateScore(); renderCurrent(); return; }
+  const inp = document.getElementById('wInput');
+  const fb = document.getElementById('wFeedback');
+  const val = inp.value.trim();
+  if (!val) return;
+
+  const correct = window._writeCorrect;
+  // flexible match: any key word from the correct answer in user answer
+  const normVal = normalize(val);
+  const normCorrect = normalize(correct);
+  const words = normCorrect.split(/[\s,\/]+/).filter(w => w.length > 3);
+  const isOk = normVal === normCorrect || words.some(w => normVal.includes(w));
+
+  answered = true;
+  if (isOk) {
+    inp.classList.add('ok');
+    fb.className = 'write-feedback ok';
+    fb.textContent = '✓ Верно! ' + (normVal !== normCorrect ? `(полный: ${correct})` : '');
+    scoreOk++;
+  } else {
+    inp.classList.add('err');
+    fb.className = 'write-feedback err';
+    fb.textContent = `✗ Правильно: ${correct}`;
+    scoreErr++;
+  }
+  updateScore();
+  document.querySelector('.write-submit').textContent = 'Далее →';
+}
+
+function renderGlossary() {
+  const cats = {};
+  VOCAB.forEach(v => {
+    if (!cats[v.cat]) cats[v.cat] = [];
+    cats[v.cat].push(v);
+  });
+
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <input class="glossary-search" id="gSearch" placeholder="Поиск слова..." oninput="filterGlossary(this.value)">
+    <div id="gList">
+      ${Object.entries(cats).map(([cat, words]) => `
+        <div class="glossary-section">
+          <div class="glossary-section-title">${cat}</div>
+          ${words.map(w => `
+            <div class="glossary-item">
+              <div class="glo-de">${w.de}</div>
+              <div class="glo-ru">${w.ru}</div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('gSearch').focus();
+}
+
+function filterGlossary(q) {
+  const nq = q.toLowerCase();
+  document.querySelectorAll('.glossary-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(nq) ? '' : 'none';
+  });
+  document.querySelectorAll('.glossary-section').forEach(sec => {
+    const visible = [...sec.querySelectorAll('.glossary-item')].some(i => i.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+}
+
+function renderDone() {
+  const main = document.getElementById('main');
+  const total = scoreOk + scoreErr;
+  const pct = total ? Math.round(scoreOk / total * 100) : 0;
+  main.innerHTML = `
+    <div class="done-screen">
+      <h2>Готово! 🎉</h2>
+      <p>Правильно: ${scoreOk} из ${total} (${pct}%)</p>
+      <button class="restart-btn" onclick="resetSession()">Начать заново</button>
+    </div>
+  `;
+}
+
+// init
+resetSession();
+</script>
+</body>
+</html>
