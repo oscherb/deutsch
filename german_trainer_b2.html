@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch Trainer — Arbeit & Beruf</title>
+<style>
+  :root{--bg:#0f1117;--surface:#181c27;--border:#252a38;--accent:#5b8fff;--as:rgba(91,143,255,0.12);--ag:rgba(91,143,255,0.3);--green:#3ecf8e;--gs:rgba(62,207,142,0.12);--red:#f26f6f;--rs:rgba(242,111,111,0.12);--text:#e8eaf2;--muted:#6b7280;--card:#1a1f2e;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+  header{width:100%;max-width:760px;padding:28px 20px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-weight:700;font-size:1.7rem;letter-spacing:-0.01em}
+  .tag{font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--as);border:1px solid var(--ag);border-radius:4px;padding:3px 9px}
+  .stats{margin-left:auto;font-size:.8rem;color:var(--muted);font-weight:500}
+  .mode-bar{width:100%;max-width:760px;padding:14px 20px 0;display:flex;gap:8px;flex-wrap:wrap}
+  .mode-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:.82rem;font-weight:500;padding:7px 18px;border-radius:8px;cursor:pointer;transition:all .18s}
+  .mode-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .mode-btn.active{background:var(--as);border-color:var(--accent);color:var(--accent)}
+  .prog-wrap{width:100%;max-width:760px;padding:14px 20px 0;display:flex;align-items:center;gap:14px}
+  .prog-bar{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+  .prog-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .35s ease}
+  .prog-label{font-size:.76rem;color:var(--muted);white-space:nowrap}
+  .score{display:flex;gap:12px;font-size:.78rem;font-weight:600}
+  .s-ok{color:var(--green)} .s-err{color:var(--red)}
+  .main{width:100%;max-width:760px;padding:22px 20px 60px;flex:1}
+
+  /* FLASHCARD */
+  .fc-wrap{perspective:1200px;cursor:pointer;user-select:none;margin-bottom:18px}
+  .fc{position:relative;width:100%;min-height:210px;transform-style:preserve-3d;transition:transform .48s cubic-bezier(.4,0,.2,1)}
+  .fc.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;background:var(--card);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:32px 28px;min-height:210px}
+  .face.back{transform:rotateY(180deg);background:var(--surface);border-color:var(--ag)}
+  .face-lbl{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .face-word{font-weight:700;font-size:2rem;text-align:center;line-height:1.2;letter-spacing:-.01em}
+  .face-cat{font-size:.78rem;color:var(--accent);margin-top:2px}
+  .face-tr{font-size:1.05rem;text-align:center;line-height:1.5;color:var(--text);margin-top:4px}
+  .tap-hint{font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:14px}
+  .fbbtns{display:flex;gap:12px;justify-content:center}
+  .fbbtn{font-family:var(--font);font-size:.85rem;font-weight:600;padding:10px 28px;border-radius:10px;border:none;cursor:pointer;transition:all .18s}
+  .fbbtn.knew{background:var(--gs);color:var(--green);border:1px solid rgba(62,207,142,.3)}
+  .fbbtn.knew:hover{background:rgba(62,207,142,.22)}
+  .fbbtn.forgot{background:var(--rs);color:var(--red);border:1px solid rgba(242,111,111,.3)}
+  .fbbtn.forgot:hover{background:rgba(242,111,111,.22)}
+
+  /* QUIZ */
+  .qcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 28px 28px;margin-bottom:18px}
+  .qlbl{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .qword{font-weight:700;font-size:1.9rem;letter-spacing:-.01em;margin-bottom:24px;line-height:1.2}
+  .qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .qopt{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:.86rem;font-weight:500;padding:13px 15px;border-radius:10px;cursor:pointer;text-align:left;transition:all .16s;line-height:1.4}
+  .qopt:hover:not([disabled]){border-color:var(--accent);background:var(--as)}
+  .qopt.correct{border-color:var(--green)!important;background:var(--gs)!important;color:var(--green)!important}
+  .qopt.wrong{border-color:var(--red)!important;background:var(--rs)!important;color:var(--red)!important}
+
+  /* GLOSSARY */
+  .gsearch{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:.95rem;padding:11px 15px;border-radius:10px;width:100%;outline:none;margin-bottom:16px;transition:border-color .18s}
+  .gsearch:focus{border-color:var(--accent)}
+  .gsec{margin-bottom:26px}
+  .gsec-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  .gitem{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:baseline;flex-wrap:wrap}
+  .gitem:last-child{border-bottom:none}
+  .g-de{font-weight:600;font-size:1rem;color:var(--text);min-width:220px;flex-shrink:0}
+  .g-ru{font-size:.84rem;color:var(--muted);line-height:1.4}
+
+  /* DONE */
+  .done{text-align:center;padding:60px 0}
+  .done h2{font-weight:700;font-size:2.2rem;margin-bottom:10px}
+  .done p{color:var(--muted);margin-bottom:26px;font-size:1rem}
+  .restart{background:var(--as);border:1px solid var(--ag);color:var(--accent);font-family:var(--font);font-size:.9rem;font-weight:600;padding:11px 28px;border-radius:10px;cursor:pointer;transition:all .18s}
+  .restart:hover{background:rgba(91,143,255,.22)}
+
+  @media(max-width:520px){.qopts{grid-template-columns:1fr}.face-word{font-size:1.6rem}.qword{font-size:1.5rem}.g-de{min-width:0;width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Deutsch Trainer</h1>
+  <span class="tag">Arbeit &amp; Beruf</span>
+  <span class="stats" id="stats"></span>
+</header>
+<div class="mode-bar">
+  <button class="mode-btn active" onclick="setMode('flash')">📇 Карточки</button>
+  <button class="mode-btn" onclick="setMode('quiz')">🎯 Тест</button>
+  <button class="mode-btn" onclick="setMode('glossary')">📖 Словарь</button>
+</div>
+<div class="prog-wrap" id="progWrap">
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  <span class="prog-label" id="progLabel"></span>
+  <div class="score"><span class="s-ok" id="sOk">✓ 0</span><span class="s-err" id="sErr">✗ 0</span></div>
+</div>
+<div class="main" id="main"></div>
+
+<script>
+const VOCAB = [
+  {de:"abbauen",ru:"разбирать, демонтировать (также: снижать, сокращать)",cat:"Глаголы и выражения"},
+  {de:"anbieten (bietet an, bot an, hat angeboten)",ru:"предлагать",cat:"Глаголы и выражения"},
+  {de:"annehmen (nimmt an, nahm an, hat angenommen)",ru:"принимать, брать (например, посылку или товар)",cat:"Глаголы и выражения"},
+  {de:"anscheinend",ru:"по-видимому, кажется, очевидно",cat:"Глаголы и выражения"},
+  {de:"anspruchsvoll",ru:"требовательный, взыскательный",cat:"Глаголы и выражения"},
+  {de:"aufbauen",ru:"монтаж, сборка, структура",cat:"Глаголы и выражения"},
+  {de:"aufheben (hebt auf, hob auf, hat aufgehoben)",ru:"сохранять, сберегать (например, чеки)",cat:"Глаголы и выражения"},
+  {de:"aufwachsen (wächst auf, wuchs auf, ist aufgewachsen)",ru:"вырастать, расти",cat:"Глаголы и выражения"},
+  {de:"aufwendig",ru:"трудоемкий, затратный, требующий больших усилий/расходов",cat:"Глаголы и выражения"},
+  {de:"aushilfsweise",ru:"временно (в качестве подработки / помощи)",cat:"Глаголы и выражения"},
+  {de:"ausstellen",ru:"выдавать, выписывать (документ, справку)",cat:"Глаголы и выражения"},
+  {de:"ausverkauft",ru:"распродано",cat:"Глаголы и выражения"},
+  {de:"bedauerlich",ru:"прискорбный, досадный, достойный сожаления",cat:"Глаголы и выражения"},
+  {de:"befristet",ru:"ограниченный сроком, временный",cat:"Глаголы и выражения"},
+  {de:"beifügen",ru:"прилагать, прикреплять (к письму, документу)",cat:"Глаголы и выражения"},
+  {de:"begrenzt",ru:"ограниченный",cat:"Глаголы и выражения"},
+  {de:"bereitstehen (steht bereit, stand bereit, ist bereitgestanden)",ru:"быть наготове, стоять наготове (быть доступным)",cat:"Глаголы и выражения"},
+  {de:"breit",ru:"широкий",cat:"Глаголы и выражения"},
+  {de:"chemisch",ru:"химический",cat:"Глаголы и выражения"},
+  {de:"das Angebot, -e",ru:"предложение (коммерческое), оффер",cat:"Существительные"},
+  {de:"das Berufsfeld, -er",ru:"сфера деятельности / проф. область",cat:"Существительные"},
+  {de:"das Blueboard / Whiteboard, -s",ru:"маркерная доска",cat:"Существительные"},
+  {de:"das Design, -s",ru:"дизайн",cat:"Существительные"},
+  {de:"das Detail, -s",ru:"деталь, подробность",cat:"Существительные"},
+  {de:"das Diensthandy, -s",ru:"служебный / рабочий мобильный телефон",cat:"Существительные"},
+  {de:"das Einfühlungsvermögen",ru:"чуткость, способность к сопереживанию",cat:"Существительные"},
+  {de:"das Fließband, ⸚er",ru:"конвейер",cat:"Существительные"},
+  {de:"das Gehalt, ⸚er",ru:"оклад, зарплата (служащего)",cat:"Существительные"},
+  {de:"das Großraumbüro, -s",ru:"офис открытого типа (большое рабочее помещение)",cat:"Существительные"},
+  {de:"das Kalenderjahr, -e",ru:"календарный год",cat:"Существительные"},
+  {de:"das Klebeband, ⸚er",ru:"скотч, клейкая лента",cat:"Существительные"},
+  {de:"das Konzept, -e",ru:"концепция, план, черновик",cat:"Существительные"},
+  {de:"das Labor",ru:"лаборатория",cat:"Существительные"},
+  {de:"das Lager, -",ru:"склад",cat:"Существительные"},
+  {de:"das Material, -ien",ru:"материал",cat:"Существительные"},
+  {de:"das Sonderangebot, -e",ru:"специальное предложение (акция)",cat:"Существительные"},
+  {de:"das Talent, -e",ru:"талант, способность",cat:"Существительные"},
+  {de:"das Teig, -e",ru:"тесто",cat:"Существительные"},
+  {de:"das Verständnis",ru:"понимание",cat:"Существительные"},
+  {de:"der Anbieter, -",ru:"провайдер, поставщик услуг, продавец",cat:"Существительные"},
+  {de:"der Antrittstermin, -e",ru:"дата начала работы (вступления в должность)",cat:"Существительные"},
+  {de:"der Aufbau, -ten",ru:"монтаж, сборка, структура",cat:"Существительные"},
+  {de:"der Aushilfsjob, -s",ru:"подработка, временная работа",cat:"Существительные"},
+  {de:"der Bedarf, -e",ru:"потребность, нужда",cat:"Существительные"},
+  {de:"der Beleg, -e",ru:"квитанция, чек, подтверждающий документ",cat:"Существительные"},
+  {de:"der berufliche Werdegang, ⸚e",ru:"профессиональный путь, карьера",cat:"Существительные"},
+  {de:"der Bestellschein, -e",ru:"бланк заказа",cat:"Существительные"},
+  {de:"der Einrichtungsgegenstand, ⸚e",ru:"предмет интерьера / обстановки",cat:"Существительные"},
+  {de:"der Fragebogen, ⸚",ru:"анкета, опросный лист",cat:"Существительные"},
+  {de:"der Führerschein, -e",ru:"водительские права",cat:"Существительные"},
+  {de:"der Handwerksbetrieb, -e",ru:"ремесленное (производственное) предприятие",cat:"Существительные"},
+  {de:"der Job, -s",ru:"работа, подработка",cat:"Существительные"},
+  {de:"der Jobwechsel, -",ru:"смена работы",cat:"Существительные"},
+  {de:"der Kassenbon, -s",ru:"кассовый чек",cat:"Существительные"},
+  {de:"der Kassenzettel, -",ru:"кассовый чек",cat:"Существительные"},
+  {de:"der Krankheitsfall, ⸚e",ru:"случай заболевания, болезнь",cat:"Существительные"},
+  {de:"der Krankenschein, -e",ru:"больничный лист, справка о нетрудоспособности",cat:"Существительные"},
+  {de:"der Krieg, -e",ru:"война",cat:"Существительные"},
+  {de:"der Kugelschreiber, - / der Kuli, -s",ru:"шариковая ручка",cat:"Существительные"},
+  {de:"der Lieferschein, -e",ru:"товарно-транспортная накладная",cat:"Существительные"},
+  {de:"der Locher, -",ru:"дырокол",cat:"Существительные"},
+  {de:"der Mangel, ⸚",ru:"недостаток, дефект, нехватка",cat:"Существительные"},
+  {de:"der Minijob, -s",ru:"мини-работа",cat:"Существительные"},
+  {de:"der Mülleimer, -",ru:"мусорное ведро",cat:"Существительные"},
+  {de:"der Nachweis, -e",ru:"подтверждение, доказательство, справка",cat:"Существительные"},
+  {de:"der Neustart, -s",ru:"новый старт / перезапуск",cat:"Существительные"},
+  {de:"der Probetag, -e",ru:"пробный рабочий день",cat:"Существительные"},
+  {de:"der Quereinstieg, -e",ru:"переход в новую проф. без спец. образования",cat:"Существительные"},
+  {de:"der Rabatt, -e",ru:"скидка",cat:"Существительные"},
+  {de:"der Supermarkt",ru:"супермаркет",cat:"Существительные"},
+  {de:"der Umsatz, ⸚e",ru:"оборот (товарооборот, выручка)",cat:"Существительные"},
+  {de:"der Vorrat, ⸚e",ru:"запас, складские запасы",cat:"Существительные"},
+  {de:"der Workshop, -s",ru:"воркшоп, мастер-класс, практический семинар",cat:"Существительные"},
+  {de:"der Zusammenhang, ⸚e",ru:"связь, взаимосвязь, контекст",cat:"Существительные"},
+  {de:"der/die Angehörige, -n",ru:"родственник / родственница, близкий",cat:"Существительные"},
+  {de:"der/die Angestellte",ru:"служащий / служащая",cat:"Существительные"},
+  {de:"der/die Ansprechpartner/in, -/-nen",ru:"контактное лицо, представитель для связи",cat:"Существительные"},
+  {de:"der/die Arbeitnehmende",ru:"работник / работница (наемный рабочий)",cat:"Существительные"},
+  {de:"der/die Lieferant/in, -en/-nen",ru:"поставщик / поставщица",cat:"Существительные"},
+  {de:"der/die Praktikant/in, -en/-nen",ru:"практикант / практикантка",cat:"Существительные"},
+  {de:"der/die Vorgesetzte, -n",ru:"начальник / начальница",cat:"Существительные"},
+  {de:"derzeit",ru:"в настоящее время, сейчас",cat:"Глаголы и выражения"},
+  {de:"die Abteilung, -en",ru:"отдел, подразделение",cat:"Существительные"},
+  {de:"die Alternative, -n",ru:"альтернатива, другой вариант",cat:"Существительные"},
+  {de:"die Anfahrt, -en",ru:"подъезд, дорога (путь к месту)",cat:"Существительные"},
+  {de:"die Anfrage, -n",ru:"запрос (официальный), заявка",cat:"Существительные"},
+  {de:"die Anlage, -n",ru:"оборудование, установка / приложение",cat:"Существительные"},
+  {de:"die Arbeitskraft, ⸚e",ru:"рабочая сила, работник",cat:"Существительные"},
+  {de:"die Arbeitszeiterfassung, -en",ru:"учет рабочего времени",cat:"Существительные"},
+  {de:"die Ausfertigung, -en",ru:"оформление, составление (документа); экземпляр, копия",cat:"Существительные"},
+  {de:"die Ausfüllung / die Aushilfe, -n",ru:"временный помощник, подсобный рабочий",cat:"Существительные"},
+  {de:"die Backware, -n",ru:"хлебобулочное изделие, выпечка",cat:"Существительные"},
+  {de:"die Beilage / die Bestellung, -en",ru:"заказ",cat:"Существительные"},
+  {de:"die Bescheinigung, -en",ru:"удостоверение, справка, свидетельство",cat:"Существительные"},
+  {de:"die Beschwerde, -n",ru:"жалоба",cat:"Существительные"},
+  {de:"die Bewertung, -en",ru:"оценка, отзыв",cat:"Существительные"},
+  {de:"die Buchhaltung, -en",ru:"бухгалтерия",cat:"Существительные"},
+  {de:"die Büroklammer, -n",ru:"скрепка для бумаги",cat:"Существительные"},
+  {de:"die Dienstleistung, -en",ru:"услуга",cat:"Существительные"},
+  {de:"die Dienstreise, -n",ru:"командировка",cat:"Существительные"},
+  {de:"die Digitalisierung",ru:"цифровизация, диджитализация",cat:"Существительные"},
+  {de:"die Einarbeitung",ru:"введение в работу, ознакомление с обязанностями",cat:"Существительные"},
+  {de:"die Elektronikbranche, -n",ru:"сфера электроники, электронная отрасль",cat:"Существительные"},
+  {de:"die Empathie",ru:"эмпатия",cat:"Существительные"},
+  {de:"die Entschädigung, -en",ru:"компенсация, возмещение ущерба",cat:"Существительные"},
+  {de:"die Fachkraft",ru:"квалифицированный специалист",cat:"Существительные"},
+  {de:"die Fahrtkosten (Pl.)",ru:"транспортные расходы (расходы на проезд)",cat:"Существительные"},
+  {de:"die Filiale, -n",ru:"филиал, отделение",cat:"Существительные"},
+  {de:"die Garderobe, -n",ru:"гардероб, раздевалка",cat:"Существительные"},
+  {de:"die Gestaltung, -en",ru:"оформление, дизайн, организация",cat:"Существительные"},
+  {de:"die Gleitzeit",ru:"гибкий график работы",cat:"Существительные"},
+  {de:"die Gutschrift, -en",ru:"зачисление на счет (кредит-нота), бонусный купон в счет возврата",cat:"Существительные"},
+  {de:"die Halle",ru:"цех, павильон, ангар",cat:"Существительные"},
+  {de:"die Herausforderung, -en",ru:"вызов, сложная задача",cat:"Существительные"},
+  {de:"die Hektik",ru:"суета, спешка",cat:"Существительные"},
+  {de:"die Hygiene",ru:"гигиена",cat:"Существительные"},
+  {de:"die Installation, -en",ru:"установка, инсталляция (оборудования/ПО)",cat:"Существительные"},
+  {de:"die interne Fortbildung, -en",ru:"внутреннее повышение квалификации",cat:"Существительные"},
+  {de:"die Karrierechance, -n",ru:"шанс на карьерный рост, карьерная возможность",cat:"Существительные"},
+  {de:"die Kita, -s",ru:"детский сад",cat:"Существительные"},
+  {de:"die Krankmeldung, -en",ru:"уведомление о болезни (документ)",cat:"Существительные"},
+  {de:"die Kritik",ru:"критика",cat:"Существительные"},
+  {de:"die Kundennummer, -n",ru:"номер клиента",cat:"Существительные"},
+  {de:"die Langeweile",ru:"скука",cat:"Существительные"},
+  {de:"die Lieferung, -en",ru:"поставка, доставка",cat:"Существительные"},
+  {de:"die Logistikbranche, -n",ru:"сфера логистики, логистическая отрасль",cat:"Существительные"},
+  {de:"die Maschinenbaubranche, -n",ru:"сфера машиностроения, машиностроительная отрасль",cat:"Существительные"},
+  {de:"die Mehrwertsteuer (MwSt.)",ru:"налог на добавленную стоимость (НДС)",cat:"Существительные"},
+  {de:"die Minusstunde, -n",ru:"неотработанный час (дефицит рабочего времени)",cat:"Существительные"},
+  {de:"die Niederlassung, -en",ru:"филиал, отделение",cat:"Существительные"},
+  {de:"die Packung, -en",ru:"пачка, упаковка",cat:"Существительные"},
+  {de:"die Personalabteilung, -en",ru:"отдел кадров",cat:"Существительные"},
+  {de:"die Pinnwand, ⸚e",ru:"пробковая доска (для объявлений/заметок)",cat:"Существительные"},
+  {de:"die Preisliste, -n",ru:"прайс-лист",cat:"Существительные"},
+  {de:"die Qualitätssicherung, -en",ru:"обеспечение качества, контроль качества",cat:"Существительные"},
+  {de:"die Quittung, -en",ru:"квитанция, расписка",cat:"Существительные"},
+  {de:"die Registrierung, -en",ru:"регистрация",cat:"Существительные"},
+  {de:"die Reinigung, -en",ru:"чистка, уборка, химчистка",cat:"Существительные"},
+  {de:"die Rezeptur, -en",ru:"рецептура, рецепт (изготовления)",cat:"Существительные"},
+  {de:"die Routine, -n",ru:"рутина, повседневный навык",cat:"Существительные"},
+  {de:"die Rückmeldung, -en",ru:"обратная связь, ответ",cat:"Существительные"},
+  {de:"die Schicht, -en",ru:"смена (на работе)",cat:"Существительные"},
+  {de:"die Schichtarbeit, -en",ru:"сменная работа",cat:"Существительные"},
+  {de:"die Schreibwaren (Pl.)",ru:"канцелярские товары (канцелярия)",cat:"Существительные"},
+  {de:"die Sonnenenergie",ru:"солнечная энергия",cat:"Существительные"},
+  {de:"die Spedition, -en",ru:"транспортно-экспедиторская компания (логистика)",cat:"Существительные"},
+  {de:"die Textilie, -n",ru:"текстильное изделие, текстиль",cat:"Существительные"},
+  {de:"die überstunde, -n",ru:"сверхурочный час (работа во внеурочное время)",cat:"Существительные"},
+  {de:"die Umgebung, -en",ru:"окружение, обстановка / окрестности",cat:"Существительные"},
+  {de:"die Unannehmlichkeit, -en",ru:"неприятность, неудобство",cat:"Существительные"},
+  {de:"die Verfügbarkeit",ru:"доступность, наличие",cat:"Существительные"},
+  {de:"die Vertretung, -en",ru:"замещение (коллеги), временное исполнение обязанностей",cat:"Существительные"},
+  {de:"die Voraussetzung, -en",ru:"условие, требование, предпосылка",cat:"Существительные"},
+  {de:"die Vorschrift, -en",ru:"предписание, инструкция, правило",cat:"Существительные"},
+  {de:"die Ware, -n",ru:"товар",cat:"Существительные"},
+  {de:"die Werkstatt",ru:"мастерская",cat:"Существительные"},
+  {de:"die Wochenendzulage, -n",ru:"надбавка за работу в выходные дни",cat:"Существительные"},
+  {de:"die Zeitarbeit",ru:"временная работа (через агентство занятости)",cat:"Существительные"},
+  {de:"dringend",ru:"срочно, неотложно",cat:"Глаголы и выражения"},
+  {de:"einfallsreich",ru:"находчивый, изобретательный",cat:"Глаголы и выражения"},
+  {de:"ein großes Herz haben für + A.",ru:"иметь доброе/большое сердце для...",cat:"Глаголы и выражения"},
+  {de:"ein Praktikum machen",ru:"проходить практику / стажировку",cat:"Глаголы и выражения"},
+  {de:"einsortieren",ru:"сортировать, раскладывать по местам",cat:"Глаголы и выражения"},
+  {de:"einen Account anlegen",ru:"создать учетную запись (аккаунт)",cat:"Глаголы и выражения"},
+  {de:"eine Ausbildung abschlie⸚en",ru:"окончить профессиональное обучение",cat:"Глаголы и выражения"},
+  {de:"eine Ausbildung machen zu + D.",ru:"получать проф. образование по специальности...",cat:"Глаголы и выражения"},
+  {de:"eine Bestellung aufgeben (gibt auf, gab auf, hat aufgegeben)",ru:"сделать / оформить заказ",cat:"Глаголы и выражения"},
+  {de:"eine Bestellung aufnehmen (nimmt auf, nahm auf, hat aufgenommen)",ru:"принять заказ",cat:"Глаголы и выражения"},
+  {de:"eine Entscheidung treffen (trifft, traf, hat getroffen)",ru:"принимать решение",cat:"Глаголы и выражения"},
+  {de:"eine Prüfung bestehen",ru:"сдать экзамен",cat:"Глаголы и выражения"},
+  {de:"ein Ziel erreichen",ru:"достигать цели",cat:"Глаголы и выражения"},
+  {de:"entgegennehmen (nimmt entgegen, nahm entgegen, hat entgegengenommen)",ru:"принимать, получать (официально, из рук в руки)",cat:"Глаголы и выражения"},
+  {de:"entwickeln",ru:"развивать, разрабатывать",cat:"Глаголы и выражения"},
+  {de:"erledigen",ru:"выполнять, доводить до конца (задачу, дело)",cat:"Глаголы и выражения"},
+  {de:"erfolgreich",ru:"успешный",cat:"Глаголы и выражения"},
+  {de:"erstellen",ru:"составлять, создавать, разрабатывать",cat:"Глаголы и выражения"},
+  {de:"ernst nehmen (nimmt ernst, nahm ernst, hat ernst genommen)",ru:"принимать всерьез",cat:"Глаголы и выражения"},
+  {de:"etw. erstattet bekommen (bekommt, bekam, hat bekommen)",ru:"получить возмещение / компенсацию за что-либо",cat:"Глаголы и выражения"},
+  {de:"etw. gesetzlich regeln",ru:"регулировать что-либо на законодательном уровне",cat:"Глаголы и выражения"},
+  {de:"jdm. etw. ersparen",ru:"избавлять кого-либо от чего-либо (от лишних хлопот)",cat:"Глаголы и выражения"},
+  {de:"fällig",ru:"подлежащий оплате / исполнению в срок (срочный)",cat:"Глаголы и выражения"},
+  {de:"frühestmöglich",ru:"как можно скорее, в ближайшие сроки",cat:"Глаголы и выражения"},
+  {de:"führen zu + D.",ru:"приводить к (чему-либо)",cat:"Глаголы и выражения"},
+  {de:"gepflegt",ru:"ухоженный, опрятный",cat:"Глаголы и выражения"},
+  {de:"halbtags arbeiten",ru:"работать на полставки (полдня)",cat:"Глаголы и выражения"},
+  {de:"hauptsächlich",ru:"главным образом, в основном",cat:"Глаголы и выражения"},
+  {de:"hinweisen auf + A. (weist hin, wies hin, hat hingewiesen)",ru:"указывать, обращать внимание на что-либо",cat:"Глаголы и выражения"},
+  {de:"im selben Jahr",ru:"в том же году",cat:"Глаголы и выражения"},
+  {de:"in der Lage sein zu + D. (ist, war, ist gewesen)",ru:"быть в состоянии (сделать что-либо)",cat:"Глаголы и выражения"},
+  {de:"individuell",ru:"индивидуальный",cat:"Глаголы и выражения"},
+  {de:"innovativ",ru:"инновационный",cat:"Глаголы и выражения"},
+  {de:"jederzeit",ru:"в любое время",cat:"Глаголы и выражения"},
+  {de:"kassieren",ru:"принимать деньги (в кассу), рассчитывать покупателей",cat:"Глаголы и выражения"},
+  {de:"kommunizieren mit + D.",ru:"общаться / коммуницировать с...",cat:"Глаголы и выражения"},
+  {de:"kompetent",ru:"компетентный",cat:"Глаголы и выражения"},
+  {de:"konzentriert",ru:"сосредоточенный",cat:"Глаголы и выражения"},
+  {de:"krankschreiben (schreibt krank, schrieb krank, hat krankgeschrieben)",ru:"выписывать больничный, освобождать от работы по болезни",cat:"Глаголы и выражения"},
+  {de:"lieferbar",ru:"доступный для поставки (в наличии для заказа)",cat:"Глаголы и выражения"},
+  {de:"mit den Händen arbeiten",ru:"работать руками",cat:"Глаголы и выражения"},
+  {de:"montieren",ru:"монтировать, собирать (оборудование, детали)",cat:"Глаголы и выражения"},
+  {de:"motiviert",ru:"мотивированный",cat:"Глаголы и выражения"},
+  {de:"nach langem Überlegen",ru:"после долгих размышлений",cat:"Глаголы и выражения"},
+  {de:"nachhaltig",ru:"устойчивый, экологичный, долгосрочный",cat:"Глаголы и выражения"},
+  {de:"parallel",ru:"параллельно, одновременно",cat:"Глаголы и выражения"},
+  {de:"pflegen",ru:"ухаживать, заботиться",cat:"Глаголы и выражения"},
+  {de:"pharmazeutisch",ru:"фармацевтический",cat:"Глаголы и выражения"},
+  {de:"praxisorientiert",ru:"ориентированный на практику, практический",cat:"Глаголы и выражения"},
+  {de:"präzise",ru:"точный, аккуратный",cat:"Глаголы и выражения"},
+  {de:"quittieren",ru:"подтверждать распиской (или подписью), квитировать",cat:"Глаголы и выражения"},
+  {de:"reinschnuppern in + A.",ru:"присмотреться к чему-то (попробовать себя в какой-то сфере)",cat:"Глаголы и выражения"},
+  {de:"reklamieren",ru:"предъявлять претензию (рекламацию), жаловаться на качество товара",cat:"Глаголы и выражения"},
+  {de:"rückwirkend",ru:"имеющий обратную силу, задним числом",cat:"Глаголы и выражения"},
+  {de:"schmal",ru:"узкий",cat:"Глаголы и выражения"},
+  {de:"schwerfallen (fällt schwer, fiel schwer, ist schwergefallen)",ru:"даваться с трудом, тяжело даваться",cat:"Глаголы и выражения"},
+  {de:"seinen Meister machen",ru:"получить квалификацию мастера",cat:"Глаголы и выражения"},
+  {de:"selbstverständlich",ru:"разумеется, само собой разумеющийся",cat:"Глаголы и выражения"},
+  {de:"sich auskennen mit + D. (kennt sich aus, kannte sich aus, hat sich ausgekannt)",ru:"хорошо разбираться в чём-либо",cat:"Глаголы и выражения"},
+  {de:"sich bemühen um + A.",ru:"стараться, стремиться к чему-либо / заботиться о чём-либо",cat:"Глаголы и выражения"},
+  {de:"sich bewerben (bewirbt, bewarb, hat beworben)",ru:"подавать заявление о приеме на работу",cat:"Глаголы и выражения"},
+  {de:"sich etw. räumlich vorstellen",ru:"пространственно представлять что-либо",cat:"Глаголы и выражения"},
+  {de:"sich herausstellen",ru:"выясняться, оказываться",cat:"Глаголы и выражения"},
+  {de:"sich interessieren für + A.",ru:"интересоваться чем-либо",cat:"Глаголы и выражения"},
+  {de:"sich registrieren bei + D.",ru:"регистрироваться где-либо / в какой-либо системе",cat:"Глаголы и выражения"},
+  {de:"sich richten an + A.",ru:"адресоваться кому-то, направляться на...",cat:"Глаголы и выражения"},
+  {de:"sich wenden an + A. (wendet sich an, wandte sich an, hat sich angewandt)",ru:"обращаться к (кому-либо)",cat:"Глаголы и выражения"},
+  {de:"strukturieren",ru:"структурировать",cat:"Глаголы и выражения"},
+  {de:"teamfähig",ru:"способный работать в команде",cat:"Глаголы и выражения"},
+  {de:"tätig als + N.",ru:"работать / быть занятым в качестве...",cat:"Глаголы и выражения"},
+  {de:"übergeben (übergibt, übergab, hat übergeben)",ru:"передавать (что-то кому-то)",cat:"Глаголы и выражения"},
+  {de:"umgehen mit + D. (geht um, ging um, ist umgegangen)",ru:"обращаться с (кем-то/чем-то), справляться с",cat:"Глаголы и выражения"},
+  {de:"verladen (verlädt, verlud, hat verladen)",ru:"погружать, производить погрузку",cat:"Глаголы и выражения"},
+  {de:"verlassen (verlässt, verließ, hat verlassen)",ru:"покидать, оставлять",cat:"Глаголы и выражения"},
+  {de:"verpflichtend",ru:"обязательный (к исполнению)",cat:"Глаголы и выражения"},
+  {de:"Verstärkung suchen",ru:"искать подкрепление (новых сотрудников в команду)",cat:"Глаголы и выражения"},
+  {de:"verunreinigen",ru:"загрязнять, засорять",cat:"Глаголы и выражения"},
+  {de:"verfügbar",ru:"доступный, свободный",cat:"Глаголы и выражения"},
+  {de:"vereinzelt",ru:"единичный, редкий, местами",cat:"Глаголы и выражения"},
+  {de:"verzweifelt",ru:"отчаявшийся, в отчаянии",cat:"Глаголы и выражения"},
+  {de:"vorausgesetzt",ru:"при условии, если; предполагаемый",cat:"Глаголы и выражения"},
+  {de:"vorlegen",ru:"предъявлять, предоставлять (документ начальству/в кассу)",cat:"Глаголы и выражения"},
+  {de:"vorwerfen (wirft vor, warf vor, hat vorgeworfen)",ru:"упрекать, винить, вменять в вину",cat:"Глаголы и выражения"},
+  {de:"zur Probe arbeiten",ru:"работать на испытательном сроке (пробно)",cat:"Глаголы и выражения"},
+  {de:"zur Verfügung stellen",ru:"предоставлять в распоряжение",cat:"Глаголы и выражения"},
+  {de:"zur Verfügung stehen (steht, stand, hat gestanden)",ru:"находиться в распоряжении",cat:"Глаголы и выражения"},
+  {de:"zurückkehren zu + D.",ru:"возвращаться к (чему-либо / кому-либо)",cat:"Глаголы и выражения"},
+  {de:"zuverlässig",ru:"надежный",cat:"Глаголы и выражения"},
+  {de:"zählen zu + D.",ru:"относиться к..., считаться...",cat:"Глаголы и выражения"}
+];
+
+// ── Fix capitalisation of die Überstunde
+VOCAB.forEach(v => {
+  if (v.de.startsWith('die überstunde')) v.de = v.de.replace('die überstunde', 'die Überstunde');
+});
+
+let mode = 'flash';
+let deck = [], cur = 0, flipped = false, scoreOk = 0, scoreErr = 0, answered = false;
+let quizOpts = [], quizCorr = -1;
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',['flash','quiz','glossary'][i]===m));
+  reset();
+}
+
+function reset(){
+  deck=shuffle(VOCAB); cur=0; flipped=false; scoreOk=0; scoreErr=0; answered=false;
+  updateUI(); render();
+}
+
+function updateUI(){
+  document.getElementById('sOk').textContent='✓ '+scoreOk;
+  document.getElementById('sErr').textContent='✗ '+scoreErr;
+  const pct=deck.length?(cur/deck.length)*100:0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=mode!=='glossary'?cur+' / '+deck.length:'';
+  document.getElementById('progWrap').style.display=mode==='glossary'?'none':'';
+  document.getElementById('stats').textContent='247 слов';
+}
+
+function render(){
+  updateUI();
+  if(mode==='glossary'){renderGlossary();return;}
+  if(cur>=deck.length){renderDone();return;}
+  const w=deck[cur];
+  if(mode==='flash') renderFlash(w);
+  else renderQuiz(w);
+}
+
+// ── FLASH ──
+function renderFlash(w){
+  flipped=false; answered=false;
+  document.getElementById('main').innerHTML=`
+    <div class="fc-wrap" onclick="flip()">
+      <div class="fc" id="fc">
+        <div class="face front">
+          <div class="face-lbl">Немецкий</div>
+          <div class="face-word">${esc(w.de)}</div>
+          <div class="face-cat">${esc(w.cat)}</div>
+        </div>
+        <div class="face back">
+          <div class="face-lbl">Перевод</div>
+          <div class="face-tr">${esc(w.ru)}</div>
+        </div>
+      </div>
+    </div>
+    <p class="tap-hint" id="th">Нажми на карточку, чтобы увидеть перевод</p>
+    <div class="fbbtns" id="fbb" style="display:none">
+      <button class="fbbtn forgot" onclick="mark(false)">Не знал</button>
+      <button class="fbbtn knew" onclick="mark(true)">Знал ✓</button>
+    </div>`;
+}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function flip(){
+  if(answered)return;
+  flipped=!flipped;
+  document.getElementById('fc').classList.toggle('flipped',flipped);
+  if(flipped){
+    document.getElementById('fbb').style.display='flex';
+    document.getElementById('th').textContent='Ты знал это слово?';
+  }
+}
+
+function mark(knew){
+  answered=true;
+  if(knew)scoreOk++;else scoreErr++;
+  cur++; updateUI(); setTimeout(render,180);
+}
+
+// ── QUIZ ──
+function renderQuiz(w){
+  answered=false;
+  const correct=w.ru;
+  const pool=shuffle(VOCAB.filter(v=>v.ru!==correct)).slice(0,3).map(v=>v.ru);
+  quizOpts=shuffle([correct,...pool]);
+  quizCorr=quizOpts.indexOf(correct);
+  const btns=quizOpts.map((o,i)=>`<button class="qopt" id="qo${i}" onclick="checkQ(${i})">${esc(o)}</button>`).join('');
+  document.getElementById('main').innerHTML=`
+    <div class="qcard">
+      <div class="qlbl">Выбери перевод</div>
+      <div class="qword">${esc(w.de)}</div>
+      <div class="qopts">${btns}</div>
+    </div>`;
+}
+
+function checkQ(idx){
+  if(answered)return;
+  answered=true;
+  quizOpts.forEach((_,i)=>{
+    const b=document.getElementById('qo'+i);
+    b.disabled=true;
+    if(i===quizCorr)b.classList.add('correct');
+  });
+  if(idx===quizCorr)scoreOk++;
+  else{document.getElementById('qo'+idx).classList.add('wrong');scoreErr++;}
+  updateUI();
+  setTimeout(()=>{cur++;render();},1100);
+}
+
+// ── GLOSSARY ──
+function renderGlossary(){
+  const cats={};
+  VOCAB.forEach(v=>{if(!cats[v.cat])cats[v.cat]=[];cats[v.cat].push(v);});
+  document.getElementById('main').innerHTML=`
+    <input class="gsearch" id="gs" placeholder="Поиск по немецкому или русскому..." oninput="filterG(this.value)">
+    <div id="gl">
+      ${Object.entries(cats).map(([c,ws])=>`
+        <div class="gsec">
+          <div class="gsec-title">${esc(c)}</div>
+          ${ws.map(w=>`<div class="gitem"><div class="g-de">${esc(w.de)}</div><div class="g-ru">${esc(w.ru)}</div></div>`).join('')}
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('gs').focus();
+}
+
+function filterG(q){
+  const nq=q.toLowerCase();
+  document.querySelectorAll('.gitem').forEach(el=>{
+    el.style.display=el.textContent.toLowerCase().includes(nq)?'':'none';
+  });
+  document.querySelectorAll('.gsec').forEach(s=>{
+    s.style.display=[...s.querySelectorAll('.gitem')].some(i=>i.style.display!=='none')?'':'none';
+  });
+}
+
+// ── DONE ──
+function renderDone(){
+  const total=scoreOk+scoreErr,pct=total?Math.round(scoreOk/total*100):0;
+  document.getElementById('main').innerHTML=`
+    <div class="done">
+      <h2>Готово! 🎉</h2>
+      <p>Правильно: ${scoreOk} из ${total} (${pct}%)</p>
+      <button class="restart" onclick="reset()">Начать заново</button>
+    </div>`;
+}
+
+reset();
+</script>
+</body>
+</html>
