@@ -74,6 +74,27 @@
   .dot.die{background:var(--die);}
   .dot.das{background:var(--das);}
 
+  .home-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    font-family:'Inter', sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    border:1.5px solid var(--line);
+    background:var(--bg-panel-2);
+    padding:6px 12px;
+    border-radius:8px;
+    margin-bottom:12px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .home-btn:hover{
+    color:var(--ink);
+    border-color:rgba(20,20,20,0.3);
+  }
+
   .progress-wrap{
     display:flex;
     align-items:center;
@@ -313,6 +334,8 @@
 </head>
 <body>
 <div class="app">
+
+  <a class="home-btn" href="index.html">← Startseite</a>
 
   <div class="brand">
     <h1>Artikeltrainer</h1>
