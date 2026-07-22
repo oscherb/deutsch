@@ -1,0 +1,166 @@
+:root {
+    --navy: #001f3f;
+    --vanilla: #f5f0d7;
+    --error: #cc0000;
+    --success-light: #008000;
+    --success-dark: #f5f0d7;
+    --border-radius: 8px;
+    --transition: 0.2s ease;
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+}
+
+/* Themes */
+
+body.light-theme {
+    background-color: var(--vanilla);
+    color: var(--navy);
+}
+
+body.dark-theme {
+    background-color: var(--navy);
+    color: var(--vanilla);
+}
+
+header {
+    padding: 1rem;
+    text-align: center;
+}
+
+.controls-top {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 0.6rem 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+body.light-theme button {
+    background-color: var(--navy);
+    color: var(--vanilla);
+}
+
+body.dark-theme button {
+    background-color: var(--vanilla);
+    color: var(--navy);
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+main {
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.settings, .exercise {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+}
+
+body.light-theme .settings,
+body.light-theme .exercise {
+    background-color: rgba(0, 31, 63, 0.05);
+}
+
+body.dark-theme .settings,
+body.dark-theme .exercise {
+    background-color: rgba(245, 240, 215, 0.05);
+}
+
+.difficulty-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.difficulty-btn.active {
+    outline: 2px solid var(--success-light);
+}
+
+#sentenceContainer {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.sentence-word {
+    display: inline-block;
+    margin: 0 0.15rem;
+}
+
+.sentence-slot {
+    display: inline-block;
+    min-width: 70px;
+    padding: 0.2rem 0.4rem;
+    margin: 0 0.15rem;
+    border-radius: var(--border-radius);
+    border: 1px dashed currentColor;
+    text-align: center;
+}
+
+.sentence-slot.filled {
+    border-style: solid;
+}
+
+.sentence-slot.correct-light {
+    border-color: var(--success-light);
+}
+
+.sentence-slot.correct-dark {
+    border-color: var(--success-dark);
+}
+
+.sentence-slot.wrong {
+    border-color: var(--error);
+}
+
+#connectorButtonsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.connector-btn {
+    font-size: 0.85rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Mobile-friendly */
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .difficulty-buttons {
+        flex-direction: column;
+    }
+}

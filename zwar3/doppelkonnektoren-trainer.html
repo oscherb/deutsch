@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Doppelkonnektoren-Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+
+  :root[data-theme="dark"]{
+    --bg: #0A0E27;
+    --bg-soft: #12163A;
+    --card: #161A44;
+    --card-border: #2A2F63;
+    --text: #F6ECDC;
+    --text-dim: #C9C3AE;
+    --thread: #4A4E82;
+    --chip-bg: #1E2350;
+    --chip-border: #383D77;
+    --chip-active-bg: #2A2F63;
+    --correct: #F6ECDC;
+    --correct-bg: rgba(246,236,220,0.10);
+    --wrong: #E27766;
+    --wrong-bg: rgba(226,119,102,0.12);
+    --stitch: #383D77;
+  }
+  :root[data-theme="light"]{
+    --bg: #F6ECDC;
+    --bg-soft: #EFE1C8;
+    --card: #FBF4E7;
+    --card-border: #E3D2AD;
+    --text: #14183A;
+    --text-dim: #5B5637;
+    --thread: #C7B78D;
+    --chip-bg: #F0E4CB;
+    --chip-border: #DCC89C;
+    --chip-active-bg: #E3D2AD;
+    --correct: #2E7D4F;
+    --correct-bg: rgba(46,125,79,0.10);
+    --wrong: #C1443B;
+    --wrong-bg: rgba(193,68,59,0.10);
+    --stitch: #DCC89C;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", sans-serif;
+    min-height: 100vh;
+    transition: background .35s ease, color .35s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wrap{
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 18px 16px 48px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom: 18px;
+  }
+  .back-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-dim);
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .back-btn:hover{ border-color: var(--thread); color: var(--text); }
+
+  .theme-toggle{
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    color: var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .theme-toggle svg{ width:18px; height:18px; }
+
+  .title-block{ text-align:center; margin-bottom: 22px; }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 0 0 6px;
+  }
+  h1{
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  h1 em{
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text-dim);
+  }
+
+  /* ---------- Level switch ---------- */
+  .level-switch{
+    display:flex;
+    background: var(--chip-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .level-btn{
+    flex:1;
+    border:none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    padding: 10px 0;
+    border-radius: 8px;
+    cursor:pointer;
+    transition: background .2s, color .2s;
+  }
+  .level-btn.active{
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 0 var(--card-border);
+  }
+
+  /* ---------- Progress ---------- */
+  .progress-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom: 10px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .pair-label{
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* ---------- Sentence card ---------- */
+  .card{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 28px 20px 22px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    left: 20px; right: 20px; top: 0;
+    height: 1px;
+    background: repeating-linear-gradient(to right, var(--stitch) 0 6px, transparent 6px 12px);
+  }
+  .sentence{
+    font-family: "Fraunces", serif;
+    font-size: 21px;
+    line-height: 1.65;
+    font-weight: 500;
+  }
+  .blank{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width: 92px;
+    padding: 2px 10px;
+    margin: 0 2px;
+    border-bottom: 2px solid var(--thread);
+    border-radius: 4px;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 0.86em;
+    color: var(--text-dim);
+    transition: border-color .2s, background .2s, color .2s;
+  }
+  .blank.filled{ color: var(--text); }
+  .blank.correct{
+    border: 2px solid var(--correct);
+    background: var(--correct-bg);
+    color: var(--text);
+  }
+  .blank.wrong{
+    border: 2px solid var(--wrong);
+    background: var(--wrong-bg);
+    color: var(--text);
+  }
+
+  /* ---------- Feedback ---------- */
+  .feedback{
+    min-height: 20px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
+  .feedback.correct{ color: var(--correct); }
+  .feedback.wrong{ color: var(--wrong); }
+
+  /* ---------- Connector chips ---------- */
+  .chips-label{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 4px 0 10px;
+  }
+  .chips{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .chip{
+    border: 1px solid var(--chip-border);
+    background: var(--chip-bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    min-height: 44px;
+    transition: background .15s, border-color .15s, transform .1s, opacity .15s;
+  }
+  .chip:active{ transform: scale(0.96); }
+  .chip.selected{
+    background: var(--chip-active-bg);
+    border-color: var(--thread);
+  }
+  .chip.locked-correct{
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+  .chip.locked-wrong-hint{
+    opacity: 0.55;
+  }
+  .chip:disabled{
+    cursor: default;
+  }
+
+  /* ---------- Next button ---------- */
+  .next-btn{
+    width:100%;
+    border:none;
+    background: var(--text);
+    color: var(--bg);
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 0;
+    border-radius: 12px;
+    cursor:pointer;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap: 8px;
+    min-height: 48px;
+  }
+  .next-btn.visible{ display:flex; }
+  .next-btn:active{ opacity:0.85; }
+
+  footer{
+    text-align:center;
+    margin-top: 22px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 380px){
+    h1{ font-size: 22px; }
+    .sentence{ font-size: 19px; }
+    .card{ padding: 22px 16px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <a class="back-btn" href="index.html" aria-label="Zurück zur Startseite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Start
+    </a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Design wechseln"></button>
+  </header>
+
+  <div class="title-block">
+    <p class="eyebrow">Grammatik · Lückentext</p>
+    <h1>Doppel&shy;konnektoren<br><em>trainieren</em></h1>
+  </div>
+
+  <div class="level-switch" role="tablist" aria-label="Schwierigkeitsstufe">
+    <button class="level-btn" data-level="A2" role="tab">A2</button>
+    <button class="level-btn" data-level="B1" role="tab">B1</button>
+    <button class="level-btn" data-level="B2" role="tab">B2</button>
+  </div>
+
+  <div class="progress-row">
+    <span id="progressText">Satz 1 / 40</span>
+    <span class="pair-label" id="pairLabel">sowohl … als auch</span>
+  </div>
+
+  <div class="card">
+    <p class="sentence" id="sentence"></p>
+  </div>
+
+  <p class="feedback" id="feedback"></p>
+
+  <p class="chips-label">Wähle die passenden Konnektoren</p>
+  <div class="chips" id="chips"></div>
+
+  <button class="next-btn" id="nextBtn">
+    Nächster Satz
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+
+  <footer>Doppelkonnektoren-Trainer</footer>
+</div>
+
+<script src="konnektoren-daten.js"></script>
+<script>
+(function(){
+
+  const ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" stroke-linecap="round"/></svg>';
+  const ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>';
+
+  const root = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+  const levelBtns = document.querySelectorAll(".level-btn");
+  const progressText = document.getElementById("progressText");
+  const pairLabel = document.getElementById("pairLabel");
+  const sentenceEl = document.getElementById("sentence");
+  const feedbackEl = document.getElementById("feedback");
+  const chipsEl = document.getElementById("chips");
+  const nextBtn = document.getElementById("nextBtn");
+
+  let state = {
+    level: "A2",
+    queue: [],       // shuffled list of {pairId, words, sentence}
+    index: 0,
+    filled: [null, null],
+    checked: false,
+    correct: false
+  };
+
+  /* ---------------- Theme ---------------- */
+  function applyTheme(theme){
+    root.setAttribute("data-theme", theme);
+    themeToggle.innerHTML = theme === "dark" ? ICON_SUN : ICON_MOON;
+    try{ localStorage.setItem("dkt_theme", theme); }catch(e){}
+  }
+  function initTheme(){
+    let saved = null;
+    try{ saved = localStorage.getItem("dkt_theme"); }catch(e){}
+    if(!saved){
+      saved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+    }
+    applyTheme(saved);
+  }
+  themeToggle.addEventListener("click", function(){
+    const current = root.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
+  });
+
+  /* ---------------- Helpers ---------------- */
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function buildQueue(level){
+    const pairs = KONNEKTOREN_DATA[level];
+    let items = [];
+    pairs.forEach(pair => {
+      pair.sentences.forEach(sentence => {
+        items.push({
+          pairId: pair.id,
+          label: pair.words[0] + " … " + pair.words[1],
+          words: pair.words,
+          sentence: sentence
+        });
+      });
+    });
+    return shuffle(items);
+  }
+
+  function allWordsForLevel(level){
+    const pairs = KONNEKTOREN_DATA[level];
+    let words = [];
+    pairs.forEach(p => { words.push(p.words[0], p.words[1]); });
+    return words;
+  }
+
+  function capitalizeFirst(str){
+    for(let i = 0; i < str.length; i++){
+      const ch = str[i];
+      if(/[a-zA-ZäöüÄÖÜß]/.test(ch)){
+        return str.slice(0, i) + ch.toUpperCase() + str.slice(i + 1);
+      }
+    }
+    return str;
+  }
+
+  /* ---------------- Level control ---------------- */
+  function setLevel(level){
+    state.level = level;
+    state.queue = buildQueue(level);
+    state.index = 0;
+    levelBtns.forEach(b => b.classList.toggle("active", b.dataset.level === level));
+    try{ localStorage.setItem("dkt_level", level); }catch(e){}
+    loadCurrentSentence();
+  }
+
+  levelBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(btn.dataset.level !== state.level) setLevel(btn.dataset.level);
+    });
+  });
+
+  /* ---------------- Rendering ---------------- */
+  function currentItem(){
+    return state.queue[state.index];
+  }
+
+  function loadCurrentSentence(){
+    state.filled = [null, null];
+    state.checked = false;
+    state.correct = false;
+    nextBtn.classList.remove("visible");
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+
+    const item = currentItem();
+    progressText.textContent = "Satz " + (state.index + 1) + " / " + state.queue.length;
+    pairLabel.textContent = item.label;
+
+    renderChips();
+    renderSentence();
+  }
+
+  function renderChips(){
+    chipsEl.innerHTML = "";
+    const words = allWordsForLevel(state.level);
+    words.forEach(word => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = word;
+      chip.dataset.word = word;
+      chip.addEventListener("click", () => onChipClick(word, chip));
+      chipsEl.appendChild(chip);
+    });
+    syncChipStates();
+  }
+
+  function syncChipStates(){
+    const chips = chipsEl.querySelectorAll(".chip");
+    chips.forEach(chip => {
+      const word = chip.dataset.word;
+      const slotIndex = state.filled.indexOf(word);
+      chip.classList.toggle("selected", slotIndex !== -1);
+      chip.classList.remove("locked-correct", "locked-wrong-hint");
+      chip.disabled = false;
+
+      if(state.checked && state.correct){
+        chip.disabled = true;
+        if(slotIndex !== -1) chip.classList.add("locked-correct");
+        else chip.classList.add("locked-wrong-hint");
+      }
+    });
+  }
+
+  function renderSentence(){
+    const item = currentItem();
+    const parts = item.sentence.split(/\{1\}|\{2\}/);
+    // parts.length === 3 always: before, middle, after
+    const before = parts[0];
+    const middle = parts[1];
+    const after = parts[2];
+
+    const blank1 = makeBlankHTML(0);
+    const blank2 = makeBlankHTML(1);
+
+    let full = before + blank1 + middle + blank2 + after;
+    sentenceEl.innerHTML = capitalizeFirstHTML(full);
+  }
+
+  function makeBlankHTML(slotIndex){
+    const word = state.filled[slotIndex];
+    let cls = "blank";
+    if(word) cls += " filled";
+    if(state.checked){
+      cls += state.correct ? " correct" : " wrong";
+    }
+    const label = word ? escapeHTML(word) : "＿＿＿";
+    return '<span class="' + cls + '" data-slot="' + slotIndex + '">' + label + '</span>';
+  }
+
+  function escapeHTML(str){
+    return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // capitalize first letter of the whole rendered text, whether it falls
+  // inside the first blank or inside plain text
+  function capitalizeFirstHTML(html){
+    const marker = "\u0000";
+    let plain = html.replace(/<[^>]+>/g, m => marker + m + marker);
+    // find first real character (letter) in the visible text
+    let firstLetterDone = false;
+    let out = "";
+    let i = 0;
+    while(i < html.length){
+      if(html[i] === "<"){
+        const end = html.indexOf(">", i);
+        out += html.slice(i, end + 1);
+        i = end + 1;
+        continue;
+      }
+      const ch = html[i];
+      if(!firstLetterDone && /[a-zA-ZäöüÄÖÜß＿]/.test(ch)){
+        out += ch.toUpperCase();
+        firstLetterDone = true;
+      } else {
+        out += ch;
+      }
+      i++;
+    }
+    return out;
+  }
+
+  /* ---------------- Interaction ---------------- */
+  function onChipClick(word, chipEl){
+    if(state.checked && state.correct) return; // locked once correct
+
+    const existingSlot = state.filled.indexOf(word);
+    if(existingSlot !== -1){
+      // remove it, allow re-pick
+      state.filled[existingSlot] = null;
+      state.checked = false;
+      feedbackEl.textContent = "";
+      feedbackEl.className = "feedback";
+      nextBtn.classList.remove("visible");
+      renderSentence();
+      syncChipStates();
+      return;
+    }
+
+    const emptySlot = state.filled.indexOf(null);
+    if(emptySlot === -1) return; // both slots full already, ignore
+
+    state.filled[emptySlot] = word;
+    renderSentence();
+    syncChipStates();
+
+    if(state.filled[0] !== null && state.filled[1] !== null){
+      checkAnswer();
+    }
+  }
+
+  function checkAnswer(){
+    const item = currentItem();
+    const isCorrect = state.filled[0] === item.words[0] && state.filled[1] === item.words[1];
+    state.checked = true;
+    state.correct = isCorrect;
+
+    renderSentence();
+    syncChipStates();
+
+    if(isCorrect){
+      feedbackEl.textContent = "Richtig! ✓";
+      feedbackEl.className = "feedback correct";
+      nextBtn.classList.add("visible");
+    } else {
+      feedbackEl.textContent = "Nicht ganz richtig — tippe auf einen markierten Konnektor, um ihn zu ändern.";
+      feedbackEl.className = "feedback wrong";
+      nextBtn.classList.remove("visible");
+    }
+  }
+
+  nextBtn.addEventListener("click", () => {
+    state.index = (state.index + 1) % state.queue.length;
+    if(state.index === 0){
+      state.queue = shuffle(state.queue);
+    }
+    loadCurrentSentence();
+  });
+
+  /* ---------------- Init ---------------- */
+  initTheme();
+  let savedLevel = "A2";
+  try{
+    const l = localStorage.getItem("dkt_level");
+    if(l && KONNEKTOREN_DATA[l]) savedLevel = l;
+  }catch(e){}
+  setLevel(savedLevel);
+
+})();
+</script>
+</body>
+</html>

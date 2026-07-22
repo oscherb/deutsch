@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Zwar ... aber Trainer</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="header">
+
+    <a href="../index.html" class="back-button">
+        ← Zur Hauptseite
+    </a>
+
+    <h1>Zwar ... aber</h1>
+
+</header>
+
+
+<main class="container">
+
+    <section class="settings">
+
+        <button id="themeButton">
+            🌙 / ☀️
+        </button>
+
+
+        <div class="levels">
+
+            <button class="level active" data-level="A2">
+                A2
+            </button>
+
+            <button class="level" data-level="B1">
+                B1
+            </button>
+
+            <button class="level" data-level="B2">
+                B2
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="exercise">
+
+        <div id="sentence" class="sentence">
+            Aufgabe wird geladen...
+        </div>
+
+
+        <div id="connectorButtons" class="connector-buttons">
+        </div>
+
+
+        <div id="message" class="message">
+        </div>
+
+
+        <button id="nextButton" class="next-button" hidden>
+            Nächste Aufgabe
+        </button>
+
+
+    </section>
+
+
+</main>
+
+
+<script src="js/sentences.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
