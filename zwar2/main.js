@@ -1,9 +1,8 @@
-// main.js
+// main.js — komplett überarbeitet
 
 let currentLevel = null;
 let currentSentenceObj = null;
 let currentPair = null;
-let currentConnectors = [];
 let usedConnectors = [];
 let slotElements = [];
 
@@ -15,7 +14,9 @@ const pairLabel = document.getElementById("currentPairLabel");
 
 const difficultyButtons = document.querySelectorAll(".difficulty-btn");
 
-// Theme toggle
+// ===============================
+//   THEME TOGGLE
+// ===============================
 themeToggleButton.addEventListener("click", () => {
     const body = document.body;
     if (body.classList.contains("light-theme")) {
@@ -27,7 +28,23 @@ themeToggleButton.addEventListener("click", () => {
     }
 });
 
-// Difficulty selection
+// ===============================
+//   GET ALL CONNECTORS OF LEVEL
+// ===============================
+function getAllConnectorsForLevel(level) {
+    const levelData = sentencesData[level];
+    const all = new Set();
+
+    levelData.forEach(pairObj => {
+        pairObj.connectors.forEach(c => all.add(c));
+    });
+
+    return Array.from(all);
+}
+
+// ===============================
+//   DIFFICULTY SELECTION
+// ===============================
 difficultyButtons.forEach(btn => {
     btn.addEventListener("click", () => {
         difficultyButtons.forEach(b => b.classList.remove("active"));
@@ -37,6 +54,9 @@ difficultyButtons.forEach(btn => {
     });
 });
 
+// ===============================
+//   LOAD RANDOM SENTENCE
+// ===============================
 function loadRandomSentence() {
     if (!currentLevel) return;
 
@@ -47,11 +67,13 @@ function loadRandomSentence() {
     const pairIndex = Math.floor(Math.random() * levelData.length);
     const pairObj = levelData[pairIndex];
     currentPair = pairObj.pair;
-    currentConnectors = pairObj.connectors;
 
     // Zufälliger Satz aus diesem Paar
     const sentenceIndex = Math.floor(Math.random() * pairObj.sentences.length);
     currentSentenceObj = pairObj.sentences[sentenceIndex];
+
+    // WICHTIG: alle Konnektoren des Levels anzeigen
+    currentConnectors = getAllConnectorsForLevel(currentLevel);
 
     usedConnectors = [];
     slotElements = [];
@@ -61,12 +83,15 @@ function loadRandomSentence() {
     renderConnectorButtons();
 }
 
+// ===============================
+//   RENDER SENTENCE
+// ===============================
 function renderSentence() {
     sentenceContainer.innerHTML = "";
     pairLabel.textContent = `Konnektoren-Paar: ${currentPair}`;
 
     const parts = currentSentenceObj.text.split("___");
-    // Wir erwarten genau zwei Lücken
+
     for (let i = 0; i < parts.length; i++) {
         const spanText = document.createElement("span");
         spanText.className = "sentence-word";
@@ -84,8 +109,12 @@ function renderSentence() {
     }
 }
 
+// ===============================
+//   RENDER CONNECTOR BUTTONS
+// ===============================
 function renderConnectorButtons() {
     connectorButtonsContainer.innerHTML = "";
+
     currentConnectors.forEach(conn => {
         const btn = document.createElement("button");
         btn.className = "connector-btn";
@@ -95,11 +124,13 @@ function renderConnectorButtons() {
     });
 }
 
+// ===============================
+//   HANDLE CONNECTOR CLICK
+// ===============================
 function handleConnectorClick(connector) {
-    // Wenn Konnektor bereits im Satz verwendet wird, entfernen
+    // Wenn Konnektor bereits im Satz verwendet wird → entfernen
     const indexUsed = usedConnectors.indexOf(connector);
     if (indexUsed !== -1) {
-        // Entfernen aus Slot
         const slot = slotElements[indexUsed];
         if (slot) {
             slot.textContent = "";
@@ -119,12 +150,15 @@ function handleConnectorClick(connector) {
         }
     }
 
-    // Wenn beide Felder gefüllt sind, prüfen
+    // Wenn beide Felder gefüllt sind → prüfen
     if (usedConnectors.filter(c => c).length === slotElements.length) {
         checkAnswer();
     }
 }
 
+// ===============================
+//   CLEAR SLOT
+// ===============================
 function clearSlot(slot) {
     const index = parseInt(slot.dataset.index, 10);
     usedConnectors[index] = null;
@@ -132,12 +166,16 @@ function clearSlot(slot) {
     slot.classList.remove("filled", "correct-light", "correct-dark", "wrong");
 }
 
+// ===============================
+//   CHECK ANSWER
+// ===============================
 function checkAnswer() {
     const correct = currentSentenceObj.solution;
     const body = document.body;
     const isLight = body.classList.contains("light-theme");
 
     let allCorrect = true;
+
     for (let i = 0; i < slotElements.length; i++) {
         const slot = slotElements[i];
         const userConn = usedConnectors[i];
@@ -146,11 +184,8 @@ function checkAnswer() {
         slot.classList.remove("correct-light", "correct-dark", "wrong");
 
         if (userConn === correctConn) {
-            if (isLight) {
-                slot.classList.add("correct-light");
-            } else {
-                slot.classList.add("correct-dark");
-            }
+            if (isLight) slot.classList.add("correct-light");
+            else slot.classList.add("correct-dark");
         } else {
             slot.classList.add("wrong");
             allCorrect = false;
@@ -160,11 +195,13 @@ function checkAnswer() {
     if (allCorrect) {
         nextSentenceButton.classList.remove("hidden");
     } else {
-        // Falsche Antwort: warten, bis der Nutzer korrigiert
         nextSentenceButton.classList.add("hidden");
     }
 }
 
+// ===============================
+//   NEXT SENTENCE BUTTON
+// ===============================
 nextSentenceButton.addEventListener("click", () => {
     loadRandomSentence();
 });
