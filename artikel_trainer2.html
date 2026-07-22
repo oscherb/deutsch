@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikeltrainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #ffffff;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #f2f3f5;
+    --line: rgba(20,20,20,0.10);
+    --ink: #17181a;
+    --ink-dim: #6b6f76;
+    --der: #1d54c7;
+    --der-dim: rgba(29,84,199,0.10);
+    --die: #c21e3a;
+    --die-dim: rgba(194,30,58,0.10);
+    --das: #15803d;
+    --das-dim: rgba(21,128,61,0.10);
+    --ok: #178a4c;
+    --ok-dim: rgba(23,138,76,0.12);
+    --bad: #d1293f;
+    --bad-dim: rgba(209,41,63,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, var(--line) 28px),
+      var(--bg);
+    font-family:'Inter', system-ui, -apple-system, sans-serif;
+    font-style:normal;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 14px;
+  }
+  .app{
+    width:100%;
+    max-width:560px;
+  }
+  .brand{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .brand h1{
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-style:normal;
+    font-size:1.5rem;
+    margin:0;
+    line-height:1.15;
+    letter-spacing:-0.3px;
+  }
+  .brand .legend{
+    display:flex;
+    gap:10px;
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--ink-dim);
+    margin-left:auto;
+  }
+  .legend span{display:inline-flex; align-items:center; gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%; display:inline-block;}
+  .dot.der{background:var(--der);}
+  .dot.die{background:var(--die);}
+  .dot.das{background:var(--das);}
+
+  .progress-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+    font-size:0.85rem;
+    color:var(--ink-dim);
+  }
+  .progress-bar{
+    flex:1;
+    height:6px;
+    border-radius:4px;
+    background:var(--bg-panel-2);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--der), var(--das));
+    width:0%;
+    transition:width 0.35s ease;
+  }
+  .score{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-variant-numeric: tabular-nums;
+    white-space:nowrap;
+  }
+  .score b{color:var(--ok); font-weight:700;}
+
+  .card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:32px 28px 26px;
+    position:relative;
+    box-shadow: 0 16px 36px -22px rgba(0,0,0,0.25);
+  }
+  .step-label{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--ink-dim);
+    margin-bottom:14px;
+    display:flex;
+    justify-content:space-between;
+  }
+  .word-display{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .word-display .article-slot{
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-style:normal;
+    font-size:1.3rem;
+    text-transform:lowercase;
+    letter-spacing:0.5px;
+    color:var(--ink-dim);
+    display:block;
+    min-height:1.6rem;
+    line-height:1;
+    margin-bottom:4px;
+    transition:color 0.2s ease;
+  }
+  .word-display .article-slot.der{color:var(--der);}
+  .word-display .article-slot.die{color:var(--die);}
+  .word-display .article-slot.das{color:var(--das);}
+  .word-display .noun{
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-style:normal;
+    font-size:2.1rem;
+    line-height:1.15;
+    word-break:break-word;
+  }
+  .word-display .plural{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-style:normal;
+    font-size:1rem;
+    color:var(--ink-dim);
+    margin-left:4px;
+  }
+
+  .options{
+    display:grid;
+    gap:10px;
+  }
+  .options.articles{
+    grid-template-columns:repeat(3, 1fr);
+  }
+  .opt{
+    border:1.5px solid var(--line);
+    background:var(--bg-panel-2);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-style:normal;
+    font-size:0.95rem;
+    font-weight:600;
+    padding:12px 10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    text-align:center;
+    line-height:1.3;
+  }
+  .options.articles .opt{
+    font-size:1.4rem;
+    font-weight:800;
+    padding:18px 10px;
+  }
+  .opt:hover:not(:disabled){
+    transform:translateY(-2px);
+    border-color:rgba(20,20,20,0.3);
+  }
+  .opt:disabled{cursor:default;}
+  .opt.der-opt{color:var(--der);}
+  .opt.die-opt{color:var(--die);}
+  .opt.das-opt{color:var(--das);}
+
+  .opt.correct{
+    background:var(--ok-dim);
+    border-color:var(--ok);
+    color:var(--ok);
+  }
+  .opt.wrong{
+    background:var(--bad-dim);
+    border-color:var(--bad);
+    color:var(--bad);
+  }
+  .opt.faded{opacity:0.4;}
+
+  .options.translations{
+    grid-template-columns:1fr;
+  }
+  .options.translations .opt{
+    text-align:left;
+    font-weight:500;
+    font-size:0.95rem;
+  }
+
+  .feedback-row{
+    margin-top:18px;
+    min-height:22px;
+    text-align:center;
+    font-size:0.85rem;
+    font-weight:600;
+    color:var(--ink-dim);
+  }
+
+  .next-btn{
+    margin-top:16px;
+    width:100%;
+    padding:13px;
+    border-radius:10px;
+    border:none;
+    background:var(--ink);
+    color:#ffffff;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease;
+  }
+  .next-btn.show{opacity:1; pointer-events:auto;}
+  .next-btn:hover{opacity:0.85;}
+
+  .summary{
+    text-align:center;
+  }
+  .summary .big{
+    font-family:'Inter', sans-serif;
+    font-weight:800;
+    font-style:normal;
+    font-size:1.9rem;
+    margin:8px 0 6px;
+  }
+  .summary p{color:var(--ink-dim); margin:4px 0 20px; font-size:0.85rem;}
+  .summary .row-btn{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .btn-secondary{
+    padding:12px 18px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    font-weight:600;
+    cursor:pointer;
+    font-size:0.85rem;
+  }
+  .btn-secondary:hover{border-color:rgba(20,20,20,0.35);}
+  .btn-primary{
+    padding:12px 18px;
+    border-radius:10px;
+    border:none;
+    background:var(--ink);
+    color:#ffffff;
+    font-weight:700;
+    cursor:pointer;
+    font-size:0.85rem;
+  }
+  .miss-list{
+    text-align:left;
+    margin:0 auto 18px;
+    max-width:340px;
+    max-height:180px;
+    overflow-y:auto;
+    font-size:0.8rem;
+    color:var(--ink-dim);
+    border-top:1px solid var(--line);
+    padding-top:12px;
+  }
+  .miss-list div{padding:3px 0;}
+  .miss-list b{color:var(--ink);}
+
+  @media (max-width: 480px){
+    .app{max-width:100%;}
+    .brand{gap:8px;}
+    .brand .legend{margin-left:0; width:100%; order:3;}
+    .card{padding:20px 14px 16px;}
+    .options.articles{gap:8px;}
+    .options.articles .opt{font-size:1.3rem; padding:16px 6px;}
+  }
+
+  @media (max-width: 360px){
+    .word-display .noun{font-size:1.9rem;}
+    .options.articles{grid-template-columns:1fr 1fr 1fr; gap:6px;}
+    .options.articles .opt{padding:14px 4px; font-size:1.15rem;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="brand">
+    <h1>Artikeltrainer</h1>
+    <div class="legend">
+      <span><span class="dot der"></span>der</span>
+      <span><span class="dot die"></span>die</span>
+      <span><span class="dot das"></span>das</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="score" id="scoreLabel">0 / 0</div>
+  </div>
+
+  <div class="card" id="card"></div>
+
+</div>
+
+<script>
+// ---------- data ----------
+// pl = Pluralendung (null = Plural = Singular oder nur Plural vorhanden)
+const WORDS = [
+  {de:"Leidenschaft", art:"die", pl:"-en", ru:"страсть, увлечение"},
+  {de:"Spedition", art:"die", pl:"-en", ru:"транспортно-экспедиционная компания"},
+  {de:"Kundschaft", art:"die", pl:null, ru:"клиентура, клиенты"},
+  {de:"Zoll", art:"der", pl:"¨-e", ru:"таможня; пошлина"},
+  {de:"Behördengang", art:"der", pl:"¨-e", ru:"поход в госучреждение"},
+  {de:"Formalie", art:"die", pl:"-n", ru:"формальность"},
+  {de:"Gericht", art:"das", pl:"-e", ru:"суд"},
+  {de:"Stellenanzeige", art:"die", pl:"-n", ru:"объявление о вакансии"},
+  {de:"Selbstständigkeit", art:"die", pl:null, ru:"самозанятость, самостоятельность"},
+  {de:"Jobportal", art:"das", pl:"-e", ru:"портал вакансий"},
+  {de:"Finanzierung", art:"die", pl:"-en", ru:"финансирование"},
+  {de:"Lebenslauf", art:"der", pl:"¨-e", ru:"резюме, автобиография"},
+  {de:"Bewerbung", art:"die", pl:"-en", ru:"заявка на работу"},
+  {de:"Absage", art:"die", pl:"-n", ru:"отказ (на заявку)"},
+  {de:"Berufserfahrung", art:"die", pl:null, ru:"опыт работы"},
+  {de:"Praktikum", art:"das", pl:"Praktika", ru:"стажировка, практика"},
+  {de:"Herausforderung", art:"die", pl:"-en", ru:"вызов, сложная задача"},
+  {de:"Angabe", art:"die", pl:"-n", ru:"сведение, данные"},
+  {de:"Geburtsdatum", art:"das", pl:"Geburtsdaten", ru:"дата рождения"},
+  {de:"Aushilfe", art:"die", pl:"-n", ru:"временный работник, помощник"},
+  {de:"Nationalität", art:"die", pl:"-en", ru:"национальность"},
+  {de:"Tätigkeit", art:"die", pl:"-en", ru:"деятельность, род занятий"},
+  {de:"Beratung", art:"die", pl:"-en", ru:"консультация"},
+  {de:"Weiterbildung", art:"die", pl:"-en", ru:"повышение квалификации"},
+  {de:"EDV-Kenntnisse", art:"die", pl:null, ru:"знание ПК, компьютерные навыки"},
+  {de:"Note", art:"die", pl:"-n", ru:"оценка (школьная)"},
+  {de:"Muttersprache", art:"die", pl:"-n", ru:"родной язык"},
+  {de:"Arbeitsplatz", art:"der", pl:"¨-e", ru:"рабочее место"},
+  {de:"Ausbildungsmöglichkeit", art:"die", pl:"-en", ru:"возможность обучения"},
+  {de:"Voraussetzung", art:"die", pl:"-en", ru:"предпосылка, необходимое условие"},
+  {de:"Studium", art:"das", pl:null, ru:"учёба (в вузе)"},
+  {de:"Gehalt", art:"das", pl:"¨-er", ru:"зарплата"},
+  {de:"Studienabschluss", art:"der", pl:"¨-e", ru:"окончание вуза, диплом о высшем образовании"},
+  {de:"Ausbildung", art:"die", pl:"-en", ru:"профессиональное обучение"},
+  {de:"Berufsschule", art:"die", pl:"-n", ru:"профессиональное училище"},
+  {de:"Experte", art:"der", pl:"-n", ru:"эксперт (м.)"},
+  {de:"Expertin", art:"die", pl:"-nen", ru:"эксперт (ж.)"},
+  {de:"Betrieb", art:"der", pl:"-e", ru:"предприятие, производство"},
+  {de:"Dauer", art:"die", pl:null, ru:"продолжительность"},
+  {de:"Stellenausschreibung", art:"die", pl:"-en", ru:"объявление о приёме на работу"},
+  {de:"Anschreiben", art:"das", pl:null, ru:"сопроводительное письмо"},
+  {de:"Einstellung", art:"die", pl:"-en", ru:"отношение (к чему-л.)"},
+  {de:"Eintrittstermin", art:"der", pl:"-e", ru:"дата начала работы"},
+  {de:"Arbeiten", art:"die", pl:null, ru:"текущие / накопившиеся дела"},
+];
+
+// ---------- state ----------
+let deck = [];
+let idx = 0;
+let correctCount = 0;
+let answeredCount = 0;
+let mistakes = [];
+let stage = "article"; // "article" | "translation"
+let currentWord = null;
+
+const card = document.getElementById("card");
+const progressFill = document.getElementById("progressFill");
+const scoreLabel = document.getElementById("scoreLabel");
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function pluralHTML(word){
+  return word.pl ? `<span class="plural">, ${word.pl}</span>` : "";
+}
+
+function startRun(useMistakesOnly){
+  deck = shuffle(useMistakesOnly ? mistakes.map(m=>m.word) : WORDS);
+  idx = 0;
+  correctCount = 0;
+  answeredCount = 0;
+  mistakes = [];
+  nextWord();
+}
+
+function updateProgress(){
+  const pct = deck.length ? Math.round((idx/deck.length)*100) : 0;
+  progressFill.style.width = pct + "%";
+  scoreLabel.innerHTML = `${idx} / ${deck.length} &nbsp;·&nbsp; <b>${correctCount}</b> richtig`;
+}
+
+function nextWord(){
+  if(idx >= deck.length){
+    renderSummary();
+    updateProgress();
+    return;
+  }
+  currentWord = deck[idx];
+  stage = "article";
+  updateProgress();
+  renderArticleStep();
+}
+
+function articleOptionsFor(word){
+  return shuffle(["der","die","das"]);
+}
+
+function renderArticleStep(){
+  const opts = articleOptionsFor(currentWord);
+  card.innerHTML = `
+    <div class="step-label"><span>Schritt 1 · Artikel</span><span>Wort ${idx+1} von ${deck.length}</span></div>
+    <div class="word-display">
+      <span class="article-slot" id="artSlot">?</span>
+      <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
+    </div>
+    <div class="options articles" id="optWrap">
+      ${opts.map(a => `<button class="opt ${a}-opt" data-art="${a}">${a}</button>`).join("")}
+    </div>
+    <div class="feedback-row" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">Weiter →</button>
+  `;
+
+  const buttons = card.querySelectorAll(".opt");
+  const feedback = document.getElementById("feedback");
+  const nextBtn = document.getElementById("nextBtn");
+  const artSlot = document.getElementById("artSlot");
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const chosen = btn.dataset.art;
+      const isCorrect = chosen === currentWord.art;
+      buttons.forEach(b => {
+        b.disabled = true;
+        if(b.dataset.art === currentWord.art){
+          b.classList.add("correct");
+        } else if(b === btn){
+          b.classList.add("wrong");
+        } else {
+          b.classList.add("faded");
+        }
+      });
+      artSlot.textContent = currentWord.art;
+      artSlot.classList.add(currentWord.art);
+
+      if(isCorrect){
+        feedback.textContent = "Richtig!";
+        feedback.style.color = "var(--ok)";
+      } else {
+        feedback.textContent = `Richtiger Artikel: ${currentWord.art}`;
+        feedback.style.color = "var(--bad)";
+        recordMistake();
+      }
+      nextBtn.classList.add("show");
+      nextBtn.textContent = "Übersetzung →";
+      nextBtn.onclick = () => renderTranslationStep(isCorrect);
+    });
+  });
+}
+
+function recordMistake(){
+  if(!mistakes.find(m => m.word.de === currentWord.de)){
+    mistakes.push({word: currentWord});
+  }
+}
+
+function translationOptionsFor(word){
+  const pool = WORDS.filter(w => w.de !== word.de && w.ru !== word.ru);
+  const distractors = shuffle(pool).slice(0,3).map(w => w.ru);
+  return shuffle([word.ru, ...distractors]);
+}
+
+function renderTranslationStep(articleWasCorrect){
+  const opts = translationOptionsFor(currentWord);
+  card.innerHTML = `
+    <div class="step-label"><span>Schritt 2 · Übersetzung</span><span>Wort ${idx+1} von ${deck.length}</span></div>
+    <div class="word-display">
+      <span class="article-slot ${currentWord.art}">${currentWord.art}</span>
+      <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
+    </div>
+    <div class="options translations" id="optWrap">
+      ${opts.map(t => `<button class="opt" data-ru="${t.replace(/"/g,'&quot;')}">${t}</button>`).join("")}
+    </div>
+    <div class="feedback-row" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">Weiter →</button>
+  `;
+
+  const buttons = card.querySelectorAll(".opt");
+  const feedback = document.getElementById("feedback");
+  const nextBtn = document.getElementById("nextBtn");
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const chosen = btn.dataset.ru;
+      const isCorrect = chosen === currentWord.ru;
+      buttons.forEach(b => {
+        b.disabled = true;
+        if(b.dataset.ru === currentWord.ru){
+          b.classList.add("correct");
+        } else if(b === btn){
+          b.classList.add("wrong");
+        } else {
+          b.classList.add("faded");
+        }
+      });
+
+      if(isCorrect){
+        feedback.textContent = "Richtig!";
+        feedback.style.color = "var(--ok)";
+      } else {
+        feedback.textContent = `Richtige Übersetzung: ${currentWord.ru}`;
+        feedback.style.color = "var(--bad)";
+        recordMistake();
+      }
+
+      answeredCount++;
+      if(articleWasCorrect && isCorrect){
+        correctCount++;
+      }
+
+      nextBtn.classList.add("show");
+      nextBtn.textContent = idx + 1 >= deck.length ? "Ergebnis" : "Nächstes Wort →";
+      nextBtn.onclick = () => {
+        idx++;
+        nextWord();
+      };
+    });
+  });
+}
+
+function renderSummary(){
+  const total = deck.length;
+  const pct = total ? Math.round((correctCount/total)*100) : 0;
+  let praise = "Gutes Ergebnis!";
+  if(pct === 100) praise = "Perfekt — alle Wörter ohne Fehler!";
+  else if(pct < 50) praise = "Am besten noch einmal üben.";
+
+  card.innerHTML = `
+    <div class="summary">
+      <div class="step-label" style="justify-content:center;">Fertig</div>
+      <div class="big">${correctCount} von ${total}</div>
+      <p>${praise} Richtig beim ersten Versuch: ${pct}%</p>
+      ${mistakes.length ? `
+        <div class="miss-list">
+          ${mistakes.map(m => `<div><b>${m.word.art} ${m.word.de}${m.word.pl ? ", "+m.word.pl : ""}</b> — ${m.word.ru}</div>`).join("")}
+        </div>
+      ` : ""}
+      <div class="row-btn">
+        <button class="btn-primary" id="restartAll">Neu starten</button>
+        ${mistakes.length ? `<button class="btn-secondary" id="restartMistakes">Fehler wiederholen (${mistakes.length})</button>` : ""}
+      </div>
+    </div>
+  `;
+  document.getElementById("restartAll").onclick = () => startRun(false);
+  const rm = document.getElementById("restartMistakes");
+  if(rm) rm.onclick = () => startRun(true);
+}
+
+startRun(false);
+</script>
+</body>
+</html>
