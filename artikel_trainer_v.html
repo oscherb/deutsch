@@ -44,11 +44,32 @@
     width:100%;
     max-width:560px;
   }
+  .home-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    font-family:'Inter', sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    border:1.5px solid var(--line);
+    background:var(--bg-panel-2);
+    padding:6px 12px;
+    border-radius:8px;
+    margin-bottom:12px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .home-btn:hover{
+    color:var(--ink);
+    border-color:rgba(20,20,20,0.3);
+  }
+
   .brand{
     display:flex;
     align-items:baseline;
     gap:10px;
-    margin-bottom:18px;
+    margin-bottom:14px;
     flex-wrap:wrap;
   }
   .brand h1{
@@ -74,26 +95,36 @@
   .dot.die{background:var(--die);}
   .dot.das{background:var(--das);}
 
-  .home-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    text-decoration:none;
-    font-family:'Inter', sans-serif;
-    font-size:0.8rem;
-    font-weight:600;
-    color:var(--ink-dim);
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:11px 8px;
+    border-radius:10px;
     border:1.5px solid var(--line);
     background:var(--bg-panel-2);
-    padding:6px 12px;
-    border-radius:8px;
-    margin-bottom:12px;
-    transition:border-color 0.15s ease, color 0.15s ease;
+    color:var(--ink-dim);
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition:all 0.15s ease;
   }
-  .home-btn:hover{
-    color:var(--ink);
+  .tab-btn.active{
+    background:var(--ink);
+    color:#ffffff;
+    border-color:var(--ink);
+  }
+  .tab-btn:not(.active):hover{
     border-color:rgba(20,20,20,0.3);
+    color:var(--ink);
   }
+
+  .screen{display:none;}
+  .screen.active{display:block;}
 
   .progress-wrap{
     display:flex;
@@ -168,7 +199,7 @@
     font-weight:800;
     font-style:normal;
     font-size:2.1rem;
-    line-height:1.15;
+    line-height:1.2;
     word-break:break-word;
   }
   .word-display .plural{
@@ -338,27 +369,42 @@
   <a class="home-btn" href="index.html">← Startseite</a>
 
   <div class="brand">
-    <h1>Artikeltrainer</h1>
-    <div class="legend">
+    <h1 id="pageTitle">Artikeltrainer</h1>
+    <div class="legend" id="legendRow">
       <span><span class="dot der"></span>der</span>
       <span><span class="dot die"></span>die</span>
       <span><span class="dot das"></span>das</span>
     </div>
   </div>
 
-  <div class="progress-wrap">
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="score" id="scoreLabel">0 / 0</div>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabArtikel">Artikel-Training</button>
+    <button class="tab-btn" id="tabWort">Wortschatz-Training</button>
   </div>
 
-  <div class="card" id="card"></div>
+  <!-- Screen 1: Artikel-Training -->
+  <div class="screen active" id="screenArtikel">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill1"></div></div>
+      <div class="score" id="scoreLabel1">0 / 0</div>
+    </div>
+    <div class="card" id="card1"></div>
+  </div>
+
+  <!-- Screen 2: Wortschatz-Training -->
+  <div class="screen" id="screenWort">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill2"></div></div>
+      <div class="score" id="scoreLabel2">0 / 0</div>
+    </div>
+    <div class="card" id="card2"></div>
+  </div>
 
 </div>
 
 <script>
-// ---------- data ----------
-// pl = Pluralendung (null = Plural = Singular oder nur Plural vorhanden)
-const WORDS = [
+// ---------- data: Modus 1 (nur Substantive) ----------
+const NOUNS = [
   {de:"Vorbild", art:"das", pl:"-er", ru:"приклад, взірець"},
   {de:"Leidenschaft", art:"die", pl:"-en", ru:"пристрасть"},
   {de:"Erzieher", art:"der", pl:null, ru:"вихователь у дитсадку (чол.)"},
@@ -487,20 +533,333 @@ const WORDS = [
   {de:"Zimmermädchen", art:"das", pl:null, ru:"покоївка"},
   {de:"Zimmerservice", art:"der", pl:"-s", ru:"обслуговування номерів"},
   {de:"Werbung", art:"die", pl:"-en", ru:"реклама"},
+  {de:"Arbeitskraft", art:"die", pl:"¨-e", ru:"робоча сила"},
+  {de:"Armee", art:"die", pl:"-n", ru:"армія"},
+  {de:"Beginn", art:"der", pl:null, ru:"початок"},
+  {de:"Bürokratie", art:"die", pl:"-n", ru:"бюрократія"},
+  {de:"Demokratie", art:"die", pl:"-n", ru:"демократія"},
+  {de:"Diktatur", art:"die", pl:"-en", ru:"диктатура"},
+  {de:"Erdbeben", art:"das", pl:null, ru:"землетрус"},
+  {de:"Flüchtling", art:"der", pl:"-e", ru:"біженець"},
+  {de:"Fortschritt", art:"der", pl:"-e", ru:"прогрес"},
+  {de:"Gegend", art:"die", pl:"-en", ru:"місцевість, район"},
+  {de:"Grenze", art:"die", pl:"-n", ru:"кордон, межа"},
+  {de:"Heimat", art:"die", pl:null, ru:"батьківщина"},
+  {de:"Hoffnung", art:"die", pl:"-en", ru:"надія"},
+  {de:"Industrie", art:"die", pl:"-n", ru:"промисловість"},
+  {de:"Inflation", art:"die", pl:"-en", ru:"інфляція"},
+  {de:"Klimakatastrophe", art:"die", pl:"-n", ru:"кліматична катастрофа"},
+  {de:"Krieg", art:"der", pl:"-e", ru:"війна"},
+  {de:"Krise", art:"die", pl:"-n", ru:"криза"},
+  {de:"Migrant", art:"der", pl:"-en", ru:"мігрант"},
+  {de:"Migrantin", art:"die", pl:"-nen", ru:"мігрантка"},
+  {de:"Monarchie", art:"die", pl:"-n", ru:"монархія"},
+  {de:"Negative", art:"das", pl:null, ru:"негатив, негативне"},
+  {de:"Organisation", art:"die", pl:"-en", ru:"організація"},
+  {de:"System", art:"das", pl:"-e", ru:"система"},
+  {de:"Toleranz", art:"die", pl:null, ru:"толерантність, терпимість"},
+  {de:"Putsch", art:"der", pl:"-e", ru:"путч, державний переворот"},
+  {de:"Unterschied", art:"der", pl:"-e", ru:"різниця, відмінність"},
+  {de:"Verordnung", art:"die", pl:"-en", ru:"розпорядження, указ, постанова"},
+  {de:"Währung", art:"die", pl:"-en", ru:"валюта"},
+  {de:"Wirtschaftskrise", art:"die", pl:"-n", ru:"економічна криза"},
+  {de:"Zeitpunkt", art:"der", pl:"-e", ru:"момент часу, точка відліку"},
+  {de:"Zuwanderung", art:"die", pl:"-en", ru:"імміграція, приплив населення"},
 ];
 
-// ---------- state ----------
-let deck = [];
-let idx = 0;
-let correctCount = 0;
-let answeredCount = 0;
-let mistakes = [];
-let stage = "article"; // "article" | "translation"
-let currentWord = null;
-
-const card = document.getElementById("card");
-const progressFill = document.getElementById("progressFill");
-const scoreLabel = document.getElementById("scoreLabel");
+// ---------- data: Modus 2 (alle Woerter) ----------
+const ALL_WORDS = [
+  {de:"einige Orte kann man an einem Tag besichtigen", ru:"декілька місць можна оглянути за один день"},
+  {de:"Gibt es", ru:"є, існує"},
+  {de:"Seit", ru:"з, відтоді як"},
+  {de:"Erfolgreich", ru:"успішний"},
+  {de:"Leidenschaft", ru:"пристрасть"},
+  {de:"Aufwachsen (aufgewachsen)", ru:"рости, вирости (виріс)"},
+  {de:"Danach", ru:"після цього"},
+  {de:"das Vorbild", ru:"приклад, взірець"},
+  {de:"Trotzdem", ru:"попри це, не зважаючи на це, все ж таки"},
+  {de:"Ermöglichen", ru:"робити можливим"},
+  {de:"Möglich", ru:"можливість (або \"можливий\")"},
+  {de:"Fremd", ru:"чужий"},
+  {de:"Doch", ru:"але"},
+  {de:"Verdienen", ru:"заробляти"},
+  {de:"Erzieher/in", ru:"вихователь в дитсадку"},
+  {de:"Einige", ru:"декілька, деякі"},
+  {de:"Eigentlich", ru:"насправді"},
+  {de:"günstig", ru:"вигідний, недорогий"},
+  {de:"einfach", ru:"простий"},
+  {de:"Vertrag", ru:"контракт, договір"},
+  {de:"besonders", ru:"особливий, особливо"},
+  {de:"Gebühr", ru:"тариф / плата"},
+  {de:"das Gleiche", ru:"такий самий"},
+  {de:"Davon", ru:"від цього / про це"},
+  {de:"Erzählen", ru:"розповідати"},
+  {de:"Übungen", ru:"вправи"},
+  {de:"zusätzliche", ru:"додатковий"},
+  {de:"Möglichkeit", ru:"можливості (або \"можливість\")"},
+  {de:"überall", ru:"усюди"},
+  {de:"entdecken", ru:"відкривати"},
+  {de:"die Erfahrung", ru:"досвід"},
+  {de:"fühlen", ru:"відчути"},
+  {de:"spüren", ru:"торгати (одяг тощо) / відчувати"},
+  {de:"Gerät", ru:"апарат"},
+  {de:"genug", ru:"досить, достатньо"},
+  {de:"Kündigen", ru:"розривати договір"},
+  {de:"bestellen", ru:"замовляти щось"},
+  {de:"abbestellen", ru:"скасувати замовлення"},
+  {de:"Anschluss", ru:"підключення"},
+  {de:"Welt", ru:"світ"},
+  {de:"Welter Krieg (Weltkrieg)", ru:"світова війна"},
+  {de:"in der Welt", ru:"в світі"},
+  {de:"Sich umarmen", ru:"обійматися"},
+  {de:"der/die Alleinstehende, -n", ru:"одинокий, одинока"},
+  {de:"der/die Alte, -n", ru:"старий, стара людина"},
+  {de:"der Austausch Sg.", ru:"обмін"},
+  {de:"der Besitzer, -", ru:"власник"},
+  {de:"das Bewerbungstraining, -s", ru:"тренінг для співбесіди"},
+  {de:"der Bewohner, -", ru:"житель"},
+  {de:"die Biografie, -n", ru:"біографія"},
+  {de:"die Dachterrasse, -n", ru:"тераса на даху"},
+  {de:"die Fläche, -n", ru:"площа, територія"},
+  {de:"das Frühjahr, -e", ru:"весна"},
+  {de:"die Gemeinschaft, -en", ru:"спільнота, громада"},
+  {de:"die Generation, -en", ru:"покоління"},
+  {de:"das Grundstück, -e", ru:"земельна ділянка"},
+  {de:"die Hilfsbereitschaft Sg.", ru:"готовність допомогти"},
+  {de:"der/die Jugendliche, -en", ru:"підліток"},
+  {de:"der Kontakt, -e", ru:"контакт"},
+  {de:"der Kompromiss, -e", ru:"компроміс"},
+  {de:"das Mehrgenerationenhaus, \"-er", ru:"будинок для кількох поколінь"},
+  {de:"die Nachbarschaft, -en", ru:"сусідство, сусіди"},
+  {de:"das Paar, -e", ru:"пара"},
+  {de:"die Partnerschaft, -en", ru:"партнерство"},
+  {de:"das Projekt, -e", ru:"проєкт"},
+  {de:"das Selbstbewusstsein Sg.", ru:"упевненість в собі"},
+  {de:"der Senior, -en", ru:"літня людина (чол.)"},
+  {de:"die Seniorin, -nen", ru:"літня людина (жін.)"},
+  {de:"das Talent, -e", ru:"талант"},
+  {de:"die Teilnahme Sg.", ru:"участь"},
+  {de:"das Treffen, -", ru:"зустріч"},
+  {de:"das Verhältnis, -se", ru:"відносини, стосунки"},
+  {de:"das Verständnis Sg.", ru:"розуміння"},
+  {de:"das Vertrauen Sg.", ru:"довіра"},
+  {de:"das Vorurteil, -e", ru:"стереотип / упередження"},
+  {de:"das Wissensgebiet, -e", ru:"сфера знань"},
+  {de:"das Zusammensein Sg.", ru:"спільне проведення часу"},
+  {de:"der Sandkasten", ru:"пісочниця"},
+  {de:"die Wippe", ru:"гойдалка"},
+  {de:"wippen", ru:"кататися на гойдалці"},
+  {de:"abbauen", ru:"демонтувати, розбирати"},
+  {de:"anbieten", ru:"пропонувати"},
+  {de:"beibringen", ru:"навчати чомусь"},
+  {de:"entwickeln", ru:"розвивати, розробляти"},
+  {de:"erfahren", ru:"дізнаватися (інформацію)"},
+  {de:"sich erkundigen (nach)", ru:"дивуватися / розпитувати"},
+  {de:"genießen", ru:"насолоджуватися"},
+  {de:"interessiert sein (an)", ru:"бути зацікавленим"},
+  {de:"profitieren (von)", ru:"мати вигоду"},
+  {de:"stattfinden", ru:"відбуватися, проходити"},
+  {de:"überrascht sein (von)", ru:"бути здивованим"},
+  {de:"(sich) verstehen", ru:"розуміти"},
+  {de:"die Rutsche", ru:"дитяча гірка"},
+  {de:"rutschen", ru:"кататися на гірці"},
+  {de:"Huckepack tragen", ru:"носити на плечах / на спині"},
+  {de:"geduldig", ru:"терплячий"},
+  {de:"geeignet", ru:"придатний"},
+  {de:"gegenseitig", ru:"взаємний"},
+  {de:"geistig", ru:"духовний"},
+  {de:"interessant", ru:"цікавий"},
+  {de:"lebendig", ru:"живий, жвавий"},
+  {de:"ökologisch", ru:"екологічний"},
+  {de:"speziell", ru:"спеціальний, особливий"},
+  {de:"die Ecke", ru:"кут"},
+  {de:"der Heizkörper", ru:"батарея / радіатор"},
+  {de:"inzwischen", ru:"тим часом, між тим"},
+  {de:"maximal", ru:"максимум"},
+  {de:"nebenbei", ru:"між іншим, попутно / заодно"},
+  {de:"Verschwommen", ru:"розмитий"},
+  {de:"die Fensterbank", ru:"підвіконня"},
+  {de:"ob", ru:"чи"},
+  {de:"zwischen", ru:"між"},
+  {de:"auf dem Schoß sitzen", ru:"сидіти на колінах"},
+  {de:"das Baguette, -s", ru:"багет"},
+  {de:"das Bier, -e", ru:"пиво"},
+  {de:"das Doppelte Sg.", ru:"подвійний"},
+  {de:"das Drittel, -", ru:"одна третя"},
+  {de:"die Erholung Sg.", ru:"відпочинок"},
+  {de:"das Fast Food Sg.", ru:"фастфуд"},
+  {de:"das Fett, -e", ru:"жир"},
+  {de:"das Fleisch Sg.", ru:"м'ясо"},
+  {de:"die Flüssigkeit, -en", ru:"рідина"},
+  {de:"der Fruchtsaft, \"-e", ru:"фруктовий сік"},
+  {de:"das Gasthaus, \"-er", ru:"гостинниця / заїжджий двір"},
+  {de:"das Gericht, -e", ru:"страва"},
+  {de:"die Gewohnheit, -en", ru:"звичка"},
+  {de:"das Gewürz, -e", ru:"спеції"},
+  {de:"die Imbissbude, -n", ru:"закусочна"},
+  {de:"die Kalorie, -n", ru:"калорія"},
+  {de:"der/das Ketchup, -s", ru:"кетчуп"},
+  {de:"das Lieblingsessen, -", ru:"улюблена їжа"},
+  {de:"die Limonade, -n", ru:"лимонад"},
+  {de:"das Lokal, -e", ru:"заклад"},
+  {de:"der Magen, \"-", ru:"шлунок"},
+  {de:"die Mayonnaise, -n", ru:"майонез"},
+  {de:"die Nachspeise, -n", ru:"десерт, солодке"},
+  {de:"der Ober, -", ru:"офіціант"},
+  {de:"die Pommes Pl.", ru:"картопля фрі"},
+  {de:"der Rotwein, -e", ru:"червоне вино"},
+  {de:"das Sandwich, -s", ru:"сендвіч"},
+  {de:"die Spezialität, -en", ru:"фірмова страва"},
+  {de:"das Trinkgeld, -er", ru:"чайові"},
+  {de:"das Übergewicht Sg.", ru:"зайва вага"},
+  {de:"die Ursache, -n", ru:"першопричина, причина"},
+  {de:"das Vitamin, -e", ru:"вітамін"},
+  {de:"die Wahrheit, -en", ru:"правда, істина"},
+  {de:"der Witz, -e", ru:"жарт"},
+  {de:"die Wurst, \"-e", ru:"ковбаса"},
+  {de:"das Würstchen, -", ru:"сосиска"},
+  {de:"enthalten", ru:"містити, містити в собі"},
+  {de:"sich entschließen (für/zu)", ru:"зважитися, вирішити"},
+  {de:"erwarten", ru:"очікувати"},
+  {de:"festhalten (an)", ru:"утримувати, триматися за"},
+  {de:"sich gut/schlecht fühlen", ru:"почуватися добре / погано"},
+  {de:"guttun", ru:"бути корисним, приносити користь"},
+  {de:"probieren", ru:"пробувати"},
+  {de:"weitermachen", ru:"продовжувати (робити)"},
+  {de:"alkoholisch", ru:"алкогольний"},
+  {de:"durchschnittlich", ru:"середній / у середньому"},
+  {de:"fett", ru:"жирний"},
+  {de:"hungrig", ru:"голодний"},
+  {de:"lecker", ru:"смачний, апетитний"},
+  {de:"leer", ru:"порожній"},
+  {de:"mild", ru:"м'який"},
+  {de:"roh", ru:"сирий"},
+  {de:"satt", ru:"ситий"},
+  {de:"scharf", ru:"гострий"},
+  {de:"salzig", ru:"солоний"},
+  {de:"vegetarisch", ru:"вегетаріанський"},
+  {de:"kaum", ru:"ледве, навряд чи"},
+  {de:"prost", ru:"за здоров'я! / будьмо!"},
+  {de:"zum Wohl", ru:"на здоров'я! / за ваше здоров'я!"},
+  {de:"die Alpen Pl.", ru:"Альпи"},
+  {de:"die Attraktion, -en", ru:"атракціон, пам'ятка"},
+  {de:"der Ausbildungsplatz, \"-e", ru:"місце навчання / стажування"},
+  {de:"die Barzahlung, -en", ru:"готівковий розрахунок"},
+  {de:"der/die Bewerber/in, -/-nen", ru:"претендент, сошукач"},
+  {de:"das Einzelzimmer, -", ru:"одномісний номер"},
+  {de:"der Empfang, \"-e", ru:"прийом, рецепція"},
+  {de:"das Erlebnis, -se", ru:"пригода, враження"},
+  {de:"der Fluss, \"-e", ru:"річка"},
+  {de:"die Fremdsprachenkenntnisse Pl.", ru:"знання іноземних мов"},
+  {de:"die Freude, -n", ru:"радість"},
+  {de:"das Frühstücksbüfett, -s", ru:"сніданок \"шведський стіл\""},
+  {de:"die Insel, -n", ru:"острів"},
+  {de:"die Kraft, \"-e", ru:"сила"},
+  {de:"die Kundschaft, -en", ru:"клієнтура (клієнти)"},
+  {de:"die Landschaft, -en", ru:"місцевість, пейзаж"},
+  {de:"das Personal Sg.", ru:"персонал"},
+  {de:"der Profi, -s", ru:"профі, професіонал"},
+  {de:"die Reinigung, -en", ru:"прибирання, чистка"},
+  {de:"das Reiseangebot, -e", ru:"туристична пропозиція"},
+  {de:"der/die Rezeptionist/in, -en/-nen", ru:"адміністратор, рецепціоніст"},
+  {de:"die Schicht, -en", ru:"зміна (робоча)"},
+  {de:"das Servicepersonal Sg.", ru:"обслуговуючий персонал"},
+  {de:"die Speisekarte, -n", ru:"меню"},
+  {de:"die Suppe, -n", ru:"суп"},
+  {de:"das Tal, \"-er", ru:"долина"},
+  {de:"die Teilzeit Sg.", ru:"неповний робочий день"},
+  {de:"die Temperatur, -en", ru:"температура"},
+  {de:"das Tier, -e", ru:"тварина"},
+  {de:"die Tour, -en", ru:"тур, екскурсія"},
+  {de:"die Verwaltung, -en", ru:"адміністрація, управління"},
+  {de:"(die) Verzeihung Sg.", ru:"пробачення, выбачення"},
+  {de:"die Vollzeit Sg.", ru:"повний робочий день"},
+  {de:"die Vollzeitkraft, \"-e", ru:"співробітник на повну ставку"},
+  {de:"der Wanderweg, -e", ru:"пішохідний маршрут"},
+  {de:"die Wintersportart, -en", ru:"зимовий вид спорту"},
+  {de:"der Winterurlaub, -e", ru:"зимова відпустка"},
+  {de:"das Zimmermädchen, -", ru:"покоївка"},
+  {de:"der Zimmerservice, -s", ru:"обслуговування номерів"},
+  {de:"die Werbung, -en (meist Sg.)", ru:"реклама"},
+  {de:"abreisen", ru:"від'їжджати, вирушати"},
+  {de:"aufräumen", ru:"прибирати"},
+  {de:"bedienen", ru:"обслуговувати"},
+  {de:"einchecken", ru:"реєструватися (на рейс / у готелі)"},
+  {de:"sich erholen (von)", ru:"відпочивати, відновлюватися (від)"},
+  {de:"festlegen", ru:"встановлювати, визначати"},
+  {de:"kritisieren", ru:"критикувати"},
+  {de:"loben", ru:"хвалити"},
+  {de:"staubsaugen", ru:"пилососити"},
+  {de:"verbringen", ru:"проводити (час)"},
+  {de:"vorkommen", ru:"траплятися, ставатися"},
+  {de:"ausgebucht", ru:"повністю заброньований"},
+  {de:"beliebt", ru:"популярний, улюблений"},
+  {de:"notwendig", ru:"необхідний"},
+  {de:"schneebedeckt", ru:"засніжений, вкритий снігом"},
+  {de:"tief", ru:"глибокий"},
+  {de:"traumhaft", ru:"казковий, казково красивий"},
+  {de:"werktags", ru:"у робочі дні"},
+  {de:"tagsüber", ru:"протягом дня, удень"},
+  {de:"die Arbeitskraft, \"-e", ru:"робоча сила"},
+  {de:"die Armee, -n", ru:"армія"},
+  {de:"der Beginn Sg.", ru:"початок"},
+  {de:"die Bürokratie, -n", ru:"бюрократія"},
+  {de:"die Demokratie, -n", ru:"демократія"},
+  {de:"die Diktatur, -en", ru:"диктатура"},
+  {de:"das Erdbeben, -", ru:"землетрус"},
+  {de:"der Flüchtling, -e", ru:"біженець"},
+  {de:"der Fortschritt, -e", ru:"прогрес"},
+  {de:"die Gegend, -en", ru:"місцевість, район"},
+  {de:"die Grenze, -n", ru:"кордон, межа"},
+  {de:"die Heimat Sg.", ru:"батьківщина"},
+  {de:"die Hoffnung, -en", ru:"надія"},
+  {de:"die Industrie, -n", ru:"промисловість"},
+  {de:"die Inflation, -en", ru:"інфляція"},
+  {de:"die Klimakatastrophe, -n", ru:"кліматична катастрофа"},
+  {de:"der Krieg, -e", ru:"війна"},
+  {de:"die Krise, -n", ru:"криза"},
+  {de:"der/die Migrant/in, -en/-nen", ru:"мігрант / мігрантка"},
+  {de:"die Monarchie, -n", ru:"монархія"},
+  {de:"das Negative Sg.", ru:"негатив, негативне"},
+  {de:"die Organisation, -en", ru:"організація"},
+  {de:"das System, -e", ru:"система"},
+  {de:"die Toleranz Sg.", ru:"толерантність, терпимість"},
+  {de:"der Putsch, -e", ru:"путч, державний переворот"},
+  {de:"der Unterschied, -e", ru:"різниця, відмінність"},
+  {de:"die Verordnung, -en", ru:"розпорядження, указ, постанова"},
+  {de:"die Währung, -en", ru:"валюта"},
+  {de:"die Wirtschaftskrise, -n", ru:"економічна криза"},
+  {de:"der Zeitpunkt, -e", ru:"момент часу, точка відліку"},
+  {de:"die Zuwanderung, -en", ru:"імміграція, приплив населення"},
+  {de:"abschaffen", ru:"скасовувати, ліквідовувати"},
+  {de:"applaudieren", ru:"аплодувати"},
+  {de:"auswandern", ru:"емігрувати"},
+  {de:"beitreten", ru:"вступати (до організації/союзу)"},
+  {de:"einführen", ru:"вводити, впроваджувати"},
+  {de:"eintreffen", ru:"прибувати"},
+  {de:"entstehen", ru:"виникати, зароджуватися"},
+  {de:"folgen", ru:"слідувати, йти за"},
+  {de:"gründen", ru:"засновувати, створювати"},
+  {de:"heimfahren", ru:"їхати додому"},
+  {de:"protestieren", ru:"протестувати"},
+  {de:"vereinen", ru:"об'єднувати"},
+  {de:"verlieren", ru:"втрачати, губити"},
+  {de:"wachsen", ru:"рости, зростати"},
+  {de:"wählen", ru:"обирати, голосувати"},
+  {de:"zerstören", ru:"руйнувати, знищувати"},
+  {de:"entschlossen", ru:"рішучий"},
+  {de:"europäisch", ru:"європейський"},
+  {de:"gefährlich", ru:"небезпечний"},
+  {de:"nachdenklich", ru:"замислений"},
+  {de:"tolerant", ru:"толерантний"},
+  {de:"unabhängig", ru:"незалежний"},
+  {de:"verantwortlich", ru:"відповідальний"},
+  {de:"vereint", ru:"об'єднаний"},
+  {de:"aufwärts", ru:"вгору, догори"},
+  {de:"anders", ru:"інакше, по-іншому"},
+  {de:"contra", ru:"проти"},
+  {de:"pro", ru:"за"},
+];
 
 function shuffle(arr){
   const a = arr.slice();
@@ -511,192 +870,360 @@ function shuffle(arr){
   return a;
 }
 
-function pluralHTML(word){
-  return word.pl ? `<span class="plural">, ${word.pl}</span>` : "";
-}
+/* =========================================================
+   MODUS 1: Artikel-Training (der/die/das + Uebersetzung)
+   ========================================================= */
+(function(){
+  let deck = [];
+  let idx = 0;
+  let correctCount = 0;
+  let mistakes = [];
+  let currentWord = null;
 
-function startRun(useMistakesOnly){
-  deck = shuffle(useMistakesOnly ? mistakes.map(m=>m.word) : WORDS);
-  idx = 0;
-  correctCount = 0;
-  answeredCount = 0;
-  mistakes = [];
-  nextWord();
-}
+  const card = document.getElementById("card1");
+  const progressFill = document.getElementById("progressFill1");
+  const scoreLabel = document.getElementById("scoreLabel1");
 
-function updateProgress(){
-  const pct = deck.length ? Math.round((idx/deck.length)*100) : 0;
-  progressFill.style.width = pct + "%";
-  scoreLabel.innerHTML = `${idx} / ${deck.length} &nbsp;·&nbsp; <b>${correctCount}</b> richtig`;
-}
+  function pluralHTML(word){
+    return word.pl ? `<span class="plural">, ${word.pl}</span>` : "";
+  }
 
-function nextWord(){
-  if(idx >= deck.length){
-    renderSummary();
+  function startRun(useMistakesOnly){
+    deck = shuffle(useMistakesOnly ? mistakes.map(m=>m.word) : NOUNS);
+    idx = 0;
+    correctCount = 0;
+    mistakes = [];
+    nextWord();
+  }
+
+  function updateProgress(){
+    const pct = deck.length ? Math.round((idx/deck.length)*100) : 0;
+    progressFill.style.width = pct + "%";
+    scoreLabel.innerHTML = `${idx} / ${deck.length} &nbsp;·&nbsp; <b>${correctCount}</b> richtig`;
+  }
+
+  function nextWord(){
+    if(idx >= deck.length){
+      renderSummary();
+      updateProgress();
+      return;
+    }
+    currentWord = deck[idx];
     updateProgress();
-    return;
+    renderArticleStep();
   }
-  currentWord = deck[idx];
-  stage = "article";
-  updateProgress();
-  renderArticleStep();
-}
 
-function articleOptionsFor(word){
-  return shuffle(["der","die","das"]);
-}
-
-function renderArticleStep(){
-  const opts = articleOptionsFor(currentWord);
-  card.innerHTML = `
-    <div class="step-label"><span>Schritt 1 · Artikel</span><span>Wort ${idx+1} von ${deck.length}</span></div>
-    <div class="word-display">
-      <span class="article-slot" id="artSlot">?</span>
-      <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
-    </div>
-    <div class="options articles" id="optWrap">
-      ${opts.map(a => `<button class="opt ${a}-opt" data-art="${a}">${a}</button>`).join("")}
-    </div>
-    <div class="feedback-row" id="feedback"></div>
-    <button class="next-btn" id="nextBtn">Weiter →</button>
-  `;
-
-  const buttons = card.querySelectorAll(".opt");
-  const feedback = document.getElementById("feedback");
-  const nextBtn = document.getElementById("nextBtn");
-  const artSlot = document.getElementById("artSlot");
-
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const chosen = btn.dataset.art;
-      const isCorrect = chosen === currentWord.art;
-      buttons.forEach(b => {
-        b.disabled = true;
-        if(b.dataset.art === currentWord.art){
-          b.classList.add("correct");
-        } else if(b === btn){
-          b.classList.add("wrong");
-        } else {
-          b.classList.add("faded");
-        }
-      });
-      artSlot.textContent = currentWord.art;
-      artSlot.classList.add(currentWord.art);
-
-      if(isCorrect){
-        feedback.textContent = "Richtig!";
-        feedback.style.color = "var(--ok)";
-      } else {
-        feedback.textContent = `Richtiger Artikel: ${currentWord.art}`;
-        feedback.style.color = "var(--bad)";
-        recordMistake();
-      }
-      nextBtn.classList.add("show");
-      nextBtn.textContent = "Übersetzung →";
-      nextBtn.onclick = () => renderTranslationStep(isCorrect);
-    });
-  });
-}
-
-function recordMistake(){
-  if(!mistakes.find(m => m.word.de === currentWord.de)){
-    mistakes.push({word: currentWord});
-  }
-}
-
-function translationOptionsFor(word){
-  const pool = WORDS.filter(w => w.de !== word.de && w.ru !== word.ru);
-  const distractors = shuffle(pool).slice(0,3).map(w => w.ru);
-  return shuffle([word.ru, ...distractors]);
-}
-
-function renderTranslationStep(articleWasCorrect){
-  const opts = translationOptionsFor(currentWord);
-  card.innerHTML = `
-    <div class="step-label"><span>Schritt 2 · Übersetzung</span><span>Wort ${idx+1} von ${deck.length}</span></div>
-    <div class="word-display">
-      <span class="article-slot ${currentWord.art}">${currentWord.art}</span>
-      <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
-    </div>
-    <div class="options translations" id="optWrap">
-      ${opts.map(t => `<button class="opt" data-ru="${t.replace(/"/g,'&quot;')}">${t}</button>`).join("")}
-    </div>
-    <div class="feedback-row" id="feedback"></div>
-    <button class="next-btn" id="nextBtn">Weiter →</button>
-  `;
-
-  const buttons = card.querySelectorAll(".opt");
-  const feedback = document.getElementById("feedback");
-  const nextBtn = document.getElementById("nextBtn");
-
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const chosen = btn.dataset.ru;
-      const isCorrect = chosen === currentWord.ru;
-      buttons.forEach(b => {
-        b.disabled = true;
-        if(b.dataset.ru === currentWord.ru){
-          b.classList.add("correct");
-        } else if(b === btn){
-          b.classList.add("wrong");
-        } else {
-          b.classList.add("faded");
-        }
-      });
-
-      if(isCorrect){
-        feedback.textContent = "Richtig!";
-        feedback.style.color = "var(--ok)";
-      } else {
-        feedback.textContent = `Richtige Übersetzung: ${currentWord.ru}`;
-        feedback.style.color = "var(--bad)";
-        recordMistake();
-      }
-
-      answeredCount++;
-      if(articleWasCorrect && isCorrect){
-        correctCount++;
-      }
-
-      nextBtn.classList.add("show");
-      nextBtn.textContent = idx + 1 >= deck.length ? "Ergebnis" : "Nächstes Wort →";
-      nextBtn.onclick = () => {
-        idx++;
-        nextWord();
-      };
-    });
-  });
-}
-
-function renderSummary(){
-  const total = deck.length;
-  const pct = total ? Math.round((correctCount/total)*100) : 0;
-  let praise = "Gutes Ergebnis!";
-  if(pct === 100) praise = "Perfekt — alle Wörter ohne Fehler!";
-  else if(pct < 50) praise = "Am besten noch einmal üben.";
-
-  card.innerHTML = `
-    <div class="summary">
-      <div class="step-label" style="justify-content:center;">Fertig</div>
-      <div class="big">${correctCount} von ${total}</div>
-      <p>${praise} Richtig beim ersten Versuch: ${pct}%</p>
-      ${mistakes.length ? `
-        <div class="miss-list">
-          ${mistakes.map(m => `<div><b>${m.word.art} ${m.word.de}${m.word.pl ? ", "+m.word.pl : ""}</b> — ${m.word.ru}</div>`).join("")}
-        </div>
-      ` : ""}
-      <div class="row-btn">
-        <button class="btn-primary" id="restartAll">Neu starten</button>
-        ${mistakes.length ? `<button class="btn-secondary" id="restartMistakes">Fehler wiederholen (${mistakes.length})</button>` : ""}
+  function renderArticleStep(){
+    const opts = shuffle(["der","die","das"]);
+    card.innerHTML = `
+      <div class="step-label"><span>Schritt 1 · Artikel</span><span>Wort ${idx+1} von ${deck.length}</span></div>
+      <div class="word-display">
+        <span class="article-slot" id="artSlot1">?</span>
+        <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
       </div>
-    </div>
-  `;
-  document.getElementById("restartAll").onclick = () => startRun(false);
-  const rm = document.getElementById("restartMistakes");
-  if(rm) rm.onclick = () => startRun(true);
-}
+      <div class="options articles" id="optWrap1">
+        ${opts.map(a => `<button class="opt ${a}-opt" data-art="${a}">${a}</button>`).join("")}
+      </div>
+      <div class="feedback-row" id="feedback1"></div>
+      <button class="next-btn" id="nextBtn1">Weiter →</button>
+    `;
 
-startRun(false);
+    const buttons = card.querySelectorAll(".opt");
+    const feedback = document.getElementById("feedback1");
+    const nextBtn = document.getElementById("nextBtn1");
+    const artSlot = document.getElementById("artSlot1");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const chosen = btn.dataset.art;
+        const isCorrect = chosen === currentWord.art;
+        buttons.forEach(b => {
+          b.disabled = true;
+          if(b.dataset.art === currentWord.art){
+            b.classList.add("correct");
+          } else if(b === btn){
+            b.classList.add("wrong");
+          } else {
+            b.classList.add("faded");
+          }
+        });
+        artSlot.textContent = currentWord.art;
+        artSlot.classList.add(currentWord.art);
+
+        if(isCorrect){
+          feedback.textContent = "Richtig!";
+          feedback.style.color = "var(--ok)";
+        } else {
+          feedback.textContent = `Richtiger Artikel: ${currentWord.art}`;
+          feedback.style.color = "var(--bad)";
+          recordMistake();
+        }
+        nextBtn.classList.add("show");
+        nextBtn.textContent = "Übersetzung →";
+        nextBtn.onclick = () => renderTranslationStep(isCorrect);
+      });
+    });
+  }
+
+  function recordMistake(){
+    if(!mistakes.find(m => m.word.de === currentWord.de)){
+      mistakes.push({word: currentWord});
+    }
+  }
+
+  function translationOptionsFor(word){
+    const pool = NOUNS.filter(w => w.de !== word.de && w.ru !== word.ru);
+    const distractors = shuffle(pool).slice(0,3).map(w => w.ru);
+    return shuffle([word.ru, ...distractors]);
+  }
+
+  function renderTranslationStep(articleWasCorrect){
+    const opts = translationOptionsFor(currentWord);
+    card.innerHTML = `
+      <div class="step-label"><span>Schritt 2 · Übersetzung</span><span>Wort ${idx+1} von ${deck.length}</span></div>
+      <div class="word-display">
+        <span class="article-slot ${currentWord.art}">${currentWord.art}</span>
+        <span class="noun">${currentWord.de}</span>${pluralHTML(currentWord)}
+      </div>
+      <div class="options translations" id="optWrap1">
+        ${opts.map(t => `<button class="opt" data-ru="${t.replace(/"/g,'&quot;')}">${t}</button>`).join("")}
+      </div>
+      <div class="feedback-row" id="feedback1"></div>
+      <button class="next-btn" id="nextBtn1">Weiter →</button>
+    `;
+
+    const buttons = card.querySelectorAll(".opt");
+    const feedback = document.getElementById("feedback1");
+    const nextBtn = document.getElementById("nextBtn1");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const chosen = btn.dataset.ru;
+        const isCorrect = chosen === currentWord.ru;
+        buttons.forEach(b => {
+          b.disabled = true;
+          if(b.dataset.ru === currentWord.ru){
+            b.classList.add("correct");
+          } else if(b === btn){
+            b.classList.add("wrong");
+          } else {
+            b.classList.add("faded");
+          }
+        });
+
+        if(isCorrect){
+          feedback.textContent = "Richtig!";
+          feedback.style.color = "var(--ok)";
+        } else {
+          feedback.textContent = `Richtige Übersetzung: ${currentWord.ru}`;
+          feedback.style.color = "var(--bad)";
+          recordMistake();
+        }
+
+        if(articleWasCorrect && isCorrect){
+          correctCount++;
+        }
+
+        nextBtn.classList.add("show");
+        nextBtn.textContent = idx + 1 >= deck.length ? "Ergebnis" : "Nächstes Wort →";
+        nextBtn.onclick = () => {
+          idx++;
+          nextWord();
+        };
+      });
+    });
+  }
+
+  function renderSummary(){
+    const total = deck.length;
+    const pct = total ? Math.round((correctCount/total)*100) : 0;
+    let praise = "Gutes Ergebnis!";
+    if(pct === 100) praise = "Perfekt — alle Wörter ohne Fehler!";
+    else if(pct < 50) praise = "Am besten noch einmal üben.";
+
+    card.innerHTML = `
+      <div class="summary">
+        <div class="step-label" style="justify-content:center;">Fertig</div>
+        <div class="big">${correctCount} von ${total}</div>
+        <p>${praise} Richtig beim ersten Versuch: ${pct}%</p>
+        ${mistakes.length ? `
+          <div class="miss-list">
+            ${mistakes.map(m => `<div><b>${m.word.art} ${m.word.de}${m.word.pl ? ", "+m.word.pl : ""}</b> — ${m.word.ru}</div>`).join("")}
+          </div>
+        ` : ""}
+        <div class="row-btn">
+          <button class="btn-primary" id="restartAll1">Neu starten</button>
+          ${mistakes.length ? `<button class="btn-secondary" id="restartMistakes1">Fehler wiederholen (${mistakes.length})</button>` : ""}
+        </div>
+      </div>
+    `;
+    document.getElementById("restartAll1").onclick = () => startRun(false);
+    const rm = document.getElementById("restartMistakes1");
+    if(rm) rm.onclick = () => startRun(true);
+  }
+
+  startRun(false);
+})();
+
+/* =========================================================
+   MODUS 2: Wortschatz-Training (nur Uebersetzung, 4 Optionen)
+   ========================================================= */
+(function(){
+  let deck = [];
+  let idx = 0;
+  let correctCount = 0;
+  let mistakes = [];
+  let currentWord = null;
+
+  const card = document.getElementById("card2");
+  const progressFill = document.getElementById("progressFill2");
+  const scoreLabel = document.getElementById("scoreLabel2");
+
+  function startRun(useMistakesOnly){
+    deck = shuffle(useMistakesOnly ? mistakes.map(m=>m.word) : ALL_WORDS);
+    idx = 0;
+    correctCount = 0;
+    mistakes = [];
+    nextWord();
+  }
+
+  function updateProgress(){
+    const pct = deck.length ? Math.round((idx/deck.length)*100) : 0;
+    progressFill.style.width = pct + "%";
+    scoreLabel.innerHTML = `${idx} / ${deck.length} &nbsp;·&nbsp; <b>${correctCount}</b> richtig`;
+  }
+
+  function nextWord(){
+    if(idx >= deck.length){
+      renderSummary();
+      updateProgress();
+      return;
+    }
+    currentWord = deck[idx];
+    updateProgress();
+    renderStep();
+  }
+
+  function optionsFor(word){
+    const pool = ALL_WORDS.filter(w => w.de !== word.de && w.ru !== word.ru);
+    const distractors = shuffle(pool).slice(0,3).map(w => w.ru);
+    return shuffle([word.ru, ...distractors]);
+  }
+
+  function renderStep(){
+    const opts = optionsFor(currentWord);
+    card.innerHTML = `
+      <div class="step-label"><span>Übersetzung</span><span>Wort ${idx+1} von ${deck.length}</span></div>
+      <div class="word-display">
+        <span class="noun" style="font-size:1.7rem;">${currentWord.de}</span>
+      </div>
+      <div class="options translations" id="optWrap2">
+        ${opts.map(t => `<button class="opt" data-ru="${t.replace(/"/g,'&quot;')}">${t}</button>`).join("")}
+      </div>
+      <div class="feedback-row" id="feedback2"></div>
+      <button class="next-btn" id="nextBtn2">Weiter →</button>
+    `;
+
+    const buttons = card.querySelectorAll(".opt");
+    const feedback = document.getElementById("feedback2");
+    const nextBtn = document.getElementById("nextBtn2");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const chosen = btn.dataset.ru;
+        const isCorrect = chosen === currentWord.ru;
+        buttons.forEach(b => {
+          b.disabled = true;
+          if(b.dataset.ru === currentWord.ru){
+            b.classList.add("correct");
+          } else if(b === btn){
+            b.classList.add("wrong");
+          } else {
+            b.classList.add("faded");
+          }
+        });
+
+        if(isCorrect){
+          feedback.textContent = "Richtig!";
+          feedback.style.color = "var(--ok)";
+          correctCount++;
+        } else {
+          feedback.textContent = `Richtige Übersetzung: ${currentWord.ru}`;
+          feedback.style.color = "var(--bad)";
+          if(!mistakes.find(m => m.word.de === currentWord.de)){
+            mistakes.push({word: currentWord});
+          }
+        }
+
+        nextBtn.classList.add("show");
+        nextBtn.textContent = idx + 1 >= deck.length ? "Ergebnis" : "Nächstes Wort →";
+        nextBtn.onclick = () => {
+          idx++;
+          nextWord();
+        };
+      });
+    });
+  }
+
+  function renderSummary(){
+    const total = deck.length;
+    const pct = total ? Math.round((correctCount/total)*100) : 0;
+    let praise = "Gutes Ergebnis!";
+    if(pct === 100) praise = "Perfekt — alle Wörter ohne Fehler!";
+    else if(pct < 50) praise = "Am besten noch einmal üben.";
+
+    card.innerHTML = `
+      <div class="summary">
+        <div class="step-label" style="justify-content:center;">Fertig</div>
+        <div class="big">${correctCount} von ${total}</div>
+        <p>${praise} Richtig: ${pct}%</p>
+        ${mistakes.length ? `
+          <div class="miss-list">
+            ${mistakes.map(m => `<div><b>${m.word.de}</b> — ${m.word.ru}</div>`).join("")}
+          </div>
+        ` : ""}
+        <div class="row-btn">
+          <button class="btn-primary" id="restartAll2">Neu starten</button>
+          ${mistakes.length ? `<button class="btn-secondary" id="restartMistakes2">Fehler wiederholen (${mistakes.length})</button>` : ""}
+        </div>
+      </div>
+    `;
+    document.getElementById("restartAll2").onclick = () => startRun(false);
+    const rm = document.getElementById("restartMistakes2");
+    if(rm) rm.onclick = () => startRun(true);
+  }
+
+  startRun(false);
+  window.__startWortRun = startRun;
+})();
+
+/* =========================================================
+   Tab-Umschaltung
+   ========================================================= */
+const tabArtikel = document.getElementById("tabArtikel");
+const tabWort = document.getElementById("tabWort");
+const screenArtikel = document.getElementById("screenArtikel");
+const screenWort = document.getElementById("screenWort");
+const pageTitle = document.getElementById("pageTitle");
+const legendRow = document.getElementById("legendRow");
+
+tabArtikel.addEventListener("click", () => {
+  tabArtikel.classList.add("active");
+  tabWort.classList.remove("active");
+  screenArtikel.classList.add("active");
+  screenWort.classList.remove("active");
+  pageTitle.textContent = "Artikeltrainer";
+  legendRow.style.display = "flex";
+});
+
+tabWort.addEventListener("click", () => {
+  tabWort.classList.add("active");
+  tabArtikel.classList.remove("active");
+  screenWort.classList.add("active");
+  screenArtikel.classList.remove("active");
+  pageTitle.textContent = "Wortschatztrainer";
+  legendRow.style.display = "none";
+});
 </script>
 </body>
 </html>
