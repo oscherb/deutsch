@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktenzeichen B2 — Wortschatz Beruf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EEE2;
+    --paper-dark:#1B1A17;
+    --ink:#241F18;
+    --ink-dark:#EDE7DA;
+    --folder:#C8B98A;
+    --folder-dark:#4A4331;
+    --stamp-red:#9C3B2E;
+    --stamp-green:#3E6B4F;
+    --accent:#B0762B;
+    --line:#c9bda0;
+    --line-dark:#4a4433;
+    --card:#FBF8F1;
+    --card-dark:#242219;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+    transition:background .3s ease,color .3s ease;
+  }
+  body.dark{
+    background:var(--paper-dark);
+    color:var(--ink-dark);
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:28px 20px 80px;position:relative;z-index:1;}
+
+  header.top{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;margin-bottom:6px;
+    transition:border-color .3s ease;
+  }
+  body.dark header.top{border-color:var(--ink-dark);}
+  .brand{display:flex;flex-direction:column;gap:2px;}
+  .brand .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);
+  }
+  .brand h1{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:clamp(26px,4vw,36px);margin:0;line-height:1.05;
+  }
+  .theme-toggle{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;
+    background:none;border:1px solid currentColor;border-radius:20px;
+    padding:6px 14px;cursor:pointer;color:inherit;letter-spacing:.04em;
+  }
+  .theme-toggle:hover{background:rgba(128,128,128,0.12);}
+
+  .subline{
+    font-size:14px;color:var(--ink);opacity:.72;margin:10px 0 26px;
+    max-width:60ch;
+  }
+
+  /* Folder tabs nav */
+  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:0;}
+  .tab-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;letter-spacing:.03em;
+    background:var(--folder);
+    color:var(--ink);
+    border:1px solid var(--ink);
+    border-bottom:none;
+    border-radius:8px 8px 0 0;
+    padding:10px 16px 9px;
+    cursor:pointer;
+    position:relative;top:2px;
+    opacity:.62;
+    transition:opacity .15s ease, transform .15s ease;
+  }
+  body.dark .tab-btn{background:var(--folder-dark);border-color:var(--line-dark);color:var(--ink-dark);}
+  .tab-btn:hover{opacity:.85;}
+  .tab-btn.active{
+    opacity:1;
+    background:var(--card);
+    top:0;
+    border-color:var(--ink);
+    box-shadow:0 -2px 0 var(--accent) inset;
+  }
+  body.dark .tab-btn.active{background:var(--card-dark);border-color:var(--line-dark);}
+
+  .sheet{
+    background:var(--card);
+    border:1px solid var(--ink);
+    border-radius:0 10px 10px 10px;
+    padding:28px;
+    min-height:420px;
+    position:relative;
+    transition:background .3s ease,border-color .3s ease;
+  }
+  body.dark .sheet{background:var(--card-dark);border-color:var(--line-dark);}
+
+  .mode-view{display:none;}
+  .mode-view.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .mode-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+  .mode-head h2{font-family:'Fraunces',serif;font-size:22px;margin:0;font-weight:600;}
+  .mode-desc{font-size:13.5px;opacity:.7;margin:0 0 22px;max-width:56ch;}
+  .score{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+    padding:5px 10px;border:1px solid var(--line);border-radius:20px;
+    white-space:nowrap;
+  }
+  body.dark .score{border-color:var(--line-dark);}
+
+  .stage{
+    display:flex;flex-direction:column;align-items:center;
+    text-align:center;gap:22px;
+    padding:30px 10px 10px;
+  }
+
+  .prompt-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;opacity:.55;
+  }
+  .prompt-word{
+    font-family:'Fraunces',serif;font-weight:600;
+    font-size:clamp(28px,5vw,40px);
+    line-height:1.15;
+  }
+  .prompt-sub{font-size:14px;opacity:.65;max-width:52ch;}
+
+  .options{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .opt-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:15px;
+    padding:12px 26px;border-radius:8px;border:1.5px solid var(--ink);
+    background:transparent;color:inherit;cursor:pointer;
+    transition:transform .12s ease, background .15s ease;
+  }
+  body.dark .opt-btn{border-color:var(--line-dark);}
+  .opt-btn:hover{transform:translateY(-2px);background:rgba(176,118,43,0.12);}
+  .opt-btn.correct{background:var(--stamp-green);color:#fff;border-color:var(--stamp-green);}
+  .opt-btn.wrong{background:var(--stamp-red);color:#fff;border-color:var(--stamp-red);}
+  .opt-btn:disabled{cursor:default;}
+  .opt-btn:disabled:hover{transform:none;}
+
+  .flash{
+    width:100%;max-width:520px;
+    border:1.5px dashed var(--line);
+    border-radius:12px;
+    padding:34px 24px;
+    background:rgba(176,118,43,0.04);
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  body.dark .flash{border-color:var(--line-dark);}
+  .flash:hover{background:rgba(176,118,43,0.09);}
+  .flash .answer{
+    margin-top:16px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:'Fraunces',serif;font-size:24px;color:var(--accent);
+    display:none;
+  }
+  body.dark .flash .answer{border-color:var(--line-dark);}
+  .flash.revealed .answer{display:block;}
+  .flash .hint{font-size:12px;opacity:.55;margin-top:14px;font-family:'IBM Plex Mono',monospace;}
+
+  .self-grade{display:none;gap:14px;justify-content:center;margin-top:4px;}
+  .self-grade.show{display:flex;}
+  .grade-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    padding:10px 20px;border-radius:8px;border:1.5px solid var(--ink);
+    background:transparent;color:inherit;cursor:pointer;
+  }
+  body.dark .grade-btn{border-color:var(--line-dark);}
+  .grade-btn.yes{border-color:var(--stamp-green);color:var(--stamp-green);}
+  .grade-btn.yes:hover{background:var(--stamp-green);color:#fff;}
+  .grade-btn.no{border-color:var(--stamp-red);color:var(--stamp-red);}
+  .grade-btn.no:hover{background:var(--stamp-red);color:#fff;}
+
+  .stamp{
+    position:absolute;top:18px;right:24px;
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;
+    letter-spacing:.08em;
+    border:2px solid var(--stamp-green);color:var(--stamp-green);
+    padding:4px 10px;border-radius:4px;
+    transform:rotate(-6deg) scale(0);
+    transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+    pointer-events:none;
+  }
+  .stamp.show{transform:rotate(-6deg) scale(1);}
+  .stamp.bad{border-color:var(--stamp-red);color:var(--stamp-red);}
+
+  .controls{display:flex;gap:10px;justify-content:center;margin-top:6px;}
+  .ctrl-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+    padding:8px 16px;border-radius:20px;border:1px solid var(--line);
+    background:none;color:inherit;cursor:pointer;opacity:.75;
+  }
+  body.dark .ctrl-btn{border-color:var(--line-dark);}
+  .ctrl-btn:hover{opacity:1;}
+
+  .home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px;}
+  .home-card{
+    border:1px solid var(--ink);border-radius:10px;padding:18px 16px;
+    cursor:pointer;background:transparent;text-align:left;color:inherit;
+    font-family:inherit;
+  }
+  body.dark .home-card{border-color:var(--line-dark);}
+  .home-card:hover{background:rgba(176,118,43,0.08);}
+  .home-card .num{font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.55;letter-spacing:.1em;}
+  .home-card h3{font-family:'Fraunces',serif;margin:6px 0 4px;font-size:19px;}
+  .home-card p{font-size:12.5px;opacity:.68;margin:0;}
+
+  footer.foot{
+    text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    opacity:.45;margin-top:34px;letter-spacing:.04em;
+  }
+
+  @media (max-width:520px){
+    .sheet{padding:20px 16px;}
+    .stage{padding:20px 4px 4px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">Aspekte | Beruf · Prüfungsvorbereitung</span>
+      <h1>Wortschatz-Aktenmappe B2</h1>
+    </div>
+    <button class="theme-toggle" id="themeToggle">☾ / ☀</button>
+  </header>
+  <p class="subline">Vier Übungsmodi zum Wortschatz aus Auftakt sowie Modul 1–4 (Jobsuche, Lebenslauf, Ausbildung, Bewerbung). Wechsle über die Reiter oben — wie in einer Bewerbungsmappe.</p>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-mode="home">Übersicht</button>
+    <button class="tab-btn" data-mode="artikel">01 · Artikel</button>
+    <button class="tab-btn" data-mode="wortbildung">02 · Nomen ↔ Verb</button>
+    <button class="tab-btn" data-mode="synonyme">03 · Synonyme</button>
+    <button class="tab-btn" data-mode="raetsel">04 · Rätsel</button>
+  </nav>
+
+  <div class="sheet">
+
+    <!-- HOME -->
+    <section class="mode-view active" id="view-home">
+      <div class="mode-head"><h2>Vier Aktenordner, ein Ziel</h2></div>
+      <p class="mode-desc">Jeder Modus prüft den gleichen Wortschatz auf eine andere Weise. Am besten alle vier der Reihe nach durchgehen.</p>
+      <div class="home-grid">
+        <button class="home-card" data-goto="artikel">
+          <div class="num">01</div>
+          <h3>Artikel-Test</h3>
+          <p>der, die oder das? 41 Nomen aus Auftakt bis Modul 4.</p>
+        </button>
+        <button class="home-card" data-goto="wortbildung">
+          <div class="num">02</div>
+          <h3>Nomen ↔ Verb</h3>
+          <p>sich bewerben → die Bewerbung — und umgekehrt.</p>
+        </button>
+        <button class="home-card" data-goto="synonyme">
+          <div class="num">03</div>
+          <h3>Synonyme</h3>
+          <p>Finde die passende Umschreibung zum Wort.</p>
+        </button>
+        <button class="home-card" data-goto="raetsel">
+          <div class="num">04</div>
+          <h3>Wort-Rätsel</h3>
+          <p>Wort anhand einer deutschen Definition erraten.</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- ARTIKEL -->
+    <section class="mode-view" id="view-artikel">
+      <div class="stamp" id="stamp-artikel">✓ RICHTIG</div>
+      <div class="mode-head">
+        <h2>01 · Artikel-Test</h2>
+        <span class="score" id="score-artikel">0 / 0</span>
+      </div>
+      <p class="mode-desc">Wähle den richtigen bestimmten Artikel für das Nomen.</p>
+      <div class="stage">
+        <span class="prompt-label">Welcher Artikel?</span>
+        <div class="prompt-word" id="artikel-word">—</div>
+        <div class="options" id="artikel-options"></div>
+        <div class="controls"><button class="ctrl-btn" id="artikel-next">Nächstes Wort →</button></div>
+      </div>
+    </section>
+
+    <!-- WORTBILDUNG -->
+    <section class="mode-view" id="view-wortbildung">
+      <div class="stamp" id="stamp-wortbildung">✓ RICHTIG</div>
+      <div class="mode-head">
+        <h2>02 · Nomen ↔ Verb</h2>
+        <span class="score" id="score-wortbildung">0 / 0</span>
+      </div>
+      <p class="mode-desc">Wie heißt die passende Wortform? Karte antippen zum Aufdecken, dann selbst bewerten.</p>
+      <div class="stage">
+        <span class="prompt-label" id="wb-label">Wie heißt das Nomen dazu?</span>
+        <div class="flash" id="wb-flash">
+          <div class="prompt-word" id="wb-front">—</div>
+          <div class="answer" id="wb-back">—</div>
+          <div class="hint">Antippen, um die Lösung zu zeigen</div>
+        </div>
+        <div class="self-grade" id="wb-grade">
+          <button class="grade-btn yes" data-ok="1">Wusste ich ✓</button>
+          <button class="grade-btn no" data-ok="0">Nicht gewusst ✗</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYNONYME -->
+    <section class="mode-view" id="view-synonyme">
+      <div class="stamp" id="stamp-synonyme">✓ RICHTIG</div>
+      <div class="mode-head">
+        <h2>03 · Synonyme</h2>
+        <span class="score" id="score-synonyme">0 / 0</span>
+      </div>
+      <p class="mode-desc">Welches Wort bedeutet etwas Ähnliches? Wähle aus vier Möglichkeiten.</p>
+      <div class="stage">
+        <span class="prompt-label">Synonym gesucht für</span>
+        <div class="prompt-word" id="syn-word">—</div>
+        <div class="options" id="syn-options"></div>
+        <div class="controls"><button class="ctrl-btn" id="syn-next">Nächstes Wort →</button></div>
+      </div>
+    </section>
+
+    <!-- RAETSEL -->
+    <section class="mode-view" id="view-raetsel">
+      <div class="stamp" id="stamp-raetsel">✓ RICHTIG</div>
+      <div class="mode-head">
+        <h2>04 · Wort-Rätsel</h2>
+        <span class="score" id="score-raetsel">0 / 0</span>
+      </div>
+      <p class="mode-desc">Lies die Umschreibung und errate das passende Wort. Karte antippen für die Lösung.</p>
+      <div class="stage">
+        <span class="prompt-label">Umschreibung</span>
+        <div class="flash" id="rt-flash" style="max-width:600px;">
+          <div class="prompt-sub" id="rt-front" style="font-size:18px;">—</div>
+          <div class="answer" id="rt-back">—</div>
+          <div class="hint">Antippen, um die Lösung zu zeigen</div>
+        </div>
+        <div class="self-grade" id="rt-grade">
+          <button class="grade-btn yes" data-ok="1">Wusste ich ✓</button>
+          <button class="grade-btn no" data-ok="0">Nicht gewusst ✗</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="foot">Wortschatz: Aspekte | Beruf — Auftakt, Modul 1–4 · eigene Trainer-App</footer>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const NOUNS = [
+  ["die","Spedition"],["die","Kundschaft"],["der","Zoll"],["die","Formalie"],
+  ["die","Stellenanzeige"],["das","Jobportal"],["der","Lebenslauf"],["die","Bewerbung"],
+  ["die","Absage"],["die","Berufserfahrung"],["das","Praktikum"],["die","Herausforderung"],
+  ["die","Selbstständigkeit"],["die","Finanzierung"],["der","Behördengang"],["das","Gericht"],
+  ["die","Leidenschaft"],["das","Geburtsdatum"],["die","Nationalität"],["die","Tätigkeit"],
+  ["die","Beratung"],["die","Weiterbildung"],["die","Note"],["die","Muttersprache"],
+  ["die","Aushilfe"],["der","Arbeitsplatz"],["die","Ausbildungsmöglichkeit"],["die","Voraussetzung"],
+  ["das","Studium"],["das","Gehalt"],["der","Studienabschluss"],["die","Ausbildung"],
+  ["der","Experte"],["die","Berufsschule"],["der","Betrieb"],["die","Dauer"],
+  ["die","Stellenausschreibung"],["das","Anschreiben"],["der","Eintrittstermin"],
+  ["die","Einstellung"],["der","Kundenauftrag"]
+];
+
+const WORTBILDUNG = [
+  ["sich bewerben","die Bewerbung"],["absagen","die Absage"],["finanzieren","die Finanzierung"],
+  ["herausfordern","die Herausforderung"],["voraussetzen","die Voraussetzung"],["ausbilden","die Ausbildung"],
+  ["sich weiterbilden","die Weiterbildung"],["beraten","die Beratung"],["einstellen","die Einstellung"],
+  ["anschreiben","das Anschreiben"],["erfahren","die Erfahrung"],["herstellen","die Herstellung"],
+  ["sich orientieren","die Orientierung"],["weiterverarbeiten","die Weiterverarbeitung"]
+];
+
+const SYNONYME = [
+  ["kostengünstig","günstig"],["üblich","gängig"],["wahrscheinlich","vermutlich"],
+  ["abwechslungsreich","vielseitig"],["anstrengend","mühsam"],["flexibel","anpassungsfähig"],
+  ["teamfähig","kooperativ"],["verantwortungsvoll","pflichtbewusst"],["detailliert","ausführlich"],
+  ["verärgern","ärgern"],["nötig","notwendig"],["übersichtlich","klar strukturiert"],
+  ["die Leidenschaft","die Begeisterung"],["die Herausforderung","die Schwierigkeit"],
+  ["unterstützen","helfen"],["prüfen","kontrollieren"],["erstellen","anfertigen"],
+  ["einbringen","beitragen"],["verhandlungssicher","geschäftssicher"],["die Kundschaft","die Klientel"]
+];
+
+const RAETSEL = [
+  ["die Kundschaft","Alle Personen, die bei einer Firma etwas kaufen, nennt man so."],
+  ["abwechslungsreich","So nennt man eine Tätigkeit, die nicht langweilig und eintönig ist."],
+  ["die Leidenschaft","Etwas, das man mit großer Freude und viel Engagement macht, tut man mit …"],
+  ["verhandlungssicher","So spricht jemand, der eine Fremdsprache im Berufsalltag sicher benutzen kann."],
+  ["der Lebenslauf","Ein Dokument, das den beruflichen und schulischen Werdegang einer Person zeigt."],
+  ["die Absage","Eine negative Antwort auf eine Bewerbung."],
+  ["das Praktikum","Ein zeitlich begrenzter Einsatz in einem Betrieb, um praktische Erfahrung zu sammeln."],
+  ["die Berufserfahrung","Das Wissen und Können, das man durch bisherige Arbeit gesammelt hat."],
+  ["die Selbstständigkeit","Wenn man sein eigener Chef ist und keinen Arbeitgeber hat."],
+  ["der Zoll","Die Behörde, die an der Grenze Waren kontrolliert."],
+  ["die Spedition","Ein Unternehmen, das Waren von einem Ort zum anderen transportiert."],
+  ["die Note","Eine Zahl oder ein Symbol, mit dem eine schulische Leistung bewertet wird."],
+  ["die Muttersprache","Die Sprache, die man als Kind zuerst gelernt hat."],
+  ["der Betrieb","Ein anderes Wort für Firma oder Unternehmen."],
+  ["das Gehalt","Das Geld, das man monatlich für seine Arbeit bekommt."],
+  ["die Weiterbildung","Ein Kurs oder eine Schulung nach der Ausbildung, um Neues zu lernen."],
+  ["teamfähig","So nennt man jemanden, der gut mit anderen zusammenarbeiten kann."],
+  ["flexibel","So nennt man jemanden, der sich leicht an neue Situationen anpassen kann."],
+  ["das Anschreiben","Der Brief, den man einer Bewerbung beilegt und in dem man sich vorstellt."],
+  ["der Eintrittstermin","Der Tag, an dem man eine neue Stelle antritt."],
+  ["die Voraussetzung","Etwas, das erfüllt sein muss, bevor man etwas anderes tun kann."],
+  ["die Ausbildungsmöglichkeit","Eine Option, einen Beruf systematisch zu erlernen."],
+  ["der Experte","Eine Person, die sich auf einem Gebiet besonders gut auskennt."],
+  ["die Dauer","Der Zeitraum, wie lange etwas dauert."],
+  ["der Kundenauftrag","Eine Aufgabe, die ein Kunde einer Firma gibt."]
+];
+
+/* ---------------- HELPERS ---------------- */
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sample(arr,n,exclude){
+  const pool=arr.filter(x=>x!==exclude);
+  return shuffle(pool).slice(0,n);
+}
+
+/* ---------------- THEME ---------------- */
+const themeBtn=document.getElementById('themeToggle');
+themeBtn.addEventListener('click',()=>document.body.classList.toggle('dark'));
+
+/* ---------------- TABS ---------------- */
+const tabs=document.querySelectorAll('.tab-btn');
+const views=document.querySelectorAll('.mode-view');
+function goto(mode){
+  tabs.forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));
+  views.forEach(v=>v.classList.toggle('active',v.id==='view-'+mode));
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.mode)));
+document.querySelectorAll('.home-card').forEach(c=>c.addEventListener('click',()=>goto(c.dataset.goto)));
+
+function flashStamp(el,ok){
+  el.textContent=ok?'✓ RICHTIG':'✕ FALSCH';
+  el.classList.toggle('bad',!ok);
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),700);
+}
+
+/* ---------------- MODE 1: ARTIKEL ---------------- */
+let artikelScore={c:0,t:0}, artikelCurrent=null;
+function artikelNext(){
+  artikelCurrent=NOUNS[Math.floor(Math.random()*NOUNS.length)];
+  document.getElementById('artikel-word').textContent=artikelCurrent[1];
+  const optsWrap=document.getElementById('artikel-options');
+  optsWrap.innerHTML='';
+  ['der','die','das'].forEach(a=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';b.textContent=a;
+    b.addEventListener('click',()=>artikelAnswer(a,b));
+    optsWrap.appendChild(b);
+  });
+}
+function artikelAnswer(choice,btn){
+  const correct=artikelCurrent[0];
+  const ok=choice===correct;
+  artikelScore.t++; if(ok)artikelScore.c++;
+  document.getElementById('score-artikel').textContent=`${artikelScore.c} / ${artikelScore.t}`;
+  [...document.getElementById('artikel-options').children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn)b.classList.add('wrong');
+  });
+  flashStamp(document.getElementById('stamp-artikel'),ok);
+  setTimeout(artikelNext,900);
+}
+document.getElementById('artikel-next').addEventListener('click',artikelNext);
+
+/* ---------------- MODE 2: WORTBILDUNG (flashcards) ---------------- */
+let wbScore={c:0,t:0}, wbCurrent=null, wbDirection=1;
+function wbNext(){
+  wbCurrent=WORTBILDUNG[Math.floor(Math.random()*WORTBILDUNG.length)];
+  wbDirection=Math.random()<0.5?0:1; // 0: verb->noun, 1: noun->verb
+  const front=wbDirection===0?wbCurrent[0]:wbCurrent[1];
+  const back=wbDirection===0?wbCurrent[1]:wbCurrent[0];
+  document.getElementById('wb-label').textContent=wbDirection===0?'Wie heißt das Nomen dazu?':'Wie heißt das Verb dazu?';
+  document.getElementById('wb-front').textContent=front;
+  document.getElementById('wb-back').textContent=back;
+  const flash=document.getElementById('wb-flash');
+  flash.classList.remove('revealed');
+  document.getElementById('wb-grade').classList.remove('show');
+}
+document.getElementById('wb-flash').addEventListener('click',function(){
+  this.classList.add('revealed');
+  document.getElementById('wb-grade').classList.add('show');
+});
+document.getElementById('wb-grade').addEventListener('click',(e)=>{
+  const btn=e.target.closest('.grade-btn'); if(!btn)return;
+  const ok=btn.dataset.ok==='1';
+  wbScore.t++; if(ok)wbScore.c++;
+  document.getElementById('score-wortbildung').textContent=`${wbScore.c} / ${wbScore.t}`;
+  flashStamp(document.getElementById('stamp-wortbildung'),ok);
+  setTimeout(wbNext,500);
+});
+
+/* ---------------- MODE 3: SYNONYME (multiple choice) ---------------- */
+let synScore={c:0,t:0}, synCurrent=null;
+function synNext(){
+  synCurrent=SYNONYME[Math.floor(Math.random()*SYNONYME.length)];
+  document.getElementById('syn-word').textContent=synCurrent[0];
+  const distractors=sample(SYNONYME.map(p=>p[1]),3,synCurrent[1]);
+  const opts=shuffle([synCurrent[1],...distractors]);
+  const wrap=document.getElementById('syn-options');
+  wrap.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';b.textContent=o;
+    b.addEventListener('click',()=>synAnswer(o,b));
+    wrap.appendChild(b);
+  });
+}
+function synAnswer(choice,btn){
+  const correct=synCurrent[1];
+  const ok=choice===correct;
+  synScore.t++; if(ok)synScore.c++;
+  document.getElementById('score-synonyme').textContent=`${synScore.c} / ${synScore.t}`;
+  [...document.getElementById('syn-options').children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn)b.classList.add('wrong');
+  });
+  flashStamp(document.getElementById('stamp-synonyme'),ok);
+  setTimeout(synNext,1000);
+}
+document.getElementById('syn-next').addEventListener('click',synNext);
+
+/* ---------------- MODE 4: RAETSEL (flashcards) ---------------- */
+let rtScore={c:0,t:0}, rtCurrent=null;
+function rtNext(){
+  rtCurrent=RAETSEL[Math.floor(Math.random()*RAETSEL.length)];
+  document.getElementById('rt-front').textContent=rtCurrent[1];
+  document.getElementById('rt-back').textContent=rtCurrent[0];
+  const flash=document.getElementById('rt-flash');
+  flash.classList.remove('revealed');
+  document.getElementById('rt-grade').classList.remove('show');
+}
+document.getElementById('rt-flash').addEventListener('click',function(){
+  this.classList.add('revealed');
+  document.getElementById('rt-grade').classList.add('show');
+});
+document.getElementById('rt-grade').addEventListener('click',(e)=>{
+  const btn=e.target.closest('.grade-btn'); if(!btn)return;
+  const ok=btn.dataset.ok==='1';
+  rtScore.t++; if(ok)rtScore.c++;
+  document.getElementById('score-raetsel').textContent=`${rtScore.c} / ${rtScore.t}`;
+  flashStamp(document.getElementById('stamp-raetsel'),ok);
+  setTimeout(rtNext,500);
+});
+
+/* ---------------- INIT ---------------- */
+artikelNext();
+wbNext();
+synNext();
+rtNext();
+</script>
+</body>
+</html>
