@@ -19,7 +19,12 @@ h1{font-size:1.4rem;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 16px;font-si
 .desc{color:var(--mut);margin:0 0 10px}
 .qa{border-top:1px solid var(--bd);padding:8px 0}
 .q{font-weight:600;color:var(--ac)}.a{margin-top:2px}
+.back{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);border-radius:8px;background:transparent;color:var(--ac);font:inherit;font-weight:600;cursor:pointer}
+.back:hover{background:var(--bg)}
+.home{display:inline-block;margin-bottom:12px;padding:8px 14px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--ac);font-weight:600;text-decoration:none}
+.home:hover{background:var(--bg)}
 </style></head><body><main>
+<a class="home" href="index.html">← На главную</a>
 <h1>Ситуации и вопросы</h1>
 <p class="sub">Нажмите на тему, чтобы раскрыть детали. Открытая тема закрывается при открытии другой.</p>
 <div id="list"></div></main>
@@ -380,6 +385,9 @@ D.forEach((d,i)=>{
   const e=document.createElement('div');e.className='q';e.textContent=(j+1)+'. '+x[0];
   const f=document.createElement('div');f.className='a';f.textContent=x[1];
   q.append(e,f);b.append(q);});
+ const bk=document.createElement('button');bk.className='back';bk.textContent='← Назад к списку';
+ bk.onclick=()=>{it.classList.remove('open');h.setAttribute('aria-expanded','false');it.scrollIntoView({block:'center'});};
+ b.append(bk);
  h.onclick=()=>{const was=it.classList.contains('open');
   document.querySelectorAll('.item.open').forEach(o=>{o.classList.remove('open');o.firstChild.setAttribute('aria-expanded','false')});
   if(!was){it.classList.add('open');h.setAttribute('aria-expanded','true');}};
