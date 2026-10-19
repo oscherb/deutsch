@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Крипто / USDC — курс</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style id="appStyle">
+  :root {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --ink: #11181f;
+    --muted: #5d6b78;
+    --line: #dde3e8;
+    --up: #0f9d6a;
+    --down: #d6434c;
+    --accent: #5b3fd4;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c1117;
+      --surface: #141b23;
+      --ink: #e8edf2;
+      --muted: #8c9aa8;
+      --line: #25303b;
+      --up: #2fd49a;
+      --down: #ff6b74;
+      --accent: #9b86ff;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.4;
+    padding: 24px 16px 48px;
+  }
+  body.pip-body { padding: 0; overflow: hidden; }
+  main { max-width: 960px; margin: 0 auto; }
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  h1 { font-size: 1rem; font-weight: 600; margin: 0 0 4px; color: var(--muted); letter-spacing: .02em; }
+  .price { font-size: clamp(2.4rem, 8vw, 3.6rem); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .price small, .mini-price small { font-size: .4em; font-weight: 500; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+  .status { font-size: .85rem; color: var(--muted); text-align: right; }
+  .status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); margin-right: 6px; }
+  .status.ok .dot { background: var(--up); }
+  .status.err .dot { background: var(--down); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 16px 8px; }
+  .card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .coin-select {
+    font: inherit; font-size: .9rem; font-weight: 600;
+    background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: pointer;
+  }
+  .coin-select:hover { border-color: var(--accent); }
+  .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; padding: 3px; gap: 2px; background: var(--bg); }
+  .tabs button {
+    font: inherit; font-size: .9rem; font-weight: 600;
+    border: 0; background: transparent; color: var(--muted);
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
+  .tabs button:focus-visible, .btn:focus-visible, .coin-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .btn {
+    font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .stats { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-bottom: 8px; min-height: 1.2em; }
+  .change { font-weight: 600; }
+  .change.up { color: var(--up); }
+  .change.down { color: var(--down); }
+  .chart { position: relative; height: 340px; min-width: 0; }
+  .chart.loading { opacity: .45; }
+
+  /* полные / короткие подписи */
+  .ls, .li { display: none; }
+
+  /* строка «цена + изменение» — только в отдельном окне */
+  .mini-row { display: none; }
+  .mini-price { font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
+  .mini-change { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+  .mini-change .per { font-weight: 500; color: var(--muted); }
+
+  /* ---------- отдельное окно: масштабируется вместе с окном ---------- */
+  .card.detached {
+    position: relative; overflow: hidden;
+    height: 100vh; border: 0; border-radius: 0; padding: 12px 12px 6px;
+    display: flex; flex-direction: column;
+  }
+  .card.detached .mini-row {
+    display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap;
+    gap: 2px 12px; margin-bottom: 8px;
+  }
+  .card.detached .mini-price { font-size: clamp(1.3rem, min(9vw, 14vh), 2.7rem); }
+  .card.detached .mini-change { font-size: clamp(.8rem, min(4.2vw, 6vh), 1.15rem); }
+  .card.detached .card-head { gap: 6px 8px; margin-bottom: 8px; }
+  .card.detached .controls { gap: 6px; }
+  .card.detached .stats .change { display: none; }      /* процент уже показан рядом с ценой */
+  .card.detached .chart { flex: 1; height: auto; min-height: 0; }
+
+  /* узкое окно */
+  .card.w-s .lf { display: none; }
+  .card.w-s .ls { display: inline; }
+  .card.w-s .tabs button { padding: 5px 9px; font-size: .8rem; }
+  .card.w-s .coin-select { padding: 6px 6px; font-size: .8rem; }
+  .card.w-s .btn { padding: 6px 9px; font-size: .8rem; }
+  .card.w-xs .btn .ls { display: none; }
+  .card.w-xs .btn .li { display: inline; }
+  .card.w-xs .tabs button { padding: 4px 6px; font-size: .75rem; }
+  .card.w-xs .coin-select { padding: 4px 4px; font-size: .75rem; }
+  .card.w-xs .mini-price small { display: block; margin-left: 0; }
+
+  /* невысокое окно */
+  .card.h-s .stats { display: none; }
+  .card.h-xs { padding: 6px 8px 4px; }
+  .card.h-xs .mini-row { margin-bottom: 4px; }
+  .card.h-xs .card-head { margin-bottom: 4px; }
+  .card.h-xs .tabs button { padding: 3px 7px; }
+  .card.h-xs .coin-select, .card.h-xs .btn { padding-top: 3px; padding-bottom: 3px; }
+
+  /* совсем низкое окно: остаются цена, изменение и график; элементы управления — при наведении */
+  .card.h-xxs .card-head {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 5; margin: 0; padding: 6px 8px;
+    background: var(--surface); border-bottom: 1px solid var(--line);
+    opacity: 0; pointer-events: none; transition: opacity .12s;
+  }
+  .card.h-xxs:hover .card-head, .card.h-xxs:focus-within .card-head { opacity: 1; pointer-events: auto; }
+
+  .placeholder {
+    background: var(--surface); border: 1px dashed var(--line); border-radius: 10px;
+    padding: 56px 16px; text-align: center; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .placeholder[hidden] { display: none; }
+  footer { font-size: .8rem; color: var(--muted); margin-top: 12px; }
+  @media (max-width: 520px) { .chart { height: 260px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1 id="pairTitle">SOL / USDC</h1>
+      <div class="price" id="price">—<small>USDC</small></div>
+    </div>
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">Загрузка…</span></div>
+  </header>
+
+  <div id="cardHost">
+    <section class="card" id="card">
+      <div class="mini-row">
+        <div class="mini-price" id="miniPrice">—</div>
+        <div class="mini-change" id="miniChange"></div>
+      </div>
+      <div class="card-head">
+        <div class="controls">
+          <select class="coin-select" id="coinSelect" aria-label="Криптовалюта"></select>
+          <div class="tabs" id="tabs" role="group" aria-label="Период">
+            <button type="button" data-id="d1" aria-pressed="true"><span class="lf">24 часа</span><span class="ls">24ч</span></button>
+            <button type="button" data-id="w1" aria-pressed="false"><span class="lf">Неделя</span><span class="ls">7д</span></button>
+            <button type="button" data-id="m1" aria-pressed="false"><span class="lf">Месяц</span><span class="ls">30д</span></button>
+          </div>
+        </div>
+        <button type="button" class="btn" id="toggleBtn"></button>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="chart" id="chartBox"><canvas id="chart"></canvas></div>
+    </section>
+  </div>
+
+  <div class="placeholder" id="placeholder" hidden>
+    <div>График открыт в отдельном окне</div>
+    <button type="button" class="btn" id="returnBtn">Вернуть на страницу</button>
+  </div>
+
+  <footer>Данные: публичные API Binance (резервно — Kraken). Обновление каждую минуту. Список монет задаётся массивом COINS в коде страницы.</footer>
+</main>
+
+<script>
+(function () {
+  var REFRESH_MS = 60000;
+
+  // Топ-15 основных криптовалют (без стейблкоинов). Список можно менять:
+  // s — тикер (пара на бирже будет <s>USDC), n — название, k — тикер на Kraken, если он отличается.
+  var COINS = [
+    { s: 'BTC',  n: 'Bitcoin',      k: 'XBT' },
+    { s: 'ETH',  n: 'Ethereum' },
+    { s: 'XRP',  n: 'XRP' },
+    { s: 'BNB',  n: 'BNB' },
+    { s: 'SOL',  n: 'Solana' },
+    { s: 'DOGE', n: 'Dogecoin',     k: 'XDG' },
+    { s: 'TRX',  n: 'TRON' },
+    { s: 'ADA',  n: 'Cardano' },
+    { s: 'LINK', n: 'Chainlink' },
+    { s: 'AVAX', n: 'Avalanche' },
+    { s: 'XLM',  n: 'Stellar' },
+    { s: 'BCH',  n: 'Bitcoin Cash' },
+    { s: 'SUI',  n: 'Sui' },
+    { s: 'LTC',  n: 'Litecoin' },
+    { s: 'DOT',  n: 'Polkadot' }
+  ];
+
+  var PERIODS = {
+    d1: { short: '24ч', binance: { interval: '5m', limit: 288 }, kraken: { interval: 5,   count: 288 }, labelFmt: { hour: '2-digit', minute: '2-digit' } },
+    w1: { short: '7д',  binance: { interval: '1h', limit: 168 }, kraken: { interval: 60,  count: 168 }, labelFmt: { weekday: 'short', hour: '2-digit', minute: '2-digit' } },
+    m1: { short: '30д', binance: { interval: '4h', limit: 180 }, kraken: { interval: 240, count: 180 }, labelFmt: { day: '2-digit', month: 'short' } }
+  };
+  var BINANCE_HOSTS = ['https://data-api.binance.vision', 'https://api.binance.com'];
+  var STORE_KEY = 'cryptoChart.coin';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var el = {
+    card: $('card'), host: $('cardHost'), placeholder: $('placeholder'),
+    pairTitle: $('pairTitle'), price: $('price'), miniPrice: $('miniPrice'), miniChange: $('miniChange'), stats: $('stats'),
+    chartBox: $('chartBox'), canvas: $('chart'), tabs: $('tabs'), coinSelect: $('coinSelect'),
+    toggleBtn: $('toggleBtn'), returnBtn: $('returnBtn'),
+    status: $('status'), statusText: $('statusText')
+  };
+
+  var coin = COINS[4];     // по умолчанию SOL
+  try {
+    var saved = localStorage.getItem(STORE_KEY);
+    var found = COINS.filter(function (c) { return c.s === saved; })[0];
+    if (found) coin = found;
+  } catch (e) {}
+
+  var active = 'd1';
+  var cache = {};          // "BTC:d1" -> { data, at }
+  var chart = null;
+  var axisDec = 2;
+  var cs = { font: 12, xTicks: 6, yTicks: 6, showX: true };   // масштаб графика под размер окна
+  var busy = false;
+  var detachedWin = null;
+  var winTimer = null;
+
+  function key() { return coin.s + ':' + active; }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function decimalsFor(v) { v = Math.abs(v); return v >= 100 ? 2 : v >= 1 ? 3 : v >= 0.1 ? 4 : 5; }
+  function fmtPrice(v, d) {
+    d = d == null ? decimalsFor(v) : d;
+    return v.toLocaleString('ru-RU', { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+
+  /* ---------- данные ---------- */
+  function fetchJson(url) {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, 10000);
+    return fetch(url, { signal: ctrl.signal, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .finally(function () { clearTimeout(timer); });
+  }
+
+  function fromBinance(c, p, i) {
+    if (i >= BINANCE_HOSTS.length) return Promise.reject(new Error('binance'));
+    var url = BINANCE_HOSTS[i] + '/api/v3/klines?symbol=' + c.s + 'USDC&interval=' + p.binance.interval + '&limit=' + p.binance.limit;
+    return fetchJson(url).then(function (rows) {
+      if (!Array.isArray(rows) || !rows.length) throw new Error('empty');
+      return rows.map(function (k) { return { t: k[0], p: parseFloat(k[4]) }; });
+    }).catch(function () { return fromBinance(c, p, i + 1); });
+  }
+
+  function fromKraken(c, p) {
+    var since = Math.floor(Date.now() / 1000) - p.kraken.count * p.kraken.interval * 60;
+    var url = 'https://api.kraken.com/0/public/OHLC?pair=' + (c.k || c.s) + 'USDC&interval=' + p.kraken.interval + '&since=' + since;
+    return fetchJson(url).then(function (j) {
+      if (j.error && j.error.length) throw new Error(j.error.join(','));
+      var k0 = Object.keys(j.result).filter(function (k) { return k !== 'last'; })[0];
+      var rows = j.result[k0];
+      if (!rows || !rows.length) throw new Error('empty');
+      return rows.map(function (k) { return { t: k[0] * 1000, p: parseFloat(k[4]) }; });
+    });
+  }
+
+  function load(c, id) {
+    var p = PERIODS[id];
+    return fromBinance(c, p, 0).catch(function () { return fromKraken(c, p); });
+  }
+
+  /* ---------- график ---------- */
+  function ensureChart() {
+    if (chart) return chart;
+    chart = new Chart(el.canvas, {
+      type: 'line',
+      data: { labels: [], datasets: [{ data: [], borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.15, fill: true }] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            displayColors: false,
+            callbacks: {
+              title: function (items) { return items[0].dataset.full[items[0].dataIndex]; },
+              label: function (item) { return fmtPrice(item.parsed.y) + ' USDC'; }
+            }
+          }
+        },
+        scales: {
+          x: { display: cs.showX, grid: { display: false }, ticks: { maxTicksLimit: cs.xTicks, maxRotation: 0, font: { size: cs.font } } },
+          y: { ticks: { maxTicksLimit: cs.yTicks, font: { size: cs.font }, callback: function (v) { return v.toFixed(axisDec); } } }
+        }
+      }
+    });
+    return chart;
+  }
+
+  function destroyChart() {
+    if (chart) { chart.destroy(); chart = null; }
+  }
+
+  function applyChartScale() {
+    if (!chart) return;
+    var s = chart.options.scales;
+    s.x.display = cs.showX;
+    s.x.ticks.maxTicksLimit = cs.xTicks;
+    s.x.ticks.font = { size: cs.font };
+    s.y.ticks.maxTicksLimit = cs.yTicks;
+    s.y.ticks.font = { size: cs.font };
+    chart.update('none');
+    chart.resize();
+  }
+
+  /* ---------- адаптация под размер отдельного окна ---------- */
+  function setOptionLabels(short) {
+    Array.prototype.forEach.call(el.coinSelect.options, function (o, i) {
+      var c = COINS[i];
+      o.textContent = short ? c.s : (i + 1) + '. ' + c.s + ' — ' + c.n;
+    });
+  }
+
+  function applyCompact() {
+    var w = detachedWin;
+    var W = w ? (w.innerWidth || 480) : 99999;
+    var H = w ? (w.innerHeight || 440) : 99999;
+    var cl = el.card.classList;
+    cl.toggle('w-s', W < 400);
+    cl.toggle('w-xs', W < 290);
+    cl.toggle('h-s', H < 330);
+    cl.toggle('h-xs', H < 230);
+    cl.toggle('h-xxs', H < 170);
+    cs = {
+      font: (W < 290 || H < 230) ? 9 : (W < 400 || H < 330) ? 10 : 12,
+      xTicks: W < 290 ? 2 : W < 400 ? 3 : 6,
+      yTicks: H < 230 ? 3 : H < 330 ? 4 : 6,
+      showX: H >= 170
+    };
+    setOptionLabels(W < 400);
+    applyChartScale();
+  }
+
+  function setTitles() {
+    var t = coin.s + ' / USDC';
+    el.pairTitle.textContent = t + ' · ' + coin.n;
+    document.title = t;
+    if (detachedWin) { try { detachedWin.document.title = t; } catch (e) {} }
+  }
+
+  function render() {
+    var entry = cache[key()];
+    var c = ensureChart();
+    var ds = c.data.datasets[0];
+    setTitles();
+
+    if (!entry) {                                   // данных ещё нет — очищаем прошлую монету
+      c.data.labels = []; ds.data = [];
+      c.update();
+      el.stats.innerHTML = '';
+      el.miniChange.innerHTML = '';
+      el.price.innerHTML = '—<small>USDC</small>';
+      el.miniPrice.innerHTML = '—<small>' + coin.s + ' / USDC</small>';
+      return;
+    }
+
+    var data = entry.data, p = PERIODS[active];
+    var first = data[0].p, last = data[data.length - 1].p;
+    var prices = data.map(function (d) { return d.p; });
+    var hi = Math.max.apply(null, prices), lo = Math.min.apply(null, prices);
+    var up = last >= first;
+    var color = up ? css('--up') : css('--down');
+    axisDec = decimalsFor(hi);
+
+    c.data.labels = data.map(function (d) { return new Date(d.t).toLocaleString('ru-RU', p.labelFmt); });
+    ds.full = data.map(function (d) { return new Date(d.t).toLocaleString('ru-RU', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' }); });
+    ds.data = prices;
+    ds.borderColor = color;
+    var g = c.ctx.createLinearGradient(0, 0, 0, c.height || 340);
+    g.addColorStop(0, color + '33');
+    g.addColorStop(1, color + '00');
+    ds.backgroundColor = g;
+
+    c.options.scales.x.ticks.color = css('--muted');
+    c.options.scales.y.ticks.color = css('--muted');
+    c.options.scales.y.grid = { color: css('--line') };
+    c.update();
+
+    var pct = (last / first - 1) * 100;
+    var changeHtml = '<span class="change ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '') + pct.toFixed(2).replace('.', ',') + '%</span>';
+    el.stats.innerHTML = changeHtml + '<span>макс. ' + fmtPrice(hi) + '</span><span>мин. ' + fmtPrice(lo) + '</span>';
+    el.miniChange.innerHTML = changeHtml + ' <span class="per">· ' + p.short + '</span>';
+    el.price.innerHTML = fmtPrice(last) + '<small>USDC</small>';
+    el.miniPrice.innerHTML = fmtPrice(last) + '<small>' + coin.s + ' / USDC</small>';
+    document.title = coin.s + ' ' + fmtPrice(last);
+    if (detachedWin) { try { detachedWin.document.title = document.title; } catch (e) {} }
+  }
+
+  function setStatus(ok, text) {
+    el.status.className = 'status ' + (ok ? 'ok' : 'err');
+    el.statusText.textContent = text;
+  }
+
+  /* ---------- обновление ---------- */
+  function refresh(force) {
+    if (busy) return;
+    var k = key();
+    var cur = cache[k];
+    if (!force && cur && Date.now() - cur.at < 20000) return;
+    busy = true;
+    var c = coin, id = active;
+    if (!cur) el.chartBox.classList.add('loading');
+    load(c, id).then(function (data) {
+      cache[c.s + ':' + id] = { data: data, at: Date.now() };
+      if (c === coin && id === active) render();
+      setStatus(true, 'Обновлено в ' + new Date().toLocaleTimeString('ru-RU'));
+    }).catch(function () {
+      if (c === coin && id === active) setStatus(false, 'Нет данных по ' + c.s + '/USDC, повтор через минуту');
+    }).finally(function () {
+      busy = false;
+      el.chartBox.classList.remove('loading');
+      if (c !== coin || id !== active) refresh(true);   // выбор сменили во время загрузки
+    });
+  }
+
+  el.tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-id]');
+    if (!btn || btn.dataset.id === active) return;
+    active = btn.dataset.id;
+    Array.prototype.forEach.call(el.tabs.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+    });
+    render();
+    if (!cache[key()] || Date.now() - cache[key()].at > 30000) refresh(true);
+  });
+
+  /* ---------- выбор монеты ---------- */
+  COINS.forEach(function () { el.coinSelect.appendChild(document.createElement('option')); });
+  Array.prototype.forEach.call(el.coinSelect.options, function (o, i) { o.value = COINS[i].s; });
+  setOptionLabels(false);
+  el.coinSelect.value = coin.s;
+
+  el.coinSelect.addEventListener('change', function () {
+    var next = COINS.filter(function (c) { return c.s === el.coinSelect.value; })[0];
+    if (!next || next === coin) return;
+    coin = next;
+    try { localStorage.setItem(STORE_KEY, coin.s); } catch (e) {}
+    render();
+    if (!cache[key()] || Date.now() - cache[key()].at > 30000) refresh(true);
+  });
+
+  /* ---------- отдельное окно ---------- */
+  function setDetachedUI(on) {
+    el.placeholder.hidden = !on;
+    el.card.classList.toggle('detached', on);
+    var label = on ? 'Вернуть на страницу' : 'Открыть в отдельном окне';
+    el.toggleBtn.innerHTML = on
+      ? '<span class="lf">Вернуть на страницу</span><span class="ls">Вернуть</span><span class="li">↩</span>'
+      : '<span class="lf">Открыть в отдельном окне</span>';
+    el.toggleBtn.title = label;
+    el.toggleBtn.setAttribute('aria-label', label);
+  }
+
+  async function detach() {
+    if (detachedWin) return;
+    var w = null;
+    try {
+      if ('documentPictureInPicture' in window) {
+        w = await documentPictureInPicture.requestWindow({ width: 420, height: 340 });
+      }
+    } catch (e) { w = null; }
+    if (!w) w = window.open('', 'crypto-chart-window', 'popup=yes,width=420,height=360');
+    if (!w) { setStatus(false, 'Браузер заблокировал открытие окна'); return; }
+
+    var d = w.document;
+    d.title = coin.s + ' / USDC';
+    var meta = d.createElement('meta'); meta.setAttribute('charset', 'utf-8'); d.head.appendChild(meta);
+    var st = d.createElement('style'); st.textContent = $('appStyle').textContent; d.head.appendChild(st);
+    d.body.className = 'pip-body';
+
+    destroyChart();
+    setDetachedUI(true);
+    d.body.appendChild(el.card);
+    detachedWin = w;
+    w.addEventListener('pagehide', function () { if (detachedWin === w) reattach(false); });
+    w.addEventListener('resize', applyCompact);
+    winTimer = w.setInterval(function () { refresh(); }, REFRESH_MS);   // таймер окна не замораживается, пока вкладка в фоне
+
+    applyCompact();
+    render();
+    setTimeout(applyCompact, 80);
+  }
+
+  function reattach(closeWin) {
+    var w = detachedWin;
+    if (!w) return;
+    detachedWin = null;
+    try { w.clearInterval(winTimer); } catch (e) {}
+    destroyChart();
+    el.host.appendChild(el.card);
+    setDetachedUI(false);
+    applyCompact();             // сброс компактных режимов
+    render();
+    setTimeout(function () { if (chart) chart.resize(); }, 60);
+    if (closeWin) { try { w.close(); } catch (e) {} }
+  }
+
+  function toggle() { if (detachedWin) reattach(true); else detach(); }
+  el.toggleBtn.addEventListener('click', toggle);
+  el.returnBtn.addEventListener('click', function () { reattach(true); });
+  window.addEventListener('pagehide', function () { if (detachedWin) { try { detachedWin.close(); } catch (e) {} } });
+
+  /* ---------- старт ---------- */
+  setDetachedUI(false);
+  render();
+  refresh(true);
+  setInterval(function () { refresh(); }, REFRESH_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
+})();
+</script>
+</body>
+</html>

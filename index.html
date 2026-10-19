@@ -1,101 +1,458 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wir lernen Deutsch</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>My projects</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Montserrat', Arial, sans-serif;
-            /* Градиент в цветах немецкого флага (черный, красный, золотой) с приглушенными оттенками */
-            background: linear-gradient(135deg, #333333, #8a2b2b, #d4a72d);
-            color: #333;
+        :root {
+            --ink: #12162b;
+            --paper: #f1f2f7;
+            --muted: #a9aec6;
+            --blue: #2a3dd8;
+            --yellow: #ffc93c;
+            --display: 'Unbounded', 'Arial Black', Arial, sans-serif;
+            --text: 'Onest', 'Segoe UI', Arial, sans-serif;
         }
 
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 90%;
-            width: 500px;
-            box-sizing: border-box;
+        * { box-sizing: border-box; }
+
+        html { background: var(--ink); }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--text);
+            font-size: 1.0625rem;
+            line-height: 1.5;
         }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header { padding: 56px 0 40px; }
 
         h1 {
-            color: #4CAF50;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin: 0;
+            font-family: var(--display);
             font-weight: 700;
+            font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+            letter-spacing: 0.01em;
+            color: var(--muted);
         }
 
-        .button {
-            display: block;
-            width: calc(100% - 20px);
-            padding: 15px 25px;
-            font-size: 1.1em;
+        h2 { margin: 0; }
+
+        .head-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        /* Language switch */
+        .lang {
+            display: inline-flex;
+            border: 2px solid rgba(169, 174, 198, 0.45);
+            border-radius: 999px;
+            padding: 2px;
+        }
+        .lang button {
+            margin: 0;
+            padding: 6px 14px;
+            border: 0;
+            border-radius: 999px;
+            background: none;
+            color: var(--muted);
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            text-align: center;
+        }
+        .lang button[aria-pressed="true"] {
+            background: var(--paper);
+            color: var(--ink);
+        }
+        .lang button:focus-visible {
+            outline: 2px solid var(--paper);
+            outline-offset: 2px;
+        }
+
+        /* Section bands */
+        .band { color: var(--paper); }
+        .band--crypto { background: var(--blue); }
+        .band--german { background: var(--yellow); color: var(--ink); }
+        .band--empty {
+            background: transparent;
+            border-top: 2px dashed rgba(169, 174, 198, 0.45);
+            color: var(--muted);
+        }
+        .band--empty:last-of-type { border-bottom: 2px dashed rgba(169, 174, 198, 0.45); }
+
+        .band-head {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .band-head .wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-top: 36px;
+            padding-bottom: 36px;
+        }
+
+        .band-title {
+            flex: 1;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: clamp(1.45rem, 4.2vw, 2.7rem);
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+
+        .band--empty .band-title { font-weight: 500; }
+
+        .band-count {
+            font-weight: 500;
+            font-size: 0.95rem;
+            opacity: 0.85;
+            white-space: nowrap;
+        }
+
+        /* Plus that turns into a minus */
+        .toggle {
+            position: relative;
+            flex: none;
+            width: 28px;
+            height: 28px;
+        }
+        .toggle::before,
+        .toggle::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            height: 3px;
+            background: currentColor;
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s ease;
+        }
+        .toggle::after { transform: translate(-50%, -50%) rotate(90deg); }
+        .band.open .toggle::after { transform: translate(-50%, -50%) rotate(0deg); }
+
+        .band-head:focus-visible {
+            outline: 3px solid currentColor;
+            outline-offset: -6px;
+        }
+
+        /* Expandable part */
+        .panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s ease;
+        }
+        .band.open .panel { grid-template-rows: 1fr; }
+
+        .panel-inner {
+            min-height: 0;
+            overflow: hidden;
+            visibility: hidden;
+            transition: visibility 0s linear 0.35s;
+        }
+        .band.open .panel-inner {
+            visibility: visible;
+            transition-delay: 0s;
+        }
+
+        .groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 8px 48px;
+            padding-bottom: 44px;
+        }
+
+        .group h3 {
+            margin: 0 0 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .group ul {
+            list-style: none;
+            margin: 0 0 20px;
+            padding: 0;
+        }
+
+        .group li { border-top: 1px solid rgba(255, 255, 255, 0.35); }
+        .band--german .group li { border-top-color: rgba(18, 22, 43, 0.3); }
+
+        .group a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 13px 2px;
+            color: inherit;
+            font-weight: 500;
             text-decoration: none;
-            outline: none;
-            color: #fff;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 7px #3e8e41;
-            margin: 10px auto;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            transition: padding-left 0.2s ease;
         }
 
-        .button:hover {
-            background-color: #5cb85c;
-            box-shadow: 0 5px #3e8e41;
+        .group a svg {
+            flex: none;
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
         }
 
-        .button:active {
-            background-color: #3e8e41;
-            box-shadow: 0 2px #666;
-            transform: translateY(4px);
+        .group a:hover,
+        .group a:focus-visible { padding-left: 10px; }
+        .group a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+        .empty-note {
+            margin: 0;
+            padding: 0 0 44px;
+            max-width: 46ch;
         }
+
+        footer { height: 56px; }
 
         @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
+            .wrap { padding: 0 18px; }
+            header { padding: 36px 0 28px; }
+            .band-head .wrap { padding-top: 26px; padding-bottom: 26px; gap: 14px; }
+            .band-count { display: none; }
+            .groups { gap: 0; }
+        }
 
-            h1 {
-                font-size: 2em;
-            }
-
-            .button {
-                font-size: 1em;
-                padding: 12px 20px;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            .panel, .toggle::before, .toggle::after, .group a { transition: none; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Wir lernen Deutsch</h1>
-        <button class="button" onclick="location.href='Worter.html'">Wörter lernen</button>
-        <button class="button" onclick="location.href='german_trainer_b2.html'">Wörter B2 lernen</button>
-        <button class="button" onclick="location.href='german_trainer.html'">Wörter</button>
-        <button class="button" onclick="location.href='verb.html'">Unregelmäßige Verben</button>
-		<button class="button" onclick="location.href='card_b3.html'">Karten mit Wörtern 2.1</button>
-        <button class="button" onclick="location.href='Verb_propos.html'">Verben mit Präpositionen</button>
-        <button class="button" onclick="location.href='artikel_trainer1.html'">Artikel_trainer 1</button>
-        <button class="button" onclick="location.href='artikel_trainer2.html'">Artikel_trainer 2</button>
-        <button class="button" onclick="location.href='artikel_trainer4.html'">Artikel_trainer 4</button>
-        <button class="button" onclick="location.href='artikel_trainer5.html'">Artikel_trainer 5</button>
-        <button class="button" onclick="location.href='artikel_trainer6.html'">Artikel_trainer 6</button>	
-        <button class="button" onclick="location.href='dialog_1.html'">Темы для диалогов </button>		
-    </div>
+    <header>
+        <div class="wrap">
+            <div class="head-row">
+                <h1 data-i18n="title">My projects</h1>
+                <div class="lang" role="group" aria-label="Language">
+                    <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+                    <button type="button" data-lang="uk" aria-pressed="false" lang="uk">UA</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. Crypto -->
+        <section class="band band--crypto">
+            <h2>
+                <button class="band-head" aria-expanded="false" aria-controls="p-crypto">
+                    <span class="wrap">
+                        <span class="band-title" data-i18n="crypto.title">Crypto courses</span>
+                        <span class="band-count" data-i18n="count.one" data-n="1">1 page</span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </span>
+                </button>
+            </h2>
+            <div class="panel" id="p-crypto">
+                <div class="panel-inner">
+                    <div class="wrap">
+                        <div class="groups">
+                            <div class="group">
+                                <ul>
+                                    <li><a href="./Kurs/Krypto.usdc.html" target="_blank" rel="noopener">Krypto USDC <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. German -->
+        <section class="band band--german">
+            <h2>
+                <button class="band-head" aria-expanded="false" aria-controls="p-german">
+                    <span class="wrap">
+                        <span class="band-title" data-i18n="german.title">Learning German</span>
+                        <span class="band-count" data-i18n="count.many" data-n="12">12 pages</span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </span>
+                </button>
+            </h2>
+            <div class="panel" id="p-german">
+                <div class="panel-inner">
+                    <div class="wrap">
+                        <div class="groups">
+                            <div class="group">
+                                <h3 data-i18n="g.words">Words</h3>
+                                <ul>
+                                    <li><a href="Worter.html" target="_blank" rel="noopener">Wörter lernen <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="german_trainer_b2.html" target="_blank" rel="noopener">Wörter B2 lernen <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="german_trainer.html" target="_blank" rel="noopener">Wörter <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="card_b3.html" target="_blank" rel="noopener">Karten mit Wörtern 2.1 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                </ul>
+                                <h3 data-i18n="g.speaking">Speaking</h3>
+                                <ul>
+                                    <li><a href="dialog_1.html" target="_blank" rel="noopener"><span data-i18n="link.dialogs">Dialogue topics</span> <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                </ul>
+                            </div>
+                            <div class="group">
+                                <h3 data-i18n="g.verbs">Verbs</h3>
+                                <ul>
+                                    <li><a href="verb.html" target="_blank" rel="noopener">Unregelmäßige Verben <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="Verb_propos.html" target="_blank" rel="noopener">Verben mit Präpositionen <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                </ul>
+                                <h3 data-i18n="g.articles">Articles</h3>
+                                <ul>
+                                    <li><a href="artikel_trainer1.html" target="_blank" rel="noopener">Artikel_trainer 1 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="artikel_trainer2.html" target="_blank" rel="noopener">Artikel_trainer 2 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="artikel_trainer4.html" target="_blank" rel="noopener">Artikel_trainer 4 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="artikel_trainer5.html" target="_blank" rel="noopener">Artikel_trainer 5 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                    <li><a href="artikel_trainer6.html" target="_blank" rel="noopener">Artikel_trainer 6 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Placeholder -->
+        <section class="band band--empty">
+            <h2>
+                <button class="band-head" aria-expanded="false" aria-controls="p-3">
+                    <span class="wrap">
+                        <span class="band-title" data-i18n="s3">Section 3</span>
+                        <span class="band-count" data-i18n="empty">empty</span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </span>
+                </button>
+            </h2>
+            <div class="panel" id="p-3">
+                <div class="panel-inner">
+                    <div class="wrap">
+                        <p class="empty-note" data-i18n="emptyNote">No links yet. Add the first one to this section and it will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Placeholder -->
+        <section class="band band--empty">
+            <h2>
+                <button class="band-head" aria-expanded="false" aria-controls="p-4">
+                    <span class="wrap">
+                        <span class="band-title" data-i18n="s4">Section 4</span>
+                        <span class="band-count" data-i18n="empty">empty</span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </span>
+                </button>
+            </h2>
+            <div class="panel" id="p-4">
+                <div class="panel-inner">
+                    <div class="wrap">
+                        <p class="empty-note" data-i18n="emptyNote">No links yet. Add the first one to this section and it will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script>
+        var I18N = {
+            en: {
+                title: 'My projects',
+                'crypto.title': 'Crypto courses',
+                'german.title': 'Learning German',
+                'count.one': '1 page',
+                'count.many': '12 pages',
+                'g.words': 'Words',
+                'g.speaking': 'Speaking',
+                'g.verbs': 'Verbs',
+                'g.articles': 'Articles',
+                'link.dialogs': 'Dialogue topics',
+                s3: 'Section 3',
+                s4: 'Section 4',
+                empty: 'empty',
+                emptyNote: 'No links yet. Add the first one to this section and it will appear here.',
+                pageTitle: 'My projects',
+                langLabel: 'Language'
+            },
+            uk: {
+                title: 'Мої проєкти',
+                'crypto.title': 'Курси криптовалют',
+                'german.title': 'Вивчення німецької',
+                'count.one': '1 сторінка',
+                'count.many': '12 сторінок',
+                'g.words': 'Слова',
+                'g.speaking': 'Мовлення',
+                'g.verbs': 'Дієслова',
+                'g.articles': 'Артиклі',
+                'link.dialogs': 'Теми для діалогів',
+                s3: 'Розділ 3',
+                s4: 'Розділ 4',
+                empty: 'порожньо',
+                emptyNote: 'Посилань поки немає. Додайте перше в цей розділ, і воно з’явиться тут.',
+                pageTitle: 'Мої проєкти',
+                langLabel: 'Мова'
+            }
+        };
+
+        function setLang(lang) {
+            if (!I18N[lang]) lang = 'en';
+            var dict = I18N[lang];
+            document.documentElement.lang = lang;
+            document.title = dict.pageTitle;
+            document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) el.textContent = dict[key];
+            });
+            document.querySelector('.lang').setAttribute('aria-label', dict.langLabel);
+            document.querySelectorAll('.lang button').forEach(function (b) {
+                b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false');
+            });
+            try { localStorage.setItem('lang', lang); } catch (e) {}
+        }
+
+        document.querySelectorAll('.lang button').forEach(function (b) {
+            b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+        });
+
+        var saved = 'en';
+        try { saved = localStorage.getItem('lang') || 'en'; } catch (e) {}
+        setLang(saved);
+
+        document.querySelectorAll('.band-head').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var band = btn.closest('.band');
+                var open = band.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        });
+    </script>
 </body>
 </html>
