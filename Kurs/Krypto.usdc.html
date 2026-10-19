@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Крипто / USDC — курс</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crypto / USDC — price</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style id="appStyle">
   :root {
@@ -30,7 +30,8 @@
       color-scheme: dark;
     }
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   html, body { margin: 0; }
   body {
     background: var(--bg);
@@ -42,6 +43,7 @@
   body.pip-body { padding: 0; overflow: hidden; }
   main { max-width: 960px; margin: 0 auto; }
   header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  .hdr-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
   h1 { font-size: 1rem; font-weight: 600; margin: 0 0 4px; color: var(--muted); letter-spacing: .02em; }
   .price { font-size: clamp(2.4rem, 8vw, 3.6rem); font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
   .price small, .mini-price small { font-size: .4em; font-weight: 500; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
@@ -68,6 +70,7 @@
   .tabs button:hover { color: var(--ink); }
   .tabs button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
   .tabs button:focus-visible, .btn:focus-visible, .coin-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .lang button { padding: 4px 10px; font-size: .8rem; }
   .btn {
     font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; white-space: nowrap;
     background: transparent; color: var(--ink);
@@ -81,16 +84,16 @@
   .chart { position: relative; height: 340px; min-width: 0; }
   .chart.loading { opacity: .45; }
 
-  /* полные / короткие подписи */
+  /* full / short labels */
   .ls, .li { display: none; }
 
-  /* строка «цена + изменение» — только в отдельном окне */
+  /* price + change row — detached window only */
   .mini-row { display: none; }
   .mini-price { font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
   .mini-change { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
   .mini-change .per { font-weight: 500; color: var(--muted); }
 
-  /* ---------- отдельное окно: масштабируется вместе с окном ---------- */
+  /* ---------- detached window: scales with the window ---------- */
   .card.detached {
     position: relative; overflow: hidden;
     height: 100vh; border: 0; border-radius: 0; padding: 12px 12px 6px;
@@ -104,10 +107,10 @@
   .card.detached .mini-change { font-size: clamp(.8rem, min(4.2vw, 6vh), 1.15rem); }
   .card.detached .card-head { gap: 6px 8px; margin-bottom: 8px; }
   .card.detached .controls { gap: 6px; }
-  .card.detached .stats .change { display: none; }      /* процент уже показан рядом с ценой */
+  .card.detached .stats .change { display: none; }
   .card.detached .chart { flex: 1; height: auto; min-height: 0; }
 
-  /* узкое окно */
+  /* narrow window */
   .card.w-s .lf { display: none; }
   .card.w-s .ls { display: inline; }
   .card.w-s .tabs button { padding: 5px 9px; font-size: .8rem; }
@@ -119,7 +122,7 @@
   .card.w-xs .coin-select { padding: 4px 4px; font-size: .75rem; }
   .card.w-xs .mini-price small { display: block; margin-left: 0; }
 
-  /* невысокое окно */
+  /* short window */
   .card.h-s .stats { display: none; }
   .card.h-xs { padding: 6px 8px 4px; }
   .card.h-xs .mini-row { margin-bottom: 4px; }
@@ -127,7 +130,7 @@
   .card.h-xs .tabs button { padding: 3px 7px; }
   .card.h-xs .coin-select, .card.h-xs .btn { padding-top: 3px; padding-bottom: 3px; }
 
-  /* совсем низкое окно: остаются цена, изменение и график; элементы управления — при наведении */
+  /* very short window: price, change and chart only; controls appear on hover */
   .card.h-xxs .card-head {
     position: absolute; top: 0; left: 0; right: 0; z-index: 5; margin: 0; padding: 6px 8px;
     background: var(--surface); border-bottom: 1px solid var(--line);
@@ -142,7 +145,38 @@
   }
   .placeholder[hidden] { display: none; }
   footer { font-size: .8rem; color: var(--muted); margin-top: 12px; }
-  @media (max-width: 520px) { .chart { height: 260px; } }
+  .chart canvas { touch-action: pan-y; }          /* vertical scroll still works while scrubbing the chart */
+  .mobile #toggleBtn { display: none; }           /* no separate window on mobile browsers */
+
+  /* ---------- mobile layout ---------- */
+  @media (max-width: 600px) {
+    body {
+      padding: max(16px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+               max(32px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    }
+    header {
+      display: grid; grid-template-columns: 1fr auto; align-items: center;
+      grid-template-areas: "title lang" "price price" "status status";
+      gap: 6px 12px; margin-bottom: 14px;
+    }
+    header > div:first-child, .hdr-right { display: contents; }
+    #pairTitle { grid-area: title; margin: 0; }
+    #langTabs { grid-area: lang; }
+    #price { grid-area: price; font-size: clamp(2.2rem, 12vw, 3rem); }
+    #status { grid-area: status; text-align: left; font-size: .8rem; }
+    .lang button { padding: 8px 14px; }
+
+    .card { padding: 12px 12px 6px; }
+    .card .card-head { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 10px; }
+    .card .controls { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
+    .card .coin-select { width: 100%; font-size: 16px; padding: 11px 12px; }   /* 16px prevents iOS zoom on focus */
+    .card .tabs { display: flex; width: 100%; }
+    .card .tabs button { flex: 1; padding: 11px 4px; font-size: .95rem; }
+    .stats { font-size: .8rem; gap: 4px 12px; }
+    .chart { height: min(58vh, 340px); }
+    footer { font-size: .75rem; }
+  }
+  @media (max-width: 600px) and (orientation: landscape) { .chart { height: 62vh; } }
 </style>
 </head>
 <body>
@@ -152,7 +186,13 @@
       <h1 id="pairTitle">SOL / USDC</h1>
       <div class="price" id="price">—<small>USDC</small></div>
     </div>
-    <div class="status" id="status"><span class="dot"></span><span id="statusText">Загрузка…</span></div>
+    <div class="hdr-right">
+      <div class="tabs lang" id="langTabs" role="group" data-i18n-aria="aria.lang">
+        <button type="button" data-lang="en" aria-pressed="true" title="English">EN</button>
+        <button type="button" data-lang="uk" aria-pressed="false" title="Українська">UA</button>
+      </div>
+      <div class="status" id="status"><span class="dot"></span><span id="statusText"></span></div>
+    </div>
   </header>
 
   <div id="cardHost">
@@ -163,11 +203,11 @@
       </div>
       <div class="card-head">
         <div class="controls">
-          <select class="coin-select" id="coinSelect" aria-label="Криптовалюта"></select>
-          <div class="tabs" id="tabs" role="group" aria-label="Период">
-            <button type="button" data-id="d1" aria-pressed="true"><span class="lf">24 часа</span><span class="ls">24ч</span></button>
-            <button type="button" data-id="w1" aria-pressed="false"><span class="lf">Неделя</span><span class="ls">7д</span></button>
-            <button type="button" data-id="m1" aria-pressed="false"><span class="lf">Месяц</span><span class="ls">30д</span></button>
+          <select class="coin-select" id="coinSelect" data-i18n-aria="aria.coin"></select>
+          <div class="tabs" id="tabs" role="group" data-i18n-aria="aria.period">
+            <button type="button" data-id="d1" aria-pressed="true"><span class="lf" data-i18n="tab.d1.f"></span><span class="ls" data-i18n="tab.d1.s"></span></button>
+            <button type="button" data-id="w1" aria-pressed="false"><span class="lf" data-i18n="tab.w1.f"></span><span class="ls" data-i18n="tab.w1.s"></span></button>
+            <button type="button" data-id="m1" aria-pressed="false"><span class="lf" data-i18n="tab.m1.f"></span><span class="ls" data-i18n="tab.m1.s"></span></button>
           </div>
         </div>
         <button type="button" class="btn" id="toggleBtn"></button>
@@ -178,19 +218,67 @@
   </div>
 
   <div class="placeholder" id="placeholder" hidden>
-    <div>График открыт в отдельном окне</div>
-    <button type="button" class="btn" id="returnBtn">Вернуть на страницу</button>
+    <div data-i18n="placeholder"></div>
+    <button type="button" class="btn" id="returnBtn" data-i18n="btn.return"></button>
   </div>
 
-  <footer>Данные: публичные API Binance (резервно — Kraken). Обновление каждую минуту. Список монет задаётся массивом COINS в коде страницы.</footer>
+  <footer data-i18n="footer"></footer>
 </main>
 
 <script>
 (function () {
   var REFRESH_MS = 60000;
 
-  // Топ-15 основных криптовалют (без стейблкоинов). Список можно менять:
-  // s — тикер (пара на бирже будет <s>USDC), n — название, k — тикер на Kraken, если он отличается.
+  /* ---------- translations (default: English) ---------- */
+  var I18N = {
+    en: {
+      'title': 'Crypto / USDC — price',
+      'tab.d1.f': '24 hours', 'tab.d1.s': '24h',
+      'tab.w1.f': 'Week',     'tab.w1.s': '7d',
+      'tab.m1.f': 'Month',    'tab.m1.s': '30d',
+      'per.d1': '24h', 'per.w1': '7d', 'per.m1': '30d',
+      'aria.coin': 'Cryptocurrency', 'aria.period': 'Period', 'aria.lang': 'Language',
+      'btn.open': 'Open in separate window',
+      'btn.return': 'Return to page', 'btn.return.s': 'Return',
+      'placeholder': 'The chart is open in a separate window',
+      'footer': 'Data: public Binance APIs (Kraken as a fallback). Updates every minute. The coin list is defined by the COINS array in the page code.',
+      'st.loading': 'Loading…',
+      'st.updated': 'Updated at {0}',
+      'st.nodata': 'No data for {0}/USDC, retrying in a minute',
+      'st.blocked': 'The browser blocked the window',
+      'high': 'high', 'low': 'low'
+    },
+    uk: {
+      'title': 'Крипто / USDC — курс',
+      'tab.d1.f': '24 години', 'tab.d1.s': '24г',
+      'tab.w1.f': 'Тиждень',   'tab.w1.s': '7д',
+      'tab.m1.f': 'Місяць',    'tab.m1.s': '30д',
+      'per.d1': '24г', 'per.w1': '7д', 'per.m1': '30д',
+      'aria.coin': 'Криптовалюта', 'aria.period': 'Період', 'aria.lang': 'Мова',
+      'btn.open': 'Відкрити в окремому вікні',
+      'btn.return': 'Повернути на сторінку', 'btn.return.s': 'Повернути',
+      'placeholder': 'Графік відкрито в окремому вікні',
+      'footer': 'Дані: публічні API Binance (резервно — Kraken). Оновлення щохвилини. Перелік монет задається масивом COINS у коді сторінки.',
+      'st.loading': 'Завантаження…',
+      'st.updated': 'Оновлено о {0}',
+      'st.nodata': 'Немає даних для {0}/USDC, повтор через хвилину',
+      'st.blocked': 'Браузер заблокував відкриття вікна',
+      'high': 'макс.', 'low': 'мін.'
+    }
+  };
+  var LANG_KEY = 'cryptoChart.lang';
+  var lang = 'en';
+  try { var sl = localStorage.getItem(LANG_KEY); if (sl && I18N[sl]) lang = sl; } catch (e) {}
+
+  function t(k, a) {
+    var s = I18N[lang][k];
+    if (s == null) s = I18N.en[k];
+    return a == null ? s : s.replace('{0}', a);
+  }
+  function loc() { return lang === 'uk' ? 'uk-UA' : 'en-US'; }
+
+  // Top-15 main cryptocurrencies (no stablecoins). Edit freely:
+  // s — ticker (the exchange pair will be <s>USDC), n — name, k — Kraken ticker if it differs.
   var COINS = [
     { s: 'BTC',  n: 'Bitcoin',      k: 'XBT' },
     { s: 'ETH',  n: 'Ethereum' },
@@ -210,23 +298,28 @@
   ];
 
   var PERIODS = {
-    d1: { short: '24ч', binance: { interval: '5m', limit: 288 }, kraken: { interval: 5,   count: 288 }, labelFmt: { hour: '2-digit', minute: '2-digit' } },
-    w1: { short: '7д',  binance: { interval: '1h', limit: 168 }, kraken: { interval: 60,  count: 168 }, labelFmt: { weekday: 'short', hour: '2-digit', minute: '2-digit' } },
-    m1: { short: '30д', binance: { interval: '4h', limit: 180 }, kraken: { interval: 240, count: 180 }, labelFmt: { day: '2-digit', month: 'short' } }
+    d1: { binance: { interval: '5m', limit: 288 }, kraken: { interval: 5,   count: 288 }, labelFmt: { hour: '2-digit', minute: '2-digit' } },
+    w1: { binance: { interval: '1h', limit: 168 }, kraken: { interval: 60,  count: 168 }, labelFmt: { weekday: 'short', hour: '2-digit', minute: '2-digit' } },
+    m1: { binance: { interval: '4h', limit: 180 }, kraken: { interval: 240, count: 180 }, labelFmt: { day: '2-digit', month: 'short' } }
   };
   var BINANCE_HOSTS = ['https://data-api.binance.vision', 'https://api.binance.com'];
   var STORE_KEY = 'cryptoChart.coin';
 
   var $ = function (id) { return document.getElementById(id); };
+
+  // mobile browsers: touch-first device or a mobile user agent
+  var isMobile = /Android|iPhone|iPad|iPod|Mobile|Silk/i.test(navigator.userAgent) ||
+                 window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (isMobile) document.documentElement.classList.add('mobile');
   var el = {
     card: $('card'), host: $('cardHost'), placeholder: $('placeholder'),
     pairTitle: $('pairTitle'), price: $('price'), miniPrice: $('miniPrice'), miniChange: $('miniChange'), stats: $('stats'),
-    chartBox: $('chartBox'), canvas: $('chart'), tabs: $('tabs'), coinSelect: $('coinSelect'),
+    chartBox: $('chartBox'), canvas: $('chart'), tabs: $('tabs'), langTabs: $('langTabs'), coinSelect: $('coinSelect'),
     toggleBtn: $('toggleBtn'), returnBtn: $('returnBtn'),
     status: $('status'), statusText: $('statusText')
   };
 
-  var coin = COINS[4];     // по умолчанию SOL
+  var coin = COINS[4];     // default: SOL
   try {
     var saved = localStorage.getItem(STORE_KEY);
     var found = COINS.filter(function (c) { return c.s === saved; })[0];
@@ -237,20 +330,21 @@
   var cache = {};          // "BTC:d1" -> { data, at }
   var chart = null;
   var axisDec = 2;
-  var cs = { font: 12, xTicks: 6, yTicks: 6, showX: true };   // масштаб графика под размер окна
+  var cs = { font: 12, xTicks: 6, yTicks: 6, showX: true };   // chart scale for the current window size
   var busy = false;
   var detachedWin = null;
   var winTimer = null;
+  var statusState = { ok: null, kind: 'loading', arg: null };
 
   function key() { return coin.s + ':' + active; }
   function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   function decimalsFor(v) { v = Math.abs(v); return v >= 100 ? 2 : v >= 1 ? 3 : v >= 0.1 ? 4 : 5; }
   function fmtPrice(v, d) {
     d = d == null ? decimalsFor(v) : d;
-    return v.toLocaleString('ru-RU', { minimumFractionDigits: d, maximumFractionDigits: d });
+    return v.toLocaleString(loc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   }
 
-  /* ---------- данные ---------- */
+  /* ---------- data ---------- */
   function fetchJson(url) {
     var ctrl = new AbortController();
     var timer = setTimeout(function () { ctrl.abort(); }, 10000);
@@ -285,7 +379,7 @@
     return fromBinance(c, p, 0).catch(function () { return fromKraken(c, p); });
   }
 
-  /* ---------- график ---------- */
+  /* ---------- chart ---------- */
   function ensureChart() {
     if (chart) return chart;
     chart = new Chart(el.canvas, {
@@ -308,7 +402,7 @@
         },
         scales: {
           x: { display: cs.showX, grid: { display: false }, ticks: { maxTicksLimit: cs.xTicks, maxRotation: 0, font: { size: cs.font } } },
-          y: { ticks: { maxTicksLimit: cs.yTicks, font: { size: cs.font }, callback: function (v) { return v.toFixed(axisDec); } } }
+          y: { ticks: { maxTicksLimit: cs.yTicks, font: { size: cs.font }, callback: function (v) { return fmtPrice(v, axisDec); } } }
         }
       }
     });
@@ -331,7 +425,7 @@
     chart.resize();
   }
 
-  /* ---------- адаптация под размер отдельного окна ---------- */
+  /* ---------- adapting to the detached window size ---------- */
   function setOptionLabels(short) {
     Array.prototype.forEach.call(el.coinSelect.options, function (o, i) {
       var c = COINS[i];
@@ -349,21 +443,27 @@
     cl.toggle('h-s', H < 330);
     cl.toggle('h-xs', H < 230);
     cl.toggle('h-xxs', H < 170);
-    cs = {
-      font: (W < 290 || H < 230) ? 9 : (W < 400 || H < 330) ? 10 : 12,
-      xTicks: W < 290 ? 2 : W < 400 ? 3 : 6,
-      yTicks: H < 230 ? 3 : H < 330 ? 4 : 6,
-      showX: H >= 170
-    };
+    if (w) {
+      cs = {
+        font: (W < 290 || H < 230) ? 9 : (W < 400 || H < 330) ? 10 : 12,
+        xTicks: W < 290 ? 2 : W < 400 ? 3 : 6,
+        yTicks: H < 230 ? 3 : H < 330 ? 4 : 6,
+        showX: H >= 170
+      };
+    } else {
+      cs = window.innerWidth < 600
+        ? { font: 11, xTicks: 4, yTicks: 5, showX: true }
+        : { font: 12, xTicks: 6, yTicks: 6, showX: true };
+    }
     setOptionLabels(W < 400);
     applyChartScale();
   }
 
   function setTitles() {
-    var t = coin.s + ' / USDC';
-    el.pairTitle.textContent = t + ' · ' + coin.n;
-    document.title = t;
-    if (detachedWin) { try { detachedWin.document.title = t; } catch (e) {} }
+    var tt = coin.s + ' / USDC';
+    el.pairTitle.textContent = tt + ' · ' + coin.n;
+    document.title = tt;
+    if (detachedWin) { try { detachedWin.document.title = tt; } catch (e) {} }
   }
 
   function render() {
@@ -372,7 +472,7 @@
     var ds = c.data.datasets[0];
     setTitles();
 
-    if (!entry) {                                   // данных ещё нет — очищаем прошлую монету
+    if (!entry) {                                   // no data yet — clear the previous coin
       c.data.labels = []; ds.data = [];
       c.update();
       el.stats.innerHTML = '';
@@ -390,8 +490,8 @@
     var color = up ? css('--up') : css('--down');
     axisDec = decimalsFor(hi);
 
-    c.data.labels = data.map(function (d) { return new Date(d.t).toLocaleString('ru-RU', p.labelFmt); });
-    ds.full = data.map(function (d) { return new Date(d.t).toLocaleString('ru-RU', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' }); });
+    c.data.labels = data.map(function (d) { return new Date(d.t).toLocaleString(loc(), p.labelFmt); });
+    ds.full = data.map(function (d) { return new Date(d.t).toLocaleString(loc(), { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' }); });
     ds.data = prices;
     ds.borderColor = color;
     var g = c.ctx.createLinearGradient(0, 0, 0, c.height || 340);
@@ -405,21 +505,28 @@
     c.update();
 
     var pct = (last / first - 1) * 100;
-    var changeHtml = '<span class="change ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '') + pct.toFixed(2).replace('.', ',') + '%</span>';
-    el.stats.innerHTML = changeHtml + '<span>макс. ' + fmtPrice(hi) + '</span><span>мин. ' + fmtPrice(lo) + '</span>';
-    el.miniChange.innerHTML = changeHtml + ' <span class="per">· ' + p.short + '</span>';
+    var changeHtml = '<span class="change ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '−') + fmtPrice(Math.abs(pct), 2) + '%</span>';
+    el.stats.innerHTML = changeHtml + '<span>' + t('high') + ' ' + fmtPrice(hi) + '</span><span>' + t('low') + ' ' + fmtPrice(lo) + '</span>';
+    el.miniChange.innerHTML = changeHtml + ' <span class="per">· ' + t('per.' + active) + '</span>';
     el.price.innerHTML = fmtPrice(last) + '<small>USDC</small>';
     el.miniPrice.innerHTML = fmtPrice(last) + '<small>' + coin.s + ' / USDC</small>';
     document.title = coin.s + ' ' + fmtPrice(last);
     if (detachedWin) { try { detachedWin.document.title = document.title; } catch (e) {} }
   }
 
-  function setStatus(ok, text) {
-    el.status.className = 'status ' + (ok ? 'ok' : 'err');
-    el.statusText.textContent = text;
+  function paintStatus() {
+    var s = statusState;
+    el.status.className = 'status' + (s.ok === true ? ' ok' : s.ok === false ? ' err' : '');
+    var arg = s.arg;
+    if (s.kind === 'updated') arg = s.arg.toLocaleTimeString(loc());
+    el.statusText.textContent = t('st.' + s.kind, arg);
+  }
+  function setStatus(ok, kind, arg) {
+    statusState = { ok: ok, kind: kind, arg: arg == null ? null : arg };
+    paintStatus();
   }
 
-  /* ---------- обновление ---------- */
+  /* ---------- refresh ---------- */
   function refresh(force) {
     if (busy) return;
     var k = key();
@@ -431,13 +538,13 @@
     load(c, id).then(function (data) {
       cache[c.s + ':' + id] = { data: data, at: Date.now() };
       if (c === coin && id === active) render();
-      setStatus(true, 'Обновлено в ' + new Date().toLocaleTimeString('ru-RU'));
+      setStatus(true, 'updated', new Date());
     }).catch(function () {
-      if (c === coin && id === active) setStatus(false, 'Нет данных по ' + c.s + '/USDC, повтор через минуту');
+      if (c === coin && id === active) setStatus(false, 'nodata', c.s);
     }).finally(function () {
       busy = false;
       el.chartBox.classList.remove('loading');
-      if (c !== coin || id !== active) refresh(true);   // выбор сменили во время загрузки
+      if (c !== coin || id !== active) refresh(true);   // selection changed while loading
     });
   }
 
@@ -452,7 +559,7 @@
     if (!cache[key()] || Date.now() - cache[key()].at > 30000) refresh(true);
   });
 
-  /* ---------- выбор монеты ---------- */
+  /* ---------- coin selector ---------- */
   COINS.forEach(function () { el.coinSelect.appendChild(document.createElement('option')); });
   Array.prototype.forEach.call(el.coinSelect.options, function (o, i) { o.value = COINS[i].s; });
   setOptionLabels(false);
@@ -467,20 +574,20 @@
     if (!cache[key()] || Date.now() - cache[key()].at > 30000) refresh(true);
   });
 
-  /* ---------- отдельное окно ---------- */
+  /* ---------- detached window ---------- */
   function setDetachedUI(on) {
     el.placeholder.hidden = !on;
     el.card.classList.toggle('detached', on);
-    var label = on ? 'Вернуть на страницу' : 'Открыть в отдельном окне';
+    var label = on ? t('btn.return') : t('btn.open');
     el.toggleBtn.innerHTML = on
-      ? '<span class="lf">Вернуть на страницу</span><span class="ls">Вернуть</span><span class="li">↩</span>'
-      : '<span class="lf">Открыть в отдельном окне</span>';
+      ? '<span class="lf">' + t('btn.return') + '</span><span class="ls">' + t('btn.return.s') + '</span><span class="li">↩</span>'
+      : '<span class="lf">' + t('btn.open') + '</span>';
     el.toggleBtn.title = label;
     el.toggleBtn.setAttribute('aria-label', label);
   }
 
   async function detach() {
-    if (detachedWin) return;
+    if (detachedWin || isMobile) return;
     var w = null;
     try {
       if ('documentPictureInPicture' in window) {
@@ -488,9 +595,10 @@
       }
     } catch (e) { w = null; }
     if (!w) w = window.open('', 'crypto-chart-window', 'popup=yes,width=420,height=360');
-    if (!w) { setStatus(false, 'Браузер заблокировал открытие окна'); return; }
+    if (!w) { setStatus(false, 'blocked'); return; }
 
     var d = w.document;
+    d.documentElement.lang = lang === 'uk' ? 'uk' : 'en';
     d.title = coin.s + ' / USDC';
     var meta = d.createElement('meta'); meta.setAttribute('charset', 'utf-8'); d.head.appendChild(meta);
     var st = d.createElement('style'); st.textContent = $('appStyle').textContent; d.head.appendChild(st);
@@ -502,7 +610,7 @@
     detachedWin = w;
     w.addEventListener('pagehide', function () { if (detachedWin === w) reattach(false); });
     w.addEventListener('resize', applyCompact);
-    winTimer = w.setInterval(function () { refresh(); }, REFRESH_MS);   // таймер окна не замораживается, пока вкладка в фоне
+    winTimer = w.setInterval(function () { refresh(); }, REFRESH_MS);   // the window's timer isn't throttled while the tab is in background
 
     applyCompact();
     render();
@@ -517,7 +625,7 @@
     destroyChart();
     el.host.appendChild(el.card);
     setDetachedUI(false);
-    applyCompact();             // сброс компактных режимов
+    applyCompact();             // reset compact modes
     render();
     setTimeout(function () { if (chart) chart.resize(); }, 60);
     if (closeWin) { try { w.close(); } catch (e) {} }
@@ -528,9 +636,43 @@
   el.returnBtn.addEventListener('click', function () { reattach(true); });
   window.addEventListener('pagehide', function () { if (detachedWin) { try { detachedWin.close(); } catch (e) {} } });
 
-  /* ---------- старт ---------- */
-  setDetachedUI(false);
-  render();
+  var rzTimer;
+  window.addEventListener('resize', function () {            // rotation / window resize on the main page
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(function () { if (!detachedWin) applyCompact(); }, 120);
+  });
+  window.addEventListener('focus', function () { refresh(); });
+  window.addEventListener('online', function () { refresh(true); });
+
+  /* ---------- language ---------- */
+  function applyLang() {
+    document.documentElement.lang = lang === 'uk' ? 'uk' : 'en';
+    if (detachedWin) { try { detachedWin.document.documentElement.lang = document.documentElement.lang; } catch (e) {} }
+    // the card may live in another window, so query both the page and the card itself
+    var scopes = [document, el.card];
+    scopes.forEach(function (root) {
+      Array.prototype.forEach.call(root.querySelectorAll('[data-i18n]'), function (n) { n.textContent = t(n.getAttribute('data-i18n')); });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-i18n-aria]'), function (n) { n.setAttribute('aria-label', t(n.getAttribute('data-i18n-aria'))); });
+    });
+    Array.prototype.forEach.call(el.langTabs.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+    });
+    setDetachedUI(!!detachedWin);
+    paintStatus();
+    render();
+  }
+
+  el.langTabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-lang]');
+    if (!btn || btn.dataset.lang === lang) return;
+    lang = btn.dataset.lang;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (err) {}
+    applyLang();
+  });
+
+  /* ---------- start ---------- */
+  applyCompact();
+  applyLang();
   refresh(true);
   setInterval(function () { refresh(); }, REFRESH_MS);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
