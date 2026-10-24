@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Small Talk — B2</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f7f6f2;--card:#fff;--tx:#23272d;--ru:#5d6b7a;--ac:#2f5d8a;--bd:#e2e0d8;--ba:#eef2f6;--bb:#e6f0e9;--b2:#9a5b13}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181c;--card:#1e2227;--tx:#e7e9ec;--ru:#a3b1c2;--ac:#8dbbe8;--bd:#2d333a;--ba:#262c33;--bb:#1f3326;--b2:#e8b86b}}
+:root[data-theme="dark"]{--bg:#15181c;--card:#1e2227;--tx:#e7e9ec;--ru:#a3b1c2;--ac:#8dbbe8;--bd:#2d333a;--ba:#262c33;--bb:#1f3326;--b2:#e8b86b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:820px;margin:0 auto;padding:18px 12px 40px}
+h1{font-size:1.4rem;margin:0 0 4px}.sub{color:var(--ru);margin:0 0 16px;font-size:.9rem}
+.item{background:var(--card);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.hd{all:unset;box-sizing:border-box;display:flex;width:100%;gap:10px;align-items:flex-start;padding:13px 14px;cursor:pointer}
+.hd:focus-visible{outline:2px solid var(--ac)}
+.n{color:var(--ac);min-width:2em;font-weight:600}
+.t{flex:1}.de{font-weight:600}.ru{display:block;font-size:.84em;color:var(--ru);margin-top:3px;font-weight:400}
+.ar{color:var(--ru);transition:transform .2s}.item.open .ar{transform:rotate(90deg)}
+.bd{display:none;padding:2px 12px 14px}.item.open .bd{display:block}
+.m{max-width:88%;padding:9px 13px;border-radius:14px;margin:7px 0}
+.m.a{background:var(--ba);border-bottom-left-radius:4px}
+.m.b{background:var(--bb);border-bottom-right-radius:4px;margin-left:auto}
+.m i{display:block;font-style:normal;font-size:.72em;color:var(--ru);font-weight:700;margin-bottom:1px}
+em.b2{font-style:normal;font-weight:700;color:var(--b2)}
+.tr{display:block;font-size:.8em;color:var(--ru);margin-top:3px}
+.back{margin-top:8px;padding:8px 14px;border:1px solid var(--bd);border-radius:8px;background:transparent;color:var(--ac);font:inherit;font-weight:600;cursor:pointer}
+.leg{font-size:.85rem;color:var(--ru);margin:0 0 14px}
+@media (min-width:720px){body{font-size:18px}main{padding:32px 24px 60px}h1{font-size:1.8rem}.m{max-width:72%}.hd{padding:16px 20px}.bd{padding:4px 20px 18px}}
+</style></head><body><main>
+<h1>Small Talk — Übungsdialoge</h1>
+<p class="sub">Тема открывается по клику; открытие другой темы закрывает предыдущую.</p>
+<p class="leg">Диалоги в основном на уровне B1. <em class="b2">Выделенные</em> слова и обороты — связки уровня B2.</p>
+<div id="list"></div></main>
+<script>
+const D=[
+["Ich finde, wir als Praktikantinnen sollten eigentlich keine Überstunden machen. Was meinst du?","Я считаю, что мы, как стажёры, не должны работать сверхурочно. Что ты думаешь?",[
+"Ich finde, wir als Praktikantinnen sollten keine Überstunden machen. Was meinst du?",
+"Da stimme ich dir zu. Wir lernen noch und bekommen wenig Geld.",
+"Genau. *Allerdings* möchte ich einen guten Eindruck machen.",
+"Das verstehe ich. *Trotzdem* sollten wir mit unserer Chefin darüber sprechen."]],
+["Ich gehe in der Mittagspause meist zum Imbiss um die Ecke. Wo isst du?","Я обычно хожу в закусочную за углом во время обеденного перерыва. А ты где ешь?",[
+"Ich gehe in der Mittagspause meist zum Imbiss um die Ecke. Wo isst du?",
+"Ich nehme meistens etwas von zu Hause mit. Das ist billiger.",
+"Stimmt, aber ich brauche Abwechslung. Der Imbiss hat leckere Salate.",
+"*Außerdem* kann man dort gut mit Kollegen reden. Vielleicht komme ich morgen mit."]],
+["Der Chef möchte, dass ich einen Computerkurs mache. Weißt du, wie ich das organisieren kann?","Шеф хочет, чтобы я прошёл курс по компьютеру. Ты знаешь, как это организовать?",[
+"Der Chef möchte, dass ich einen Computerkurs mache. Wie kann ich das organisieren?",
+"Du fragst am besten zuerst in der Personalabteilung. Die kennt die Anbieter.",
+"Und wer bezahlt den Kurs?",
+"Wenn der Chef den Kurs wünscht, zahlt normalerweise die Firma. *Es empfiehlt sich*, das schriftlich zu klären."]],
+["Im Sommer fahre ich gerne an einen See zum Baden. Du auch oder magst du Freibäder lieber?","Летом я люблю ездить на озеро купаться. А ты? Или ты предпочитаешь открытые бассейны?",[
+"Im Sommer fahre ich gerne an einen See zum Baden. Du auch oder magst du Freibäder lieber?",
+"Ich bevorzuge das Freibad. Dort gibt es einen Kiosk und eine Rutsche.",
+"Am See ist es aber ruhiger und die Natur ist schön.",
+"*Einerseits* hast du recht, *andererseits* ist das Wasser im Freibad sauberer. Wir können ja beides probieren."]],
+["Wie und wann buchst du deinen Urlaub?","Как и когда ты бронируешь свой отпуск?",[
+"Wie und wann buchst du deinen Urlaub?",
+"Ich plane schon im Januar und trage die Tage im Online-Kalender ein.",
+"So früh? Ich warte meistens bis zum Frühling.",
+"*Dadurch* bekomme ich meine Wunschtermine und die Flüge sind billiger. Ich kann es dir nur empfehlen."]],
+["Ich habe noch fünf Tage Resturlaub. Was passiert mit diesen Tagen?","У меня осталось пять дней неиспользованного отпуска. Что с ними будет?",[
+"Ich habe noch fünf Tage Resturlaub. Was passiert mit diesen Tagen?",
+"Meistens verfallen sie Ende März des nächsten Jahres. Frag lieber die Personalabteilung.",
+"Schade. Dann nehme ich sie lieber im Dezember.",
+"*Falls* das nicht klappt, kann man manchmal Tage übertragen. Das hängt vom Vertrag ab."]],
+["Wie kann man die verbleibenden 5 Urlaubstage am besten nutzen?","Как лучше провести оставшиеся 5 дней отпуска?",[
+"Wie kann man die verbleibenden fünf Urlaubstage am besten nutzen?",
+"Ich würde ein langes Wochenende an einem schönen Ort verbringen.",
+"Gute Idee. Man kann auch zu Hause bleiben und Dinge erledigen, die man lange verschoben hat.",
+"*Meiner Meinung nach* ist Erholung wichtiger. Fahr doch mit dem Zug in die Berge!"]],
+["Ich arbeite im Homeoffice. Ich habe kein Diensthandy bekommen. Denkst du, dass ich mein Privathandy benutzen soll?","Я работаю из дома и не получил служебный телефон. Как думаешь, стоит ли использовать личный?",[
+"Ich arbeite im Homeoffice und habe kein Diensthandy bekommen. Soll ich mein Privathandy benutzen?",
+"Ich würde das nicht tun. Die Firma sollte ein Gerät zur Verfügung stellen.",
+"Aber ich muss erreichbar sein.",
+"*In diesem Fall* schreib deinem Chef eine E-Mail und frag nach einer Lösung oder nach einer Kostenerstattung."]],
+["Der Chef möchte die Krankmeldung ab dem ersten Tag und nicht am dritten Tag. Was hältst du davon?","Шеф хочет больничный с первого дня, а не с третьего. Что ты об этом думаешь?",[
+"Der Chef will die Krankmeldung ab dem ersten Tag. Was hältst du davon?",
+"Ich finde das übertrieben. Bisher reichte der dritte Tag.",
+"Vielleicht will er Missbrauch verhindern.",
+"*Das mag sein*, aber es zeigt wenig Vertrauen. *Außerdem* muss man dann mit Fieber zum Arzt gehen."]],
+["Am Samstag ist der Tag der offenen Tür im Unternehmen. Wir können unsere Kinder mitbringen. Bist du dabei?","В субботу в компании день открытых дверей. Мы можем привести детей. Ты пойдёшь?",[
+"Am Samstag ist der Tag der offenen Tür. Wir können unsere Kinder mitbringen. Bist du dabei?",
+"Ja, gerne! Meine Tochter möchte sehen, wo ich arbeite.",
+"Super. Es gibt auch ein Programm für Kinder.",
+"*Dann* komme ich um zehn Uhr. Treffen wir uns am Eingang?"]],
+["Das Unternehmen gewährt keine Boni für dieses Jahr. Was hältst du davon?","Компания в этом году не выплачивает бонусы. Что ты об этом думаешь?",[
+"Das Unternehmen gibt dieses Jahr keine Boni. Was hältst du davon?",
+"Ich bin enttäuscht. Wir haben viel gearbeitet.",
+"Die Firma sagt, die Lage sei schwierig.",
+"*Trotzdem* hätte ich eine kleine Anerkennung erwartet, zum Beispiel ein paar freie Tage."]],
+["80% der Mitarbeiter kommen mit dem Fahrrad zur Arbeit. Findest du es auch toll?","80% сотрудников приезжают на работу на велосипеде. Ты тоже считаешь это классным?",[
+"80 Prozent der Mitarbeiter kommen mit dem Fahrrad zur Arbeit. Findest du das auch toll?",
+"Ja, das ist gesund und gut für die Umwelt.",
+"Ich fahre auch gern, aber bei Regen nehme ich den Bus.",
+"Das ist verständlich. Die Firma sollte *jedoch* mehr Fahrradständer bauen."]],
+["Im Dezember gibt es Urlaubssperre. Findest du das fair?","В декабре запрещено брать отпуск. Ты считаешь это справедливым?",[
+"Im Dezember gibt es eine Urlaubssperre. Findest du das fair?",
+"Im Handel ist dann sehr viel los. Deshalb verstehe ich es.",
+"Aber viele wollen zu Weihnachten bei der Familie sein.",
+"*Einerseits* braucht die Firma Personal, *andererseits* sollte sie Familien entgegenkommen, zum Beispiel mit Schichttausch."]],
+["Wo verbringst du am liebsten deine Mittagspause? Ich verbringe sie gerne außerhalb des Betriebs.","Где ты предпочитаешь проводить обеденный перерыв? Я люблю обедать вне офиса.",[
+"Wo verbringst du am liebsten deine Mittagspause? Ich gehe gern raus.",
+"Ich bleibe lieber im Büro und lese ein bisschen.",
+"Frische Luft macht mich danach viel wacher.",
+"Das stimmt. *Bei schönem Wetter* komme ich mit in den Park."]],
+["Wo ist es besser, Mittag zu essen: im Büro oder draußen, mit Kollegen oder alleine?","Где лучше обедать: в офисе или на улице, с коллегами или одному?",[
+"Wo isst man besser: im Büro oder draußen, mit Kollegen oder alleine?",
+"Ich esse gern mit Kollegen. So lernt man sich besser kennen.",
+"Ich brauche manchmal Ruhe, dann esse ich allein.",
+"*Beides hat Vorteile.* Hauptsache, man macht wirklich Pause."]],
+["Arbeitest du bevorzugt im Büro oder lieber von zu Hause aus?","Ты предпочитаешь работать в офисе или из дома?",[
+"Arbeitest du lieber im Büro oder von zu Hause aus?",
+"Am liebsten zwei Tage zu Hause und drei Tage im Büro.",
+"Warum so?",
+"Zu Hause kann ich mich besser konzentrieren, *im Büro hingegen* kann ich Fragen sofort klären."]],
+["Ich bevorzuge im Herbst Urlaub zu nehmen, weil es viele Vorteile hat. Und du? Wann machst du Urlaub?","Я предпочитаю брать отпуск осенью, потому что это имеет много преимуществ. А ты? Когда ты берёшь отпуск?",[
+"Ich nehme im Herbst Urlaub, weil das viele Vorteile hat. Und du?",
+"Ich fahre im Sommer, weil es dann warm ist.",
+"Im Herbst ist es ruhiger und billiger. *Außerdem* sind weniger Touristen da.",
+"*Das überzeugt mich fast.* Vielleicht probiere ich es dieses Jahr."]],
+["Ich würde gerne in meiner Freizeit ehrenamtlich arbeiten. Hast du eine Idee, was man machen könnte?","Я бы хотел заниматься волонтёрской работой в свободное время. У тебя есть идеи, чем можно заняться?",[
+"Ich würde gern in meiner Freizeit ehrenamtlich arbeiten. Hast du eine Idee?",
+"Du könntest im Tierheim helfen oder älteren Menschen beim Einkaufen.",
+"Das klingt gut. Ich mag Tiere.",
+"*In dem Fall* ruf doch beim Tierheim an. Sie suchen oft Hilfe am Wochenende."]],
+["Wie kann man mit ehrenamtlicher Arbeit anfangen?","Как начать заниматься волонтёрской деятельностью?",[
+"Wie kann man mit ehrenamtlicher Arbeit anfangen?",
+"Am einfachsten suchst du im Internet nach einer Freiwilligenagentur in deiner Stadt.",
+"Muss man Erfahrung haben?",
+"Nein, meistens nicht. *Entscheidend ist*, dass du regelmäßig Zeit hast."]],
+["Ich habe nächste Woche meine erste Nachtschicht. Was machst du, um wach zu bleiben?","На следующей неделе у меня первая ночная смена. Что ты делаешь, чтобы не уснуть?",[
+"Ich habe nächste Woche meine erste Nachtschicht. Was machst du, um wach zu bleiben?",
+"Ich schlafe vorher ein paar Stunden und trinke Wasser statt zu viel Kaffee.",
+"Und was isst du?",
+"Etwas Leichtes, *denn* schweres Essen macht müde. Mach auch kurze Bewegungspausen."]],
+["Bist du auch produktiver in der Frühschicht? Das trifft auf mich zu.","Ты тоже продуктивнее в утреннюю смену? Это про меня.",[
+"Bist du auch produktiver in der Frühschicht? Bei mir ist das so.",
+"Ja, am Morgen bin ich fit und es ist ruhig im Büro.",
+"Nachmittags lässt meine Konzentration nach.",
+"*Deshalb* mag ich auch, dass ich früh Feierabend habe."]],
+["Brauchst du nach der Arbeit auch erstmal Ruhe, wie ich?","Тебе тоже нужно сначала немного отдыха после работы, как и мне?",[
+"Brauchst du nach der Arbeit auch erstmal Ruhe, wie ich?",
+"Unbedingt. Zuerst setze ich mich zehn Minuten hin und trinke einen Tee.",
+"Ich höre gern Musik oder gehe spazieren.",
+"*Das hilft auch mir.* Danach habe ich wieder Energie für die Familie."]],
+["Sollen wir mittags etwas bestellen? Wie wäre es mit einem gemeinsamen Mittagessen?","Может, закажем что-то на обед? Как насчёт совместного обеда?",[
+"Sollen wir mittags etwas bestellen? Wie wäre es mit einem gemeinsamen Mittagessen?",
+"Gute Idee! Worauf hast du Lust?",
+"Pizza oder etwas Asiatisches?",
+"Lieber Asiatisch. *Sofern* alle zustimmen, bestelle ich für uns."]],
+["Nächsten Monat kann ich leider keine Überstunden machen. Denkst du, dass es geht?","В следующем месяце я, к сожалению, не могу работать сверхурочно. Как думаешь, это возможно?",[
+"Nächsten Monat kann ich leider keine Überstunden machen. Denkst du, dass das geht?",
+"Das hängt vom Chef ab. Hast du einen wichtigen Grund?",
+"Ja, ich besuche abends einen Sprachkurs.",
+"*In dem Fall* sag es früh und freundlich. Meistens gibt es eine Lösung."]],
+["Meine neue Kollegin ist unfreundlich. Hast du vielleicht Ratschläge, wie ich damit umgehen könnte?","Моя новая коллега недружелюбна. У тебя есть советы, как с этим справиться?",[
+"Meine neue Kollegin ist unfreundlich. Hast du Ratschläge, wie ich damit umgehen kann?",
+"Vielleicht ist sie nur gestresst. Gib ihr etwas Zeit.",
+"Ich habe es mit Lächeln versucht, aber sie antwortet kaum.",
+"Sprich sie in Ruhe an, *und zwar* ohne Vorwürfe. *Falls* es nicht besser wird, rede mit dem Chef."]],
+["Ich soll am Samstag für eine Kollegin einspringen. Weißt du, ob ich dafür nächste Woche einen anderen Tag frei bekomme?","Мне нужно заменить коллегу в субботу. Знаешь, получу ли я за это выходной на следующей неделе?",[
+"Ich soll am Samstag für eine Kollegin einspringen. Bekomme ich dafür nächste Woche einen Tag frei?",
+"Normalerweise ja. Du kannst den Tag als Ausgleich nehmen.",
+"Muss ich das vorher mit dem Chef abklären?",
+"Auf jeden Fall. *Am besten* lässt du dir das schriftlich bestätigen."]],
+["Mein Kind weint in der Kita. Hast du Erfahrungen damit und Tipps, was ich tun könnte?","Мой ребёнок плачет в детском саду. У тебя есть опыт и советы, что делать?",[
+"Mein Kind weint in der Kita. Hast du Erfahrung damit und Tipps?",
+"Ja, bei uns war es am Anfang auch so. Das ist ganz normal.",
+"Was hat geholfen?",
+"Ein kurzer, fester Abschied. *Außerdem* hat ein Kuscheltier geholfen. Sprich auch mit den Erzieherinnen."]],
+["Ich möchte meine Kollegen besser kennenlernen. Hast du eine Idee, wie ich das machen könnte?","Я хочу лучше узнать своих коллег. У тебя есть идеи, как это сделать?",[
+"Ich möchte meine Kollegen besser kennenlernen. Hast du eine Idee?",
+"Geh doch öfter mit in die Mittagspause. Da redet man ganz locker.",
+"Gute Idee. Und sonst?",
+"Du könntest ein Kaffeetrinken vorschlagen. *Das trägt dazu bei*, dass das Team enger zusammenwächst."]],
+["Ich möchte gerne mal im Sommer Urlaub machen. Leider dürfen das nur Kolleg*innen mit Kindern. Findest du das fair?","Я бы хотел взять отпуск летом, но это разрешено только сотрудникам с детьми. Ты считаешь это справедливым?",[
+"Im Sommer dürfen nur Kollegen mit Kindern Urlaub nehmen. Findest du das fair?",
+"Nein, das finde ich nicht fair. Alle brauchen mal Erholung.",
+"Die Firma sagt, die Schulferien seien für Familien wichtig.",
+"*Einerseits* verstehe ich das, *andererseits* sollte man abwechseln. *Zum Beispiel* jedes Jahr eine andere Gruppe."]],
+["Bei uns in der Firma haben wir eine dreimonatige Kündigungsfrist. Ist das nicht zu viel?","У нас в компании срок увольнения — три месяца. Это не слишком долго?",[
+"Bei uns gibt es eine dreimonatige Kündigungsfrist. Ist das nicht zu lang?",
+"Finde ich auch. Man ist lange gebunden.",
+"Für die Firma ist es sicher praktisch, einen Ersatz zu finden.",
+"*Das stimmt*, *dennoch* sollten beide Seiten flexibel sein. Vielleicht kann man sich im Gespräch einigen."]],
+["Ich würde am Wochenende mit Freunden bei mir im Garten grillen. Magst du auch kommen?","Я собираюсь на выходных устроить барбекю в саду с друзьями. Хочешь прийти?",[
+"Ich grille am Wochenende mit Freunden in meinem Garten. Magst du auch kommen?",
+"Sehr gern! Soll ich etwas mitbringen?",
+"Ein Salat wäre toll. Fleisch und Getränke habe ich schon.",
+"Gerne. *Falls* das Wetter schlecht wird, können wir ja drinnen essen."]],
+["Eine Freundin von mir sagt, dass in ihrer Firma freitags schon um 14 Uhr Feierabend ist. Was hältst du davon?","Моя подруга говорит, что в её компании в пятницу рабочий день заканчивается в 14:00. Что ты об этом думаешь?",[
+"Bei einer Freundin ist freitags schon um 14 Uhr Feierabend. Was hältst du davon?",
+"Das klingt super! Dann hat man ein langes Wochenende.",
+"Aber die Arbeitszeit muss ja unter der Woche nachgeholt werden.",
+"*Das ist wahr*, *trotzdem* würde ich das Modell gern ausprobieren."]],
+["Im Unternehmen findet ein Seminar zur Stressbewältigung statt. Ich würde es gerne besuchen. Bist du auch dabei?","В компании проводится семинар по преодолению стресса. Я бы хотел его посетить. Ты тоже?",[
+"Es gibt ein Seminar zur Stressbewältigung. Ich möchte hingehen. Kommst du auch?",
+"Ja, das kann ich gut gebrauchen. Wann findet es statt?",
+"Nächsten Donnerstag, während der Arbeitszeit.",
+"*Wunderbar*, dann melde ich mich gleich an. *Hoffentlich* lerne ich ein paar nützliche Tricks."]],
+["Ich arbeite schon lange hier und würde mich gerne weiterentwickeln. Hast du Ideen, was ich machen könnte?","Я уже давно здесь работаю и хочу развиваться. У тебя есть идеи, что мне можно сделать?",[
+"Ich arbeite schon lange hier und möchte mich weiterentwickeln. Hast du Ideen?",
+"Du könntest eine Fortbildung machen oder neue Aufgaben übernehmen.",
+"Daran habe ich auch gedacht. Wen soll ich fragen?",
+"Sprich mit deinem Chef. *Außerdem* kannst du in der Personalabteilung nach Programmen fragen."]],
+["Ich brauche ein zusätzliches Einkommen. Denkst du es ist eine gute Idee, einen Nebenjob anzunehmen?","Мне нужен дополнительный доход. Ты думаешь, подработка — хорошая идея?",[
+"Ich brauche ein zusätzliches Einkommen. Ist ein Nebenjob eine gute Idee?",
+"Das kommt darauf an. Hast du genug Zeit und Energie?",
+"Ich könnte am Wochenende ein paar Stunden arbeiten.",
+"*Dann* achte darauf, dass dein Hauptjob nicht leidet. *Außerdem* musst du den Nebenjob dem Chef melden."]],
+["Wie kann man das Einkommen erhöhen, wenn die Ausgaben gestiegen sind?","Как можно увеличить доходы, если расходы выросли?",[
+"Wie kann man das Einkommen erhöhen, wenn die Ausgaben gestiegen sind?",
+"Man kann eine Gehaltserhöhung verhandeln oder Überstunden machen.",
+"Und wenn das nicht klappt?",
+"Dann ist ein Nebenjob eine Möglichkeit. *Parallel dazu* kann man auch Ausgaben senken."]],
+["Was hältst du von zusätzlicher Arbeit wie einem Minijob?","Что ты думаешь о дополнительной работе, например, мини-джобе?",[
+"Was hältst du von einem Minijob neben dem Hauptjob?",
+"Ich finde ihn praktisch, weil man flexibel ist und wenig Steuern zahlt.",
+"Aber man hat dann weniger Freizeit.",
+"*Das stimmt.* *Deshalb* sollte man gut überlegen, ob man das wirklich braucht."]],
+["In der Firma soll es Maßnahmen zur betrieblichen Gesundheitsförderung geben. Wie findest du das?","В компании должны появиться меры по укреплению здоровья сотрудников. Как ты к этому относишься?",[
+"Die Firma plant Maßnahmen zur Gesundheitsförderung. Wie findest du das?",
+"Ich finde das sehr gut. Ein Rückentraining wäre nützlich.",
+"Ich hoffe auch auf gesundes Essen in der Kantine.",
+"*Alles in allem* ist das eine gute Investition. Gesunde Mitarbeiter sind motivierter."]],
+["Wie stehen Sie zu Gesundheitsvorsorge-Veranstaltungen?","Как Вы относитесь к мероприятиям по профилактике здоровья?",[
+"Wie stehen Sie zu Gesundheitsvorsorge-Veranstaltungen?",
+"Ich finde sie wichtig. Man bekommt viele Informationen.",
+"Gehen Sie selbst hin?",
+"Ja, *sofern* es die Arbeitszeit erlaubt. Letztes Jahr gab es einen Vortrag über gesunden Schlaf."]],
+["Findest du es auch super, dass in unserer Kantine mehr vegane und vegetarische Gerichte angeboten werden?","Ты тоже считаешь классным, что в нашей столовой стало больше веганских и вегетарианских блюд?",[
+"Findest du es auch super, dass es in der Kantine mehr vegane Gerichte gibt?",
+"Ja, die Auswahl ist jetzt viel besser.",
+"Ich esse zwar Fleisch, aber ich probiere gern etwas Neues.",
+"*Genau*, und *darüber hinaus* ist es gut für die Umwelt."]],
+["Spielst du ein Musikinstrument? Ich würde gerne eins lernen. Kennst du hier gute Lehrmöglichkeiten?","Ты играешь на музыкальном инструменте? Я бы хотел научиться. Знаешь хорошие курсы?",[
+"Spielst du ein Musikinstrument? Ich würde gern eines lernen.",
+"Ich spiele Gitarre. Die Volkshochschule bietet günstige Kurse an.",
+"Gibt es auch Einzelunterricht?",
+"Ja, in der Musikschule. *Allerdings* sind die Plätze begrenzt, deshalb melde dich bald an."]],
+["Diesen Sommer fahren wir im Urlaub nicht in die Heimat, sondern bleiben hier. Wollen wir mal etwas zusammen unternehmen?","Этим летом мы не поедем в отпуск на родину, а останемся здесь. Давай что-нибудь вместе организуем?",[
+"Diesen Sommer bleiben wir hier und fahren nicht in die Heimat. Wollen wir etwas zusammen unternehmen?",
+"Gern! Wie wäre es mit einem Ausflug an den See?",
+"Super. Und die Kinder könnten spielen.",
+"*Falls* das Wetter mitspielt, könnten wir auch grillen. Ich organisiere das."]],
+["Weißt du schon, was du für unsere Weihnachtsfeier anziehst? Sie findet schon nächste Woche statt.","Ты уже знаешь, что наденешь на нашу рождественскую вечеринку? Она уже на следующей неделе.",[
+"Weißt du schon, was du zur Weihnachtsfeier anziehst? Sie ist schon nächste Woche.",
+"Noch nicht. Ich denke an etwas Elegantes, aber nicht zu Festliches.",
+"Ich auch. Ein Hemd und eine dunkle Hose reichen vielleicht.",
+"*Meiner Meinung nach* passt das gut. Hauptsache, man fühlt sich wohl."]],
+["Weißt du, wie das in der Firma eigentlich mit der Krankmeldung geregelt ist?","Ты знаешь, как у нас в компании оформляется больничный?",[
+"Weißt du, wie das mit der Krankmeldung in der Firma geregelt ist?",
+"Man muss am ersten Tag morgens beim Chef anrufen.",
+"Und wann braucht man ein Attest?",
+"Ab dem dritten Tag. *Es empfiehlt sich*, trotzdem früh zum Arzt zu gehen."]],
+["Die Firma plant, ab diesem Jahr nur noch ein Sommerfest zu veranstalten. Die Weihnachtsfeier wird gestrichen. Wie findest du das?","Компания планирует с этого года проводить только летний праздник, а рождественскую вечеринку отменить. Как тебе это?",[
+"Die Weihnachtsfeier wird gestrichen, es gibt nur noch ein Sommerfest. Wie findest du das?",
+"Schade. Die Weihnachtsfeier war immer gemütlich.",
+"Vielleicht will die Firma Kosten sparen.",
+"*Das mag sein*, aber für die Stimmung im Team ist beides wichtig."]],
+["Hast du von dem Zuschuss der Firma für den Kauf eines E-Bikes gehört? Was denkst du darüber?","Ты слышал, что компания даёт субсидию на покупку электровелосипеда? Что думаешь об этом?",[
+"Hast du vom Zuschuss der Firma für ein E-Bike gehört? Was denkst du darüber?",
+"Ja, das finde ich großartig. Ich überlege, mir eins zu kaufen.",
+"Ich auch. Mein Weg zur Arbeit ist ziemlich lang.",
+"*Dadurch* spart man Benzin und tut etwas für die Gesundheit."]],
+["Verbringst du wichtige Feiertage eher mit der Familie oder mit Freunden?","Ты важные праздники проводишь скорее с семьёй или с друзьями?",[
+"Verbringst du wichtige Feiertage eher mit der Familie oder mit Freunden?",
+"Meistens mit der Familie. Wir kochen zusammen und sitzen lange am Tisch.",
+"Bei mir ist es gemischt. Heiligabend mit der Familie, Silvester mit Freunden.",
+"*Das klingt nach einer guten Mischung.* So kommt keine Seite zu kurz."]],
+["Was hältst du von Fahrgemeinschaften auf dem Weg zur Arbeit? Auf diese Weise könnte man Fahrtkosten sparen.","Что ты думаешь о совместных поездках на работу? Так можно сэкономить на проезде.",[
+"Was hältst du von Fahrgemeinschaften auf dem Weg zur Arbeit?",
+"Ich finde die Idee gut. Man spart Geld und die Umwelt freut sich.",
+"Hast du Lust, eine Fahrgemeinschaft zu bilden?",
+"Gern. *Vorausgesetzt*, wir finden feste Zeiten, die für alle passen."]],
+["Bevorzugst du bargeldlose Zahlungen oder zahlst du lieber bar?","Ты предпочитаешь безналичную оплату или платишь наличными?",[
+"Bevorzugst du bargeldlose Zahlungen oder zahlst du lieber bar?",
+"Ich zahle meistens mit Karte. Das geht schnell und ist praktisch.",
+"Ich benutze lieber Bargeld, dann sehe ich, wie viel ich ausgebe.",
+"*Das kann ich nachvollziehen.* *Allerdings* verliert man mit der Karte leichter den Überblick."]],
+["Denkst du, es ist eine gute Idee, sich selbstständig zu machen?","Ты считаешь хорошей идеей открыть собственное дело?",[
+"Denkst du, es ist eine gute Idee, sich selbstständig zu machen?",
+"Das kommt darauf an. *Einerseits* ist man sein eigener Chef, *andererseits* trägt man das ganze Risiko.",
+"Ich träume schon lange von einem eigenen Café.",
+"Dann schreib einen Businessplan. *Zunächst* solltest du dich beraten lassen."]],
+["Hast du auch mitbekommen, unsere Kantine wird für zwei Monate geschlossen, weil sie umgebaut wird? Was sagst du dazu?","Ты слышал, что нашу столовую закроют на два месяца из-за ремонта? Что скажешь?",[
+"Unsere Kantine wird zwei Monate geschlossen, weil sie umgebaut wird. Was sagst du dazu?",
+"Das ist ärgerlich. Wo sollen wir dann essen?",
+"Vielleicht gibt es einen Lieferdienst oder einen Zuschuss.",
+"*Falls* nicht, bringe ich mir etwas mit. *Hoffentlich* lohnt sich der Umbau."]],
+["Meinst du, dass man wirklich alle zwei Jahre ein neues Handy benötigt?","Ты считаешь, что действительно нужно менять телефон каждые два года?",[
+"Meinst du, dass man wirklich alle zwei Jahre ein neues Handy braucht?",
+"Nein, das finde ich unnötig. Mein Handy ist vier Jahre alt und funktioniert gut.",
+"Aber die neuen Modelle haben bessere Kameras.",
+"*Mag sein*, *trotzdem* ist es besser für die Umwelt, ein Gerät länger zu nutzen."]],
+["Nächsten Monat muss ich in eine Wohnung umziehen. Könntest du mir mit der Renovierung helfen?","В следующем месяце я переезжаю в новую квартиру. Не мог бы ты помочь с ремонтом?",[
+"Nächsten Monat ziehe ich um. Könntest du mir bei der Renovierung helfen?",
+"Klar, gern! Am Wochenende habe ich Zeit.",
+"Danke! Ich muss streichen und den Boden legen.",
+"*In dem Fall* bringe ich meine Malerrolle mit. Wir schaffen das zusammen."]],
+["Ich muss bald umziehen. Wo finde ich einen guten Handwerker für den Umzug?","Мне скоро переезжать. Где найти хорошего мастера для переезда?",[
+"Ich muss bald umziehen. Wo finde ich einen guten Handwerker?",
+"Frag Kollegen oder schau im Internet nach Bewertungen.",
+"Soll ich mehrere Angebote einholen?",
+"Unbedingt. *Auf diese Weise* kannst du Preise vergleichen und sparst Geld."]],
+["Findest du eine Betriebsfeier mit oder ohne Partner besser?","Как ты считаешь, корпоратив лучше проводить с партнёрами или без них?",[
+"Findest du eine Betriebsfeier mit oder ohne Partner besser?",
+"Ich bevorzuge mit Partner, dann ist die Stimmung lockerer.",
+"Ich finde ohne besser. Man kann sich mehr mit Kollegen unterhalten.",
+"*Einerseits* stimmt das, *andererseits* lernt man so die Familien kennen."]],
+["Soll man einen Partner/eine Partnerin zur Firmenfeier mitbringen?","Нужно ли брать партнёра на корпоративную вечеринку?",[
+"Soll man einen Partner zur Firmenfeier mitbringen?",
+"Das kommt auf die Einladung an. Steht dort etwas dazu?",
+"Ja, dort steht, dass eine Begleitung willkommen ist.",
+"*Dann* ist es völlig in Ordnung. Ich bringe meinen Partner mit."]],
+["Ich mache gerne Überstunden. Du auch?","Мне нравится работать сверхурочно. А тебе?",[
+"Ich mache gerne Überstunden. Du auch?",
+"Nein, nicht wirklich. Ich möchte pünktlich nach Hause.",
+"Mir gefällt es, weil ich dann mehr verdiene und in Ruhe arbeiten kann.",
+"*Ich verstehe das*, *allerdings* sollte man auf die Gesundheit achten."]],
+["Hast du gehört, dass es in der Firma bald kostenlose Sportkurse geben soll? Ich würde gerne dran teilnehmen. Und du?","Ты слышал, что скоро в компании будут бесплатные спортивные занятия? Я бы хотел участвовать. А ты?",[
+"Hast du gehört, dass es bald kostenlose Sportkurse in der Firma gibt?",
+"Ja, ich möchte unbedingt mitmachen. Yoga würde mir gefallen.",
+"Ich bin eher für Rückentraining.",
+"*Beides* ist nützlich. *Sofern* die Kurse nach der Arbeit sind, bin ich dabei."]],
+["Für mich wäre Schichtarbeit kein Problem. Wie siehst du das?","Для меня сменная работа не была бы проблемой. А как ты к этому относишься?",[
+"Für mich wäre Schichtarbeit kein Problem. Wie siehst du das?",
+"Ich bräuchte Zeit, um mich daran zu gewöhnen. Der Schlafrhythmus ist schwierig.",
+"Dafür hat man unter der Woche frei.",
+"*Das stimmt*, *dennoch* ist es für Familien nicht immer einfach."]],
+["Wollen wir mal an einem Abend (morgen Abend) etwas mit Kolleg*innen unternehmen?","Может, как-нибудь вечером (завтра вечером) организуем что-то с коллегами?",[
+"Wollen wir morgen Abend etwas mit den Kollegen unternehmen?",
+"Gern! Woran hast du gedacht?",
+"Vielleicht Bowling oder ein gemeinsames Abendessen.",
+"Bowling klingt gut. *Außerdem* kann man dabei locker reden."]],
+["Arbeitest du lieber im Team oder alleine? Ich persönlich bevorzuge, im Team zu arbeiten.","Ты предпочитаешь работать в команде или самостоятельно? Лично я предпочитаю работать в команде.",[
+"Arbeitest du lieber im Team oder alleine? Ich arbeite lieber im Team.",
+"Ich eher alleine. Dann kann ich in meinem eigenen Tempo arbeiten.",
+"Im Team bekommt man aber schneller neue Ideen.",
+"*Das stimmt*, *dennoch* brauche ich manchmal Ruhe, um mich zu konzentrieren."]],
+["Unser Betriebsausflug findet am Samstag statt. Was hältst du davon?","Наш корпоративный выезд состоится в субботу. Как ты к этому относишься?",[
+"Unser Betriebsausflug findet am Samstag statt. Was hältst du davon?",
+"Ehrlich gesagt gefällt mir das nicht. Am Wochenende möchte ich frei haben.",
+"Ich verstehe das. Aber vielleicht bekommen wir einen Tag Ausgleich.",
+"*Falls* das so ist, bin ich einverstanden. *Ansonsten* würde ich lieber unter der Woche fahren."]],
+["Ich nehme an Brückentagen immer frei. Und du?","Я всегда беру выходной на стыке праздников. А ты?",[
+"Ich nehme an Brückentagen immer frei. Und du?",
+"Ich auch, wenn es geht. So hat man ein langes Wochenende mit nur einem Urlaubstag.",
+"Leider wollen das alle, deshalb muss man früh fragen.",
+"*Das stimmt.* *Am besten* trägt man sich schon im Januar ein."]],
+["Ich finde einen Tag extra Urlaub für einen Umzug sehr wenig. Was denkst du darüber?","Я считаю, что один дополнительный день отпуска на переезд — это очень мало. Что ты думаешь?",[
+"Ein Tag Sonderurlaub für einen Umzug ist sehr wenig. Was denkst du?",
+"Da hast du recht. Man muss packen, transportieren und alles wieder aufbauen.",
+"Vielleicht kann man mit dem Chef über einen zweiten Tag sprechen.",
+"*Einerseits* ist das oft so üblich, *andererseits* kann die Firma freiwillig mehr geben."]],
+["Alle Fortbildungen sollen dieses Jahr an Wochenenden stattfinden. Was hältst du davon?","Все курсы повышения квалификации в этом году будут проходить по выходным. Как тебе это?",[
+"Alle Fortbildungen sollen dieses Jahr am Wochenende stattfinden. Was hältst du davon?",
+"Das finde ich nicht gut. Am Wochenende brauche ich Zeit für meine Familie.",
+"Vielleicht bekommt man dafür freie Tage.",
+"*Das wäre das Mindeste.* *Anderenfalls* wird kaum jemand teilnehmen."]],
+["Du arbeitest doch Vollzeit, oder? Wie schaffst du das denn mit deinem Kind?","Ты же работаешь на полную ставку, да? Как ты справляешься с ребёнком?",[
+"Du arbeitest doch Vollzeit, oder? Wie schaffst du das mit deinem Kind?",
+"Mit viel Organisation. Mein Sohn ist ganztägig in der Kita.",
+"Und wer holt ihn ab, wenn du Überstunden hast?",
+"Mein Partner oder die Oma. *Ohne* Hilfe wäre es kaum möglich."]],
+["Dieses Jahr fällt unser Betriebsausflug aus. Was hältst du davon?","В этом году наш корпоративный выезд отменили. Как ты к этому относишься?",[
+"Dieses Jahr fällt unser Betriebsausflug aus. Was hältst du davon?",
+"Schade, ich habe mich darauf gefreut. Warum denn?",
+"Die Firma will sparen, heißt es.",
+"*Trotzdem* sollte man so etwas nicht streichen. *Immerhin* stärkt es den Zusammenhalt."]],
+["Was wäre eine gute Idee für unseren nächsten Betriebsausflug?","Какая идея была бы хорошей для нашего следующего корпоративного выезда?",[
+"Was wäre eine gute Idee für unseren nächsten Betriebsausflug?",
+"Wie wäre es mit einer Wanderung und einem gemeinsamen Picknick?",
+"Gut, aber nicht alle sind sportlich.",
+"*Dann* könnten wir eine Bootstour machen. Das passt für alle."]],
+["Bald ziehen wir um. Im neuen Gebäude arbeiten wir im Großraumbüro. Freust du dich auch darauf?","Скоро мы переезжаем. В новом здании у нас будет офис открытого типа. Ты этому рад?",[
+"Bald ziehen wir um. Im neuen Gebäude arbeiten wir im Großraumbüro. Freust du dich darauf?",
+"Nicht wirklich. Ich fürchte, dass es zu laut wird.",
+"Ich sehe auch Vorteile. Man kommuniziert schneller.",
+"*Das mag sein*, *dennoch* brauche ich Rückzugsorte, zum Beispiel einen ruhigen Raum für Telefonate."]],
+["Ich wünsche, es gäbe mehr vegetarische Gerichte in der Kantine. Was denkst du darüber?","Я бы хотел, чтобы в столовой было больше вегетарианских блюд. Что ты об этом думаешь?",[
+"Ich fände es gut, wenn es mehr vegetarische Gerichte in der Kantine gäbe. Was denkst du?",
+"Da stimme ich zu. Im Moment gibt es nur ein vegetarisches Gericht.",
+"Vielleicht können wir einen Vorschlag machen.",
+"*Gute Idee.* *Gemeinsam* haben wir mehr Gewicht. Ich unterschreibe gern."]],
+["Ich finde es gut, wenn wir uns einmal im Monat abends zu einem Stammtisch treffen würden. Und du? Machst du mit?","Я думаю, было бы здорово встречаться раз в месяц вечером за общим столом. А ты? Присоединишься?",[
+"Ich fände einen Stammtisch einmal im Monat gut. Machst du mit?",
+"Gern. Hast du schon ein Lokal im Kopf?",
+"Das Lokal in der Nähe des Büros ist gemütlich.",
+"*Perfekt.* *Sobald* wir einen Termin haben, schreibe ich allen eine Nachricht."]],
+["Ich überlege, meine Stunden zu reduzieren und in Teilzeit zu arbeiten. Was denkst du? Ist das gut?","Я думаю о том, чтобы сократить часы и работать на неполную ставку. Как ты считаешь, это хорошо?",[
+"Ich überlege, in Teilzeit zu arbeiten. Was denkst du? Ist das gut?",
+"Das hängt davon ab, ob du dir das finanziell leisten kannst.",
+"Ich hätte dann mehr Zeit für meine Familie.",
+"*Einerseits* ist das ein großer Gewinn, *andererseits* bekommst du weniger Gehalt. Rechne alles genau durch."]],
+["Mein Zug kommt jeden Morgen spät. Ich habe Angst, ich bekomme bald Ärger vom Chef. Was soll ich machen?","Мой поезд каждое утро опаздывает. Боюсь, что у меня скоро будут проблемы с шефом. Что мне делать?",[
+"Mein Zug kommt jeden Morgen zu spät. Ich habe Angst vor Ärger mit dem Chef. Was soll ich tun?",
+"Sprich offen mit ihm. Er weiß vielleicht schon, dass die Bahn Probleme hat.",
+"Und wenn er es nicht akzeptiert?",
+"*In diesem Fall* nimm einen früheren Zug. *Außerdem* kannst du die Verspätungen dokumentieren."]],
+["Was tun, wenn der Zug ständig Verspätung hat?","Что делать, если поезд постоянно опаздывает?",[
+"Was tun, wenn der Zug ständig Verspätung hat?",
+"Man kann eine Beschwerde schreiben oder eine App für Echtzeit-Infos nutzen.",
+"Und wenn man dadurch zu spät zur Arbeit kommt?",
+"*Dann* sollte man den Arbeitgeber informieren. Oder man wechselt auf Bus oder Fahrrad."]],
+["Was kann man tun, wenn man 45 Minuten im Zug verbringen muss?","Чем заняться, если предстоит провести 45 минут в поезде?",[
+"Was kann man tun, wenn man 45 Minuten im Zug verbringen muss?",
+"Ich lese ein Buch oder höre einen Podcast.",
+"Ich lerne Vokabeln mit einer App. So nutze ich die Zeit sinnvoll.",
+"*Das finde ich klug.* *Dadurch* wird die Fahrt nicht langweilig."]],
+["Ich möchte gerne mal einen Bildungsurlaub machen. Weißt du, wie das bei uns in der Firma geregelt ist?","Я хочу взять учебный отпуск. Ты знаешь, как это устроено в нашей компании?",[
+"Ich möchte einen Bildungsurlaub machen. Weißt du, wie das bei uns geregelt ist?",
+"Man muss den Antrag einige Wochen vorher stellen.",
+"Und der Chef muss zustimmen?",
+"Ja, *sofern* der Kurs anerkannt ist. Frag am besten die Personalabteilung."]],
+["Unsere Abteilung plant, in ein Kochstudio zu gehen, um gemeinsam zu kochen. Mir gefällt diese Idee. Wie findest du sie?","Наш отдел планирует пойти в кулинарную студию и вместе приготовить еду. Мне нравится эта идея. А тебе?",[
+"Unsere Abteilung plant einen Kochabend im Kochstudio. Wie findest du die Idee?",
+"Super! Beim Kochen lernt man sich gut kennen.",
+"Ich koche selten. Hoffentlich blamiere ich mich nicht.",
+"*Keine Sorge*, ein Koch leitet uns an. *Zudem* essen wir alles gemeinsam."]],
+["Weißt du schon, wohin du in den Urlaub fährst? Bist du auf die Schulferien angewiesen?","Ты уже знаешь, куда поедешь в отпуск? Ты зависишь от школьных каникул?",[
+"Weißt du schon, wohin du in den Urlaub fährst? Bist du an die Schulferien gebunden?",
+"Nein, ich habe keine Kinder. Deshalb fahre ich außerhalb der Ferien.",
+"Das ist praktisch, es ist billiger und ruhiger.",
+"*Genau*, *dafür* muss man den Urlaub früh genug planen."]],
+["In der Kantine kann man nur noch abgepackte Brötchen kaufen. Ich würde gerne eine warme Mahlzeit essen. Wie ist das bei dir?","В столовой теперь можно купить только упакованные булочки. Я бы хотел горячую еду. А ты?",[
+"In der Kantine gibt es nur noch abgepackte Brötchen. Ich möchte eine warme Mahlzeit. Und du?",
+"Mir fehlt das auch. Nach dem Vormittag brauche ich etwas Richtiges.",
+"Sollen wir uns bei der Kantinenleitung beschweren?",
+"*Ja*, *und zwar* höflich. Vielleicht gibt es bald wieder eine Suppe."]],
+["Als neues Angebot für eine aktive Pause gibt es jetzt Tischtennis. Wollen wir mal in der Pause spielen?","В качестве нового варианта активного перерыва теперь есть настольный теннис. Может, поиграем в перерыв?",[
+"Für die aktive Pause gibt es jetzt Tischtennis. Wollen wir in der Pause spielen?",
+"Gern! Ich habe lange nicht gespielt, aber früher war ich gut.",
+"Das werden wir sehen. Der Verlierer holt den Kaffee.",
+"*Abgemacht!* *Hoffentlich* bleibt der Tisch nicht ständig besetzt."]],
+["Die Firma plant einen Betriebsausflug über das ganze Wochenende. Was hältst du davon?","Компания планирует корпоративный выезд на целый уик-энд. Как ты к этому относишься?",[
+"Die Firma plant einen Betriebsausflug über das ganze Wochenende. Was hältst du davon?",
+"Hmm, das ist ziemlich lang. Ich habe am Wochenende oft Familientermine.",
+"Ich finde es spannend, weil man die Kollegen besser kennenlernt.",
+"*Einerseits* verstehe ich das, *andererseits* sollte die Teilnahme freiwillig sein."]],
+["Soll man an den Betriebsausflügen teilnehmen?","Обязаны ли участвовать в корпоративных экскурсиях?",[
+"Muss man an den Betriebsausflügen teilnehmen?",
+"Meistens nicht, aber es ist gern gesehen.",
+"Ich komme immer mit. Das ist gut für den Zusammenhalt.",
+"*Das sehe ich auch so.* *Wer* nie dabei ist, verpasst viele Gespräche."]],
+["Hast du eine Idee / weißt du, was man in den Ferien mit Kindern hier in der Stadt unternehmen kann?","У тебя есть идеи, чем можно заняться с детьми в городе во время каникул?",[
+"Weißt du, was man in den Ferien mit Kindern hier in der Stadt unternehmen kann?",
+"Es gibt ein Kindermuseum und ein Hallenbad.",
+"Und bei schönem Wetter?",
+"*Dann* kann man in den Zoo oder zum Spielplatz im Stadtpark gehen. *Außerdem* gibt es oft Ferienprogramme."]],
+["Was soll man zur Party mit den Kollegen anziehen?","Что надеть на вечеринку с коллегами?",[
+"Was soll man zur Party mit den Kollegen anziehen?",
+"Etwas Bequemes, aber nicht zu Lässiges. Jeans und Hemd gehen immer.",
+"Und Schuhe?",
+"*Am besten* keine Sportschuhe. Lieber etwas Ordentliches, *denn* man weiß nie, wer kommt."]],
+["Ich finde flexible Arbeitszeiten großartig. Wann fängst du morgens mit der Arbeit an?","Я считаю, что гибкий график работы – это здорово. Во сколько ты начинаешь работать по утрам?",[
+"Ich finde flexible Arbeitszeiten großartig. Wann fängst du morgens an?",
+"Meistens um sieben, dann habe ich früher Feierabend.",
+"Ich beginne eher um neun, weil ich ein Morgenmuffel bin.",
+"*Das ist der Vorteil*: Jeder kann nach seinem Rhythmus arbeiten, *sofern* die Kernzeit eingehalten wird."]],
+["Ich finde die Uniform langweilig. Was ist deine Meinung?","Я считаю, что униформа скучная. Каково твоё мнение?",[
+"Ich finde die Uniform langweilig. Was ist deine Meinung?",
+"Ich finde sie praktisch. Man muss morgens nicht überlegen, was man anzieht.",
+"Aber man kann sich nicht individuell ausdrücken.",
+"*Einerseits* stimmt das, *andererseits* wirkt das Team professioneller."]],
+["Findest du es fair, dass wir die Kosten für die Fortbildungen selbst tragen sollen?","Ты считаешь справедливым, что мы должны сами оплачивать курсы повышения квалификации?",[
+"Findest du es fair, dass wir die Kosten für die Fortbildungen selbst tragen sollen?",
+"Nein, überhaupt nicht. Die Firma profitiert doch auch davon.",
+"Vielleicht übernimmt sie wenigstens einen Teil.",
+"*Zumindest* sollte man darüber verhandeln. *Sonst* nimmt kaum jemand teil."]],
+["Ich finde die Gleitzeit sehr familienfreundlich. Und du auch?","Я считаю, что гибкий график удобен для семейных людей. Ты согласен?",[
+"Ich finde die Gleitzeit sehr familienfreundlich. Und du?",
+"Absolut. Ich bringe morgens meine Tochter zur Schule und fange danach an.",
+"Das ist ein großer Vorteil für Eltern.",
+"*Dadurch* sinkt der Stress, und man ist insgesamt motivierter."]],
+["Was denkst du? Was könnte eine gute Idee für eine aktive Pause sein?","Как ты думаешь, какая идея для активного перерыва была бы хорошей?",[
+"Was könnte eine gute Idee für eine aktive Pause sein?",
+"Ein kurzer Spaziergang oder ein paar Dehnübungen am Platz.",
+"Oder man spielt Tischfußball im Pausenraum.",
+"*Alles in allem* tut jede Bewegung gut, *vor allem* nach langem Sitzen."]],
+["Was ist wichtiger? Familie oder Karriere?","Что важнее? Семья или карьера?",[
+"Was ist wichtiger? Familie oder Karriere?",
+"Für mich ganz klar die Familie. Karriere kann man später machen.",
+"Ich sehe das ähnlich, aber Geld spielt auch eine Rolle.",
+"*Meiner Ansicht nach* ist die Balance entscheidend. Beides gleichzeitig ist möglich, wenn man gut plant."]],
+["Ich habe so viele Überstunden. Ist es besser, diese abzubummeln oder sich diese auszahlen zu lassen?","У меня так много переработок. Лучше взять отгулы или получить за них деньги?",[
+"Ich habe so viele Überstunden. Soll ich sie abbummeln oder auszahlen lassen?",
+"Ich würde freie Tage nehmen. Erholung ist wichtiger als Geld.",
+"Aber ich könnte das Geld gut gebrauchen.",
+"*Es kommt darauf an*, was du gerade brauchst. *Falls* du sehr müde bist, nimm Urlaub."]],
+["Ich bin nach der Arbeit immer so müde. Hast du Idee, wie ich mich trotz Familie erholen kann?","Я всегда такой уставший после работы. У тебя есть идея, как я могу отдохнуть, несмотря на семью?",[
+"Ich bin nach der Arbeit immer so müde. Wie kann ich mich trotz Familie erholen?",
+"Plane kleine Pausen ein, zum Beispiel zehn Minuten Ruhe nach der Arbeit.",
+"Und am Wochenende?",
+"Teile die Aufgaben auf. *Darüber hinaus* hilft es, einmal pro Woche etwas nur für dich zu tun."]],
+["Wie kann man Müdigkeit von der Arbeit nicht ins Familienleben tragen?","Как не переносить усталость с работы в семью?",[
+"Wie kann man Müdigkeit von der Arbeit nicht ins Familienleben tragen?",
+"Ich mache auf dem Heimweg bewusst Schluss mit der Arbeit, zum Beispiel mit Musik.",
+"Und zu Hause?",
+"Ich erzähle kurz vom Tag und *danach* konzentriere ich mich auf die Familie."]],
+["Was kann man nach der Arbeit tun, um die Stimmung zu verbessern?","Что можно делать после работы для улучшения настроения?",[
+"Was kann man nach der Arbeit tun, um die Stimmung zu verbessern?",
+"Ein Spaziergang an der frischen Luft wirkt bei mir Wunder.",
+"Ich treffe lieber Freunde oder koche etwas Leckeres.",
+"*Egal*, was man macht: Hauptsache, es macht Freude und lenkt vom Arbeitsstress ab."]],
+["Müssen wir eigentlich im Homeoffice unser privates Handy für die Arbeit benutzen? Ich habe nämlich kein Diensthandy bekommen.","Должны ли мы вообще в хоум-офисе использовать свой личный телефон для работы? Дело в том, что мне не выдали служебный телефон.",[
+"Müssen wir im Homeoffice unser privates Handy für die Arbeit benutzen? Ich habe kein Diensthandy bekommen.",
+"Eigentlich nicht. Die Firma sollte die Arbeitsmittel stellen.",
+"Ich möchte Beruf und Privates trennen.",
+"*Das ist verständlich.* Frag den Chef, *ob* es eine Lösung gibt, zum Beispiel eine zweite SIM-Karte."]],
+["Gibt es in deinem Heimatland auch so viele Formulare und Bürokratie wie hier in Deutschland?","В твоей родной стране тоже так много формуляров, как здесь, в Германии?",[
+"Gibt es in deinem Heimatland auch so viel Bürokratie wie hier in Deutschland?",
+"Ja, aber vieles läuft dort inzwischen online ab.",
+"Hier muss man oft noch Papier ausfüllen und ausdrucken.",
+"*Das stimmt.* *Immerhin* wird die Digitalisierung langsam besser."]],
+["In der Firma ist die Rede davon, dass wir an einer Spendenaktion teilnehmen sollen. Machst du mit?","В компании говорят о том, что мы должны принять участие в благотворительной акции. Ты будешь участвовать?",[
+"In der Firma ist von einer Spendenaktion die Rede. Machst du mit?",
+"Ja, gern. Ich finde es wichtig, anderen zu helfen.",
+"Sollen wir Geld sammeln oder Sachen spenden?",
+"*Beides* ist möglich. *Sofern* es freiwillig bleibt, habe ich nichts dagegen."]],
+["Wir bekommen Zuschuss für das Mittagessen in der Kantine. Findest du das gut?","Мы получаем дотацию на обед в столовой. Ты считаешь это хорошим?",[
+"Wir bekommen einen Zuschuss für das Mittagessen. Findest du das gut?",
+"Ja, sehr. Dadurch kostet ein Essen viel weniger.",
+"Für mich ist es ein Grund, in der Kantine zu essen.",
+"*Außerdem* verbringt man mehr Zeit mit Kollegen. Das stärkt das Betriebsklima."]],
+["Wäre ein Seminar für Konfliktmanagement für unsere Team nützlich? Was meinst du?","Был бы полезен семинар по управлению конфликтами для нашей команды? Как ты думаешь?",[
+"Wäre ein Seminar für Konfliktmanagement für unser Team nützlich? Was meinst du?",
+"Ich denke schon. In letzter Zeit gab es öfter Streit.",
+"Man könnte lernen, ruhiger zu diskutieren.",
+"*Das wäre hilfreich.* *Vorausgesetzt*, alle nehmen es ernst."]],
+["Ich hätte gerne rückenfreundliche Bürostühle, aber die Firma bezahlt das nicht.","Я бы хотел удобные для спины офисные стулья, но компания за это не платит.",[
+"Ich hätte gern rückenfreundliche Bürostühle, aber die Firma bezahlt das nicht.",
+"Das ist schade. Ein guter Stuhl ist wichtig für die Gesundheit.",
+"Vielleicht können wir als Team einen Antrag stellen.",
+"*Gute Idee.* *Gemeinsam* sind die Chancen größer, dass die Firma zustimmt."]],
+["Wie stehen Sie zum zusätzlichen Lernen oder zur Weiterbildung am Arbeitsplatz?","Как Вы относитесь к дополнительному обучению на работе?",[
+"Wie stehen Sie zur Weiterbildung am Arbeitsplatz?",
+"Ich halte sie für sehr wichtig. Die Arbeitswelt verändert sich schnell.",
+"Haben Sie schon einen Kurs besucht?",
+"Ja, *kürzlich* einen Kurs zum Datenschutz. *Dadurch* fühle ich mich sicherer bei meiner Arbeit."]],
+["Was soll man machen, wenn im Büro Hunde erlaubt sind und man Angst vor ihn hat?","Что делать, если в офисе разрешают приводить собак, а у меня страх?",[
+"Was soll man machen, wenn im Büro Hunde erlaubt sind und man Angst vor ihnen hat?",
+"Sprich offen mit den Kollegen und dem Chef darüber.",
+"Ich möchte niemanden verärgern.",
+"*Trotzdem* ist deine Angst ernst zu nehmen. Vielleicht gibt es hundefreie Zonen oder Tage."]],
+["Wie kann man die Balance zwischen Freizeit und Arbeit halten?","Как поддерживать баланс между свободным временем и работой?",[
+"Wie kann man die Balance zwischen Freizeit und Arbeit halten?",
+"Ich plane feste Zeiten für Hobbys und schalte abends das Diensthandy aus.",
+"Das fällt mir schwer. Ich antworte oft noch auf E-Mails.",
+"*Meiner Meinung nach* helfen klare Grenzen. *Auf diese Weise* bleibt genug Energie für die Freizeit."]],
+["Liest du lieber Bücher oder hörst du Hörbücher?","Тебе больше нравиться читать книги или слушать аудиокниги?",[
+"Liest du lieber Bücher oder hörst du Hörbücher?",
+"Ich lese lieber, weil ich Papier mag. Aber im Auto höre ich Hörbücher.",
+"Ich höre fast nur noch, zum Beispiel beim Kochen.",
+"*Einerseits* ist Lesen entspannender, *andererseits* spart man mit Hörbüchern Zeit."]]
+];
+const T=[
+["Я считаю, что мы, как стажёры, не должны работать сверхурочно. Что думаешь?","Согласен(на) с тобой. Мы ещё учимся и получаем мало денег.","Именно. Однако я хочу произвести хорошее впечатление.","Понимаю. Тем не менее нам стоит поговорить об этом с начальницей."],
+["Я обычно хожу в обеденный перерыв в закусочную за углом. А ты где ешь?","Я чаще всего беру еду из дома. Так дешевле.","Верно, но мне нужно разнообразие. В закусочной вкусные салаты.","Кроме того, там удобно общаться с коллегами. Может, завтра пойду с тобой."],
+["Шеф хочет, чтобы я прошёл(ла) компьютерный курс. Как мне это организовать?","Лучше всего сначала спросить в отделе кадров. Они знают поставщиков курсов.","А кто платит за курс?","Если курс нужен шефу, обычно платит фирма. Рекомендуется выяснить это письменно."],
+["Летом я люблю ездить купаться на озеро. Ты тоже или предпочитаешь открытые бассейны?","Я предпочитаю открытый бассейн. Там есть киоск и горка.","Но на озере спокойнее и красивая природа.","С одной стороны, ты прав(а), с другой — вода в бассейне чище. Можно попробовать и то и другое."],
+["Как и когда ты бронируешь отпуск?","Я планирую уже в январе и вношу дни в онлайн-календарь.","Так рано? Я обычно жду до весны.","Благодаря этому я получаю желаемые даты, а билеты дешевле. Могу только посоветовать."],
+["У меня осталось пять дней неиспользованного отпуска. Что с ними будет?","Обычно они сгорают в конце марта следующего года. Лучше спроси в отделе кадров.","Жаль. Тогда я лучше возьму их в декабре.","Если не получится, иногда дни можно перенести. Это зависит от договора."],
+["Как лучше всего использовать оставшиеся пять дней отпуска?","Я бы провёл(а) длинные выходные в красивом месте.","Хорошая идея. Можно и остаться дома и сделать дела, которые давно откладывал(а).","На мой взгляд, отдых важнее. Съезди на поезде в горы!"],
+["Я работаю из дома и не получил(а) служебный телефон. Стоит ли использовать личный?","Я бы не стал(а). Фирма должна предоставить устройство.","Но я должен(на) быть на связи.","В таком случае напиши шефу письмо и спроси про решение или возмещение расходов."],
+["Шеф хочет больничный с первого дня. Что ты об этом думаешь?","Мне кажется, это чересчур. Раньше хватало третьего дня.","Может, он хочет предотвратить злоупотребления.","Может быть, но это показывает недостаток доверия. К тому же с температурой придётся идти к врачу."],
+["В субботу день открытых дверей. Можно взять детей. Ты пойдёшь?","Да, с удовольствием! Моя дочь хочет увидеть, где я работаю.","Отлично. Для детей есть и своя программа.","Тогда я приду в десять. Встретимся у входа?"],
+["В этом году компания не платит бонусы. Что ты об этом думаешь?","Я разочарован(а). Мы много работали.","Фирма говорит, что ситуация сложная.","Тем не менее я ожидал(а) бы небольшого признания, например нескольких выходных."],
+["80 процентов сотрудников ездят на работу на велосипеде. Тебе это тоже нравится?","Да, это полезно для здоровья и для окружающей среды.","Я тоже люблю ездить, но в дождь еду на автобусе.","Это понятно. Однако фирме стоит построить больше велопарковок."],
+["В декабре действует запрет на отпуск. Ты считаешь это справедливым?","В торговле тогда очень много работы. Поэтому я это понимаю.","Но многие хотят быть на Рождество с семьёй.","С одной стороны, фирме нужны сотрудники, с другой — ей стоит пойти навстречу семьям, например, разрешив меняться сменами."],
+["Где ты любишь проводить обеденный перерыв? Я люблю выходить на улицу.","Я лучше останусь в офисе и немного почитаю.","После свежего воздуха я намного бодрее.","Верно. При хорошей погоде я пойду с тобой в парк."],
+["Где лучше обедать: в офисе или на улице, с коллегами или в одиночестве?","Я люблю обедать с коллегами. Так лучше узнаёшь друг друга.","Мне иногда нужна тишина, тогда я ем один.","Есть плюсы и там и там. Главное — действительно сделать перерыв."],
+["Ты предпочитаешь работать в офисе или дома?","Лучше всего два дня дома и три в офисе.","Почему так?","Дома я лучше концентрируюсь, а в офисе, напротив, могу сразу уточнить вопросы."],
+["Я беру отпуск осенью, потому что у этого много преимуществ. А ты?","Я езжу летом, потому что тогда тепло.","Осенью спокойнее и дешевле. Кроме того, меньше туристов.","Это почти убеждает меня. Может, попробую в этом году."],
+["Я бы хотел(а) в свободное время заниматься волонтёрством. Есть идеи?","Ты мог(ла) бы помогать в приюте для животных или пожилым людям с покупками.","Звучит хорошо. Я люблю животных.","Тогда позвони в приют. Им часто нужна помощь по выходным."],
+["Как можно начать заниматься волонтёрской деятельностью?","Проще всего поискать в интернете агентство волонтёров в твоём городе.","Нужен ли опыт?","Нет, обычно нет. Решающее — чтобы у тебя регулярно было время."],
+["На следующей неделе у меня первая ночная смена. Что ты делаешь, чтобы не уснуть?","Я сплю перед этим несколько часов и пью воду вместо большого количества кофе.","А что ты ешь?","Что-нибудь лёгкое, ведь тяжёлая еда вызывает усталость. И делай короткие перерывы на движение."],
+["Ты тоже продуктивнее в утреннюю смену? У меня так.","Да, утром я бодр(а), и в офисе тихо.","После обеда моя концентрация падает.","Поэтому мне ещё нравится, что рабочий день заканчивается рано."],
+["Тебе тоже после работы сначала нужен покой, как и мне?","Обязательно. Сначала я сажусь на десять минут и пью чай.","Я люблю слушать музыку или гулять.","Мне это тоже помогает. После этого у меня снова есть энергия для семьи."],
+["Закажем что-нибудь на обед? Как насчёт совместного обеда?","Хорошая идея! Что бы тебе хотелось?","Пиццу или что-нибудь азиатское?","Лучше азиатское. Если все согласны, я закажу на всех."],
+["В следующем месяце я, к сожалению, не могу работать сверхурочно. Как думаешь, это возможно?","Это зависит от шефа. У тебя важная причина?","Да, по вечерам я хожу на языковой курс.","В таком случае скажи об этом заранее и вежливо. Обычно решение находится."],
+["Моя новая коллега недружелюбна. Есть советы, как с этим справиться?","Может, она просто в стрессе. Дай ей немного времени.","Я пробовал(а) улыбаться, но она почти не отвечает.","Поговори с ней спокойно, причём без упрёков. Если лучше не станет, поговори с шефом."],
+["Мне нужно в субботу заменить коллегу. Получу ли я за это выходной на следующей неделе?","Обычно да. Этот день можно взять как компенсацию.","Мне нужно заранее согласовать это с шефом?","Безусловно. Лучше всего возьми подтверждение в письменном виде."],
+["Мой ребёнок плачет в детском саду. У тебя есть опыт и советы?","Да, у нас в начале было так же. Это совершенно нормально.","Что помогло?","Короткое, уверенное прощание. Кроме того, помогла мягкая игрушка. Поговори ещё с воспитательницами."],
+["Я хочу лучше узнать коллег. Есть идея?","Ходи чаще с нами на обеденный перерыв. Там общаются очень свободно.","Хорошая идея. А ещё?","Ты мог(ла) бы предложить чаепитие. Это способствует тому, что команда становится ближе."],
+["Летом отпуск могут брать только сотрудники с детьми. Ты считаешь это справедливым?","Нет, я не считаю это справедливым. Всем нужен отдых.","Фирма говорит, что школьные каникулы важны для семей.","С одной стороны, я это понимаю, с другой — нужно чередоваться. Например, каждый год другая группа."],
+["У нас трёхмесячный срок увольнения. Не слишком ли это долго?","Я тоже так думаю. Долго остаёшься связан(а).","Для фирмы наверняка удобно, чтобы найти замену.","Это верно, однако обе стороны должны быть гибкими. Возможно, получится договориться в разговоре."],
+["На выходных я жарю барбекю с друзьями в саду. Хочешь прийти?","С удовольствием! Мне что-нибудь принести?","Было бы здорово, если бы ты принёс(ла) салат. Мясо и напитки у меня уже есть.","С удовольствием. Если погода испортится, можем поесть дома."],
+["У моей подруги по пятницам рабочий день заканчивается уже в 14:00. Что ты об этом думаешь?","Звучит здорово! Тогда получаются длинные выходные.","Но рабочее время придётся отрабатывать в течение недели.","Это правда, но всё же я бы хотел(а) попробовать такую модель."],
+["Проводится семинар по преодолению стресса. Я хочу пойти. Ты тоже придёшь?","Да, мне это очень пригодится. Когда он проходит?","В следующий четверг, в рабочее время.","Замечательно, тогда я сразу запишусь. Надеюсь, узнаю полезные приёмы."],
+["Я давно здесь работаю и хочу развиваться. Есть идеи?","Ты мог(ла) бы пройти повышение квалификации или взять новые задачи.","Я тоже об этом думал(а). Кого спросить?","Поговори с шефом. Кроме того, в отделе кадров можно узнать о программах."],
+["Мне нужен дополнительный доход. Подработка — хорошая идея?","Это зависит от обстоятельств. У тебя достаточно времени и сил?","Я мог(ла) бы работать несколько часов по выходным.","Тогда следи за тем, чтобы основная работа не страдала. Кроме того, о подработке нужно сообщить шефу."],
+["Как можно увеличить доход, если расходы выросли?","Можно договориться о повышении зарплаты или брать сверхурочные.","А если это не получится?","Тогда вариант — подработка. Параллельно можно также сократить расходы."],
+["Что ты думаешь о мини-джобе помимо основной работы?","Я считаю его удобным: можно гибко работать и платить мало налогов.","Но тогда остаётся меньше свободного времени.","Это так. Поэтому нужно хорошо подумать, действительно ли это тебе нужно."],
+["Фирма планирует меры по укреплению здоровья. Как тебе это?","Я считаю это очень хорошим. Тренировка для спины была бы полезна.","Я также надеюсь на здоровую еду в столовой.","В целом это хорошее вложение. Здоровые сотрудники более мотивированы."],
+["Как Вы относитесь к мероприятиям по профилактике здоровья?","Я считаю их важными. Получаешь много информации.","Вы сами ходите на них?","Да, если позволяет рабочее время. В прошлом году была лекция о здоровом сне."],
+["Тебе тоже нравится, что в столовой стало больше веганских блюд?","Да, выбор теперь намного лучше.","Я, правда, ем мясо, но с удовольствием пробую новое.","Именно, а кроме того, это полезно для окружающей среды."],
+["Ты играешь на музыкальном инструменте? Я бы хотел(а) научиться.","Я играю на гитаре. В народной школе (Volkshochschule) есть недорогие курсы.","А индивидуальные занятия есть?","Да, в музыкальной школе. Однако места ограничены, поэтому запишись поскорее."],
+["Этим летом мы остаёмся здесь и не едем на родину. Давай что-нибудь организуем вместе?","С удовольствием! Как насчёт поездки на озеро?","Отлично. И дети могли бы поиграть.","Если погода позволит, можем ещё пожарить барбекю. Я это организую."],
+["Ты уже знаешь, что наденешь на рождественскую вечеринку? Она уже на следующей неделе.","Пока нет. Думаю о чём-то элегантном, но не слишком праздничном.","Я тоже. Может быть, хватит рубашки и тёмных брюк.","На мой взгляд, это подходит. Главное — чтобы было удобно."],
+["Ты знаешь, как в фирме урегулирован больничный?","В первый день утром нужно позвонить шефу.","А когда нужна справка?","С третьего дня. Тем не менее рекомендуется рано пойти к врачу."],
+["Рождественскую вечеринку отменяют, будет только летний праздник. Как тебе?","Жаль. Рождественская вечеринка всегда была уютной.","Возможно, фирма хочет сэкономить.","Возможно, но для атмосферы в команде важно и то и другое."],
+["Ты слышал(а) о субсидии фирмы на электровелосипед? Что думаешь об этом?","Да, я считаю это отличным. Думаю купить себе.","Я тоже. Мой путь на работу довольно длинный.","Так можно сэкономить на бензине и сделать что-то для здоровья."],
+["Важные праздники ты проводишь скорее с семьёй или с друзьями?","Чаще всего с семьёй. Мы вместе готовим и долго сидим за столом.","У меня по-разному. Сочельник с семьёй, Сильвестр с друзьями.","Звучит как хорошее сочетание. Так никто не остаётся обделённым."],
+["Что ты думаешь о совместных поездках на работу?","Мне нравится идея. Экономишь деньги, и окружающей среде это на пользу.","Хочешь создать такую группу для поездок?","С удовольствием. При условии, что мы найдём фиксированное время, удобное всем."],
+["Ты предпочитаешь безналичную оплату или наличные?","Я чаще всего плачу картой. Это быстро и удобно.","Я лучше пользуюсь наличными, тогда вижу, сколько трачу.","Я могу это понять. Однако с картой легче потерять обзор расходов."],
+["Ты считаешь, что открыть своё дело — хорошая идея?","Это зависит от обстоятельств. С одной стороны, ты сам себе начальник, с другой — несёшь весь риск.","Я давно мечтаю о собственном кафе.","Тогда составь бизнес-план. Сначала тебе стоит проконсультироваться."],
+["Нашу столовую закроют на два месяца на перестройку. Что скажешь?","Досадно. Где нам тогда есть?","Может быть, будет доставка или дотация.","Если нет, я буду приносить еду с собой. Надеюсь, ремонт окупится."],
+["Ты считаешь, что действительно нужен новый телефон каждые два года?","Нет, считаю это лишним. Моему телефону четыре года, и он хорошо работает.","Но у новых моделей лучше камеры.","Возможно, но для окружающей среды лучше дольше пользоваться устройством."],
+["В следующем месяце я переезжаю. Не мог(ла) бы ты помочь с ремонтом?","Конечно, с удовольствием! В выходные у меня есть время.","Спасибо! Мне нужно покрасить и положить пол.","Тогда я возьму свой малярный валик. Мы справимся вместе."],
+["Мне скоро переезжать. Где найти хорошего мастера?","Спроси у коллег или посмотри отзывы в интернете.","Стоит ли запросить несколько предложений?","Обязательно. Так ты сможешь сравнить цены и сэкономить."],
+["Как ты считаешь, корпоратив лучше с партнёром или без?","Я предпочитаю с партнёром, тогда атмосфера свободнее.","Я считаю, что без лучше. Можно больше общаться с коллегами.","С одной стороны, это верно, с другой — так знакомишься с семьями."],
+["Стоит ли брать партнёра на корпоратив?","Это зависит от приглашения. Что там об этом написано?","Да, там сказано, что спутник приветствуется.","Тогда это совершенно нормально. Я возьму с собой партнёра."],
+["Мне нравится работать сверхурочно. А тебе?","Нет, не особо. Я хочу вовремя уйти домой.","Мне нравится, потому что я больше зарабатываю и могу работать в тишине.","Я понимаю, однако нужно следить за здоровьем."],
+["Ты слышал(а), что скоро в фирме будут бесплатные спортивные занятия?","Да, я обязательно хочу участвовать. Мне бы понравилась йога.","Я скорее за тренировки для спины.","И то и другое полезно. Если занятия будут после работы, я с вами."],
+["Для меня сменная работа не была бы проблемой. А ты как считаешь?","Мне понадобилось бы время, чтобы привыкнуть. Режим сна — это сложно.","Зато бывают выходные в будни.","Это верно, но для семей это не всегда просто."],
+["Давайте завтра вечером что-нибудь организуем с коллегами?","С удовольствием! О чём ты думаешь?","Может быть, боулинг или совместный ужин.","Боулинг звучит хорошо. Кроме того, там можно свободно общаться."],
+["Ты предпочитаешь работать в команде или один? Я лучше в команде.","Я скорее один. Тогда я работаю в собственном темпе.","Но в команде быстрее появляются новые идеи.","Это верно, однако мне иногда нужна тишина, чтобы сосредоточиться."],
+["Наш корпоративный выезд будет в субботу. Что ты об этом думаешь?","Честно говоря, мне это не нравится. В выходные я хочу отдыхать.","Я понимаю. Но, может быть, нам дадут день компенсации.","Если так, я согласен(на). В противном случае я предпочёл(а) бы поехать в будни."],
+["Я всегда беру выходной в «мостовые» дни. А ты?","Я тоже, если получается. Так получаются длинные выходные всего за один день отпуска.","К сожалению, этого хотят все, поэтому нужно спрашивать заранее.","Это так. Лучше всего записаться уже в январе."],
+["Один день отпуска на переезд — это очень мало. Что ты думаешь?","Ты прав(а). Нужно упаковать, перевезти и снова всё собрать.","Может, можно поговорить с шефом о втором дне.","С одной стороны, это часто так принято, с другой — фирма может добровольно дать больше."],
+["Все курсы в этом году должны проходить по выходным. Что ты об этом думаешь?","Мне это не нравится. В выходные мне нужно время для семьи.","Может, за это дадут выходные в будни.","Это было бы минимумом. Иначе почти никто не будет участвовать."],
+["Ты же работаешь на полную ставку? Как справляешься с ребёнком?","С помощью хорошей организации. Мой сын весь день в детском саду.","А кто забирает его, когда у тебя сверхурочные?","Мой партнёр или бабушка. Без помощи это было бы почти невозможно."],
+["В этом году наш корпоративный выезд отменяется. Что ты об этом думаешь?","Жаль, я ждал(а) его. А почему?","Говорят, фирма хочет сэкономить.","Всё же такое не стоит отменять. Ведь это укрепляет сплочённость."],
+["Какая идея подойдёт для нашего следующего выезда?","Как насчёт похода и совместного пикника?","Хорошо, но не все спортивные.","Тогда можно устроить прогулку на лодке. Это подойдёт всем."],
+["Скоро мы переезжаем. В новом здании будет офис открытого типа. Ты этому рад(а)?","Не особо. Боюсь, что будет слишком шумно.","Я вижу и плюсы. Общаешься быстрее.","Возможно, но мне нужны места, где можно уединиться, например тихая комната для звонков."],
+["Я был(а) бы рад(а), если бы в столовой было больше вегетарианских блюд. Что думаешь?","Согласен(на). Сейчас есть только одно такое блюдо.","Может быть, мы можем внести предложение.","Хорошая идея. Вместе у нас больше веса. Я с удовольствием подпишусь."],
+["Мне нравится идея регулярных встреч раз в месяц. Присоединишься?","С удовольствием. У тебя уже есть на примете заведение?","Заведение рядом с офисом уютное.","Отлично. Как только будет дата, я напишу всем сообщение."],
+["Я думаю о работе на неполную ставку. Как ты считаешь, это хорошо?","Это зависит от того, можешь ли ты позволить себе это финансово.","Тогда у меня было бы больше времени для семьи.","С одной стороны, это большой плюс, с другой — зарплата будет меньше. Всё точно посчитай."],
+["Мой поезд каждое утро опаздывает. Боюсь неприятностей с шефом. Что мне делать?","Поговори с ним открыто. Возможно, он уже знает, что у железной дороги проблемы.","А если он не примет это?","В таком случае поезжай более ранним поездом. Кроме того, можешь фиксировать опоздания."],
+["Что делать, если поезд постоянно опаздывает?","Можно написать жалобу или пользоваться приложением с информацией в реальном времени.","А если из-за этого опаздываешь на работу?","Тогда нужно сообщить работодателю. Или перейти на автобус или велосипед."],
+["Что можно делать, если нужно провести в поезде 45 минут?","Я читаю книгу или слушаю подкаст.","Я учу слова в приложении. Так я с пользой трачу время.","Мне это кажется разумным. Благодаря этому поездка не скучна."],
+["Я хочу взять учебный отпуск. Ты знаешь, как это у нас урегулировано?","Заявление нужно подать за несколько недель.","И шеф должен согласиться?","Да, если курс признан. Лучше всего спроси в отделе кадров."],
+["Наш отдел планирует кулинарный вечер в студии. Как тебе идея?","Отлично! За готовкой хорошо узнаёшь друг друга.","Я редко готовлю. Надеюсь, не опозорюсь.","Не волнуйся, нас будет направлять повар. К тому же мы всё вместе съедим."],
+["Ты уже знаешь, куда поедешь в отпуск? Ты привязан(а) к школьным каникулам?","Нет, у меня нет детей. Поэтому я езжу вне каникул.","Это удобно: дешевле и спокойнее.","Именно, зато отпуск нужно планировать достаточно рано."],
+["В столовой остались только упакованные булочки. Я хочу горячую еду. А ты?","Мне тоже этого не хватает. После первой половины дня нужно что-то настоящее.","Может, пожалуемся руководству столовой?","Да, причём вежливо. Может, скоро снова будет суп."],
+["Для активного перерыва теперь есть настольный теннис. Поиграем в перерыв?","С удовольствием! Давно не играл(а), но раньше был(а) хорош(а).","Это мы увидим. Проигравший приносит кофе.","Договорились! Надеюсь, стол не будет всё время занят."],
+["Фирма планирует корпоративный выезд на все выходные. Что ты об этом думаешь?","Хм, это довольно долго. У меня в выходные часто семейные дела.","Мне это интересно, потому что лучше узнаёшь коллег.","С одной стороны, я понимаю, с другой — участие должно быть добровольным."],
+["Нужно ли участвовать в корпоративных поездках?","Чаще всего нет, но это приветствуется.","Я всегда еду. Это хорошо для сплочённости.","Я тоже так считаю. Кто никогда не участвует, упускает много разговоров."],
+["Знаешь, чем можно заняться с детьми в каникулы в нашем городе?","Есть детский музей и крытый бассейн.","А при хорошей погоде?","Тогда можно пойти в зоопарк или на детскую площадку в городском парке. Кроме того, часто бывают каникулярные программы."],
+["Что надеть на вечеринку с коллегами?","Что-то удобное, но не слишком небрежное. Джинсы и рубашка подходят всегда.","А обувь?","Лучше без кроссовок. Лучше что-то аккуратное, ведь никогда не знаешь, кто придёт."],
+["Мне гибкий график очень нравится. Во сколько ты начинаешь утром?","Обычно в семь, тогда я раньше заканчиваю.","Я скорее в девять, потому что не люблю рано вставать.","В этом и преимущество: каждый работает по своему ритму, если соблюдается основное рабочее время."],
+["Мне форма кажется скучной. Что ты думаешь?","Мне она кажется практичной. Утром не нужно думать, что надеть.","Но нельзя выразить индивидуальность.","С одной стороны, это правда, с другой — команда выглядит профессиональнее."],
+["Справедливо ли, что мы сами должны платить за курсы повышения квалификации?","Нет, совсем нет. Ведь фирма от этого тоже выигрывает.","Может, она хотя бы часть возьмёт на себя.","По крайней мере, об этом нужно договариваться. Иначе почти никто не будет участвовать."],
+["Мне кажется, гибкий график очень удобен для семей. А тебе?","Абсолютно. Утром я отвожу дочь в школу и после этого начинаю работать.","Это большое преимущество для родителей.","Благодаря этому стресса меньше, и человек в целом мотивированнее."],
+["Какая идея подойдёт для активного перерыва?","Короткая прогулка или несколько упражнений на растяжку на месте.","Или можно поиграть в настольный футбол в комнате отдыха.","В целом любое движение полезно, особенно после долгого сидения."],
+["Что важнее? Семья или карьера?","Для меня однозначно семья. Карьеру можно строить позже.","Я смотрю похоже, но деньги тоже играют роль.","На мой взгляд, решающий фактор — баланс. И то и другое одновременно возможно, если хорошо планировать."],
+["У меня много сверхурочных. Взять отгулы или получить деньги?","Я бы взял(а) отгулы. Отдых важнее денег.","Но мне деньги бы пригодились.","Это зависит от того, что тебе сейчас нужно. Если ты очень устал(а), возьми отгул."],
+["Я после работы всегда очень устаю. Как мне отдохнуть, несмотря на семью?","Запланируй небольшие паузы, например десять минут покоя после работы.","А в выходные?","Распредели обязанности. Кроме того, помогает раз в неделю делать что-то только для себя."],
+["Как не переносить усталость с работы в семью?","По дороге домой я сознательно «закрываю» работу, например с помощью музыки.","А дома?","Я коротко рассказываю о дне, а потом концентрируюсь на семье."],
+["Что можно делать после работы, чтобы улучшить настроение?","Прогулка на свежем воздухе действует на меня чудесно.","Я лучше встречаюсь с друзьями или готовлю что-нибудь вкусное.","Неважно, что делать: главное, чтобы это радовало и отвлекало от рабочего стресса."],
+["Обязаны ли мы в хоум-офисе использовать личный телефон для работы? Мне не выдали служебный.","Вообще-то нет. Фирма должна предоставлять рабочие средства.","Я хочу разделять работу и личное.","Понятно. Спроси шефа, есть ли решение, например вторая SIM-карта."],
+["В твоей родной стране тоже столько бюрократии, как в Германии?","Да, но многое там теперь делается онлайн.","Здесь часто приходится заполнять бумаги и печатать.","Это так. Всё же цифровизация понемногу улучшается."],
+["В фирме говорят о благотворительной акции. Ты будешь участвовать?","Да, с удовольствием. Я считаю важным помогать другим.","Будем собирать деньги или вещи?","Возможно и то и другое. Если это остаётся добровольным, я не против."],
+["Мы получаем дотацию на обед. Тебе это нравится?","Да, очень. Благодаря этому обед стоит намного дешевле.","Для меня это повод есть в столовой.","Кроме того, проводишь больше времени с коллегами. Это улучшает атмосферу в коллективе."],
+["Был бы полезен семинар по управлению конфликтами для нашей команды? Что думаешь?","Думаю, да. В последнее время чаще бывали ссоры.","Можно научиться спокойнее обсуждать.","Это было бы полезно. При условии, что все отнесутся к нему серьёзно."],
+["Я бы хотел(а) удобные для спины офисные стулья, но фирма за это не платит.","Жаль. Хороший стул важен для здоровья.","Может быть, мы как команда можем подать заявку.","Хорошая идея. Вместе шансы, что фирма согласится, выше."],
+["Как Вы относитесь к обучению на рабочем месте?","Я считаю его очень важным. Рабочий мир быстро меняется.","Вы уже посещали курс?","Да, недавно курс по защите данных. Благодаря этому я чувствую себя увереннее в работе."],
+["Что делать, если в офисе разрешены собаки, а ты их боишься?","Поговори об этом открыто с коллегами и шефом.","Я не хочу никого раздражать.","Тем не менее твой страх нужно воспринимать всерьёз. Возможно, будут зоны или дни без собак."],
+["Как поддерживать баланс между свободным временем и работой?","Я планирую фиксированное время для хобби и вечером выключаю рабочий телефон.","Мне это трудно. Я часто ещё отвечаю на письма.","На мой взгляд, помогают чёткие границы. Так остаётся достаточно энергии на свободное время."],
+["Ты больше любишь читать книги или слушать аудиокниги?","Я больше люблю читать, потому что люблю бумагу. Но в машине слушаю аудиокниги.","Я почти только слушаю, например, когда готовлю.","С одной стороны, чтение расслабляет больше, с другой — аудиокниги экономят время."]
+];
+const L=document.getElementById('list');
+const fmt=s=>s.replace(/\*(.+?)\*/g,'<em class="b2">$1</em>');
+D.forEach((d,i)=>{
+ const it=document.createElement('div');it.className='item';
+ const h=document.createElement('button');h.className='hd';h.setAttribute('aria-expanded','false');
+ const n=document.createElement('span');n.className='n';n.textContent=(i+1)+'.';
+ const t=document.createElement('span');t.className='t';
+ const de=document.createElement('span');de.className='de';de.textContent=d[0];
+ const ru=document.createElement('span');ru.className='ru';ru.textContent=d[1];
+ t.append(de,ru);
+ const a=document.createElement('span');a.className='ar';a.textContent='›';
+ h.append(n,t,a);
+ const b=document.createElement('div');b.className='bd';
+ d[2].forEach((x,j)=>{const m=document.createElement('div');m.className='m '+(j%2?'b':'a');
+  m.innerHTML='<i>'+(j%2?'B':'A')+'</i>'+fmt(x)+'<span class="tr">'+((T[i]||[])[j]||'')+'</span>';b.append(m);});
+ const bk=document.createElement('button');bk.className='back';bk.textContent='← Назад к списку';
+ bk.onclick=()=>{it.classList.remove('open');h.setAttribute('aria-expanded','false');it.scrollIntoView({block:'center'});};
+ b.append(bk);
+ h.onclick=()=>{const was=it.classList.contains('open');
+  document.querySelectorAll('.item.open').forEach(o=>{o.classList.remove('open');o.firstChild.setAttribute('aria-expanded','false')});
+  if(!was){it.classList.add('open');h.setAttribute('aria-expanded','true');}};
+ it.append(h,b);L.append(it);
+});
+</script></body></html>
